@@ -33,15 +33,11 @@ public:
 
 	};
 
-	Listener& listener;
-
-	View (Listener& listener);
-
 	virtual Size GetScreenSize () const = 0;
 
 	virtual Size GetSize () const = 0;
 
-	virtual IDXGISwapChain4* CreateSwapChain (const IDXGIFactory5& factory, const DXGI_SWAP_CHAIN_DESC1& desc) const = 0;
+	virtual IDXGISwapChain4* CreateSwapChain (const IUnknown & device, const IDXGIFactory5& factory) const = 0;
 
 	virtual void Close () = 0;
 
