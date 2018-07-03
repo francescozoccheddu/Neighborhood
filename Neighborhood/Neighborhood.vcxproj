@@ -157,11 +157,9 @@
   <ItemGroup>
     <ClCompile Include="D3DContext.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DContext.h" />
-    <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

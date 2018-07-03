@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="85681663-86c7-4485-bccb-0c55f60ddb73"
+    Name="849662cb-0a50-4b6d-b32f-a1b05cc0d9ef"
     Publisher="CN=zocch"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="85681663-86c7-4485-bccb-0c55f60ddb73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="849662cb-0a50-4b6d-b32f-a1b05cc0d9ef" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Launcher-UWP</DisplayName>
