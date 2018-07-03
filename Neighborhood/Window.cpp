@@ -193,10 +193,10 @@ std::string Window::GetTitle () const
 	return buf;
 }
 
-void Window::GetSize (int & w, int & h)
+void Window::GetSize (int & w, int & h) const
 {}
 
-void Window::GetPosition (int & x, int & y)
+void Window::GetPosition (int & x, int & y) const
 {}
 
 bool Window::IsResizable () const
@@ -209,7 +209,7 @@ bool Window::IsMinimized () const
 	return false;
 }
 
-void Window::GetSystemButtons (bool& enabled, bool & minimize, bool & maximize)
+void Window::GetSystemButtons (bool& enabled, bool & minimize, bool & maximize) const
 {}
 
 bool Window::IsVisible () const

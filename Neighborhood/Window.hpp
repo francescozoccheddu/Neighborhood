@@ -75,15 +75,15 @@ public:
 
 	std::string GetTitle () const;
 
-	void GetSize (int& w, int& h);
+	void GetSize (int& w, int& h) const;
 
-	void GetPosition (int& x, int& y);
+	void GetPosition (int& x, int& y) const;
 
 	bool IsResizable () const;
 
 	bool IsMinimized () const;
 
-	void GetSystemButtons (bool& enabled, bool& minimize, bool& maximize);
+	void GetSystemButtons (bool& enabled, bool& minimize, bool& maximize) const;
 
 	bool IsVisible () const;
 
