@@ -16,10 +16,14 @@
     <ClCompile Include="Main.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="D3DContext.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.hpp">
       <Filter>Sources\Window</Filter>
     </ClInclude>
+    <ClInclude Include="D3DContext.h" />
   </ItemGroup>
 </Project>
