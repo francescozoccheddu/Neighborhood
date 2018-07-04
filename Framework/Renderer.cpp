@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include "Direct3D11.h"
 
+#define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
+
 Renderer::Renderer (View & _view) : m_View{ _view }
 {}
 
@@ -29,13 +31,16 @@ void Renderer::OnTick (double _deltaTime)
 
 void Renderer::OnSize (View::Size _size)
 {
+	m_Size = _size;
 	if (!m_pDevice || !m_pDeviceContext)
 	{
 		throw std::runtime_error ("Device not created");
 	}
 	if (m_pSwapChain)
 	{
-		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, DXGI_FORMAT_R8G8B8A8_UNORM, 0) };
+		ReleaseCOM (m_pRenderTargetView);
+		ReleaseCOM (m_pDepthStencilView);
+		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		{
 			HandleDeviceLost ();
@@ -92,6 +97,11 @@ ID3D11DepthStencilView * Renderer::GetDepthStencilView ()
 	return m_pDepthStencilView;
 }
 
+View::Size Renderer::GetSize () const
+{
+	return m_Size;
+}
+
 void Renderer::CreateDeviceAndDeviceContext ()
 {
 	ReleaseCOM (m_pDeviceContext);
@@ -128,7 +138,7 @@ void Renderer::CreateSwapChain (View::Size _bufferSize)
 	desc.Width = _bufferSize.width;
 	desc.Height = _bufferSize.height;
 	desc.Scaling = DXGI_SCALING_STRETCH;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.Format = SWAP_CHAIN_FORMAT;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	desc.Stereo = FALSE;
@@ -190,10 +200,9 @@ void Renderer::HandleDeviceLost ()
 	OnDeviceDestroyed ();
 	CreateDeviceAndDeviceContext ();
 	OnDeviceCreated ();
-	const View::Size size{ m_View.GetSize () };
-	CreateSwapChain (size);
-	CreateRenderTarget (size);
-	CreateDepthStencilView (size);
+	CreateSwapChain (m_Size);
+	CreateRenderTarget (m_Size);
+	CreateDepthStencilView (m_Size);
 	SetOutputMergerViews ();
-	SetOutputMergerViewport (size);
+	SetOutputMergerViewport (m_Size);
 }
