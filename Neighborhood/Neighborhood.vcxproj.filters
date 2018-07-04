@@ -7,12 +7,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameView.cpp">
+    <ClCompile Include="Game.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameView.h">
+    <ClInclude Include="Game.hpp">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

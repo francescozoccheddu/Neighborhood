@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameView.h" />
+    <ClInclude Include="Game.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameView.cpp" />
+    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.vcxproj">

@@ -8,7 +8,7 @@
 #define IDI_ICON_SM                     103
 #define IDS_ERRD_CLASS_NOT_REGISTERED   103
 #define IDS_ERRD_WINDOW_NOT_CREATED     104
-#define IDS_ERRD_ERROR_IN_MESSAGE_LOOP  105
+#define IDS_ERRD_TIMER_QUERY_FAILED     105
 
 // Next default values for new objects
 // 
