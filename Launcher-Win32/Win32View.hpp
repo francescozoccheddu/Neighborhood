@@ -12,10 +12,6 @@ public:
 	
 	Win32View (HWND hWnd);
 	
-	virtual Size GetScreenSize () const override;
-
-	virtual Size GetSize () const override;
-
 	virtual IDXGISwapChain1 * CreateSwapChain (IUnknown & device, IDXGIFactory2 & factory, const DXGI_SWAP_CHAIN_DESC1 & desc) const override;
 
 	virtual void Close () override;

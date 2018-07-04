@@ -20,7 +20,7 @@ void Game::OnDeviceCreated ()
 
 void Game::OnRender (double deltaTime)
 {
-	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), DirectX::Colors::Aqua);
+	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), DirectX::Colors::Aquamarine);
 }
 
 void Game::OnSized (View::Size size)

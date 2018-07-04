@@ -38,9 +38,12 @@ protected:
 
 	ID3D11DepthStencilView * GetDepthStencilView ();
 
+	View::Size GetSize () const;
+
 private:
 
 	View& m_View;
+	View::Size m_Size;
 	ID3D11Device * m_pDevice{ nullptr };
 	ID3D11DeviceContext * m_pDeviceContext{ nullptr };
 	IDXGISwapChain1 * m_pSwapChain{ nullptr };
