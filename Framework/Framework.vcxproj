@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Direct3D11.h" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="View.hpp" />
   </ItemGroup>

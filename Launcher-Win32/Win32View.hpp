@@ -3,7 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windef.h>
 #include <Framework/View.hpp>
-#include <d3d11_4.h>
+#include <Framework/Direct3D11.h>
 
 class Win32View : public View
 {
@@ -16,13 +16,13 @@ public:
 
 	virtual Size GetSize () const override;
 
-	virtual IDXGISwapChain4 * CreateSwapChain (const IUnknown & device, const IDXGIFactory5 & factory) const override;
+	virtual IDXGISwapChain1 * CreateSwapChain (IUnknown & device, IDXGIFactory2 & factory, const DXGI_SWAP_CHAIN_DESC1 & desc) const override;
 
 	virtual void Close () override;
 
 private:
 
-	HWND hWnd;
+	HWND m_hWnd;
 
 };
 
