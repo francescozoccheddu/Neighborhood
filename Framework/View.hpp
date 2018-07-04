@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <d3d11_4.h>
+#include "Direct3D11.h"
 
 class View
 {
@@ -19,17 +19,17 @@ public:
 
 	public:
 
-		virtual void Render (double deltaTime) = 0;
+		virtual void OnTick (double deltaTime) = 0;
 
-		virtual void Show () = 0;
+		virtual void OnShow () = 0;
 
-		virtual void Hide () = 0;
+		virtual void OnHide () = 0;
 
-		virtual void Size (Size size) = 0;
+		virtual void OnSize (Size size) = 0;
 
-		virtual void Create () = 0;
+		virtual void OnCreate () = 0;
 
-		virtual void Destroy () = 0;
+		virtual void OnDestroy () = 0;
 
 	};
 
@@ -37,7 +37,7 @@ public:
 
 	virtual Size GetSize () const = 0;
 
-	virtual IDXGISwapChain4* CreateSwapChain (const IUnknown & device, const IDXGIFactory5& factory) const = 0;
+	virtual IDXGISwapChain1* CreateSwapChain (IUnknown & device, IDXGIFactory2& factory, const DXGI_SWAP_CHAIN_DESC1 & desc) const = 0;
 
 	virtual void Close () = 0;
 
