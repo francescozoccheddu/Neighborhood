@@ -2,7 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windef.h>
-#include <Framework/View.h>
+#include <Framework/View.hpp>
 #include <d3d11_4.h>
 
 class Win32View : public View

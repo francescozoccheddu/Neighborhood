@@ -19,7 +19,7 @@ public:
 
 	public:
 
-		virtual void Render (float deltaTime) = 0;
+		virtual void Render (double deltaTime) = 0;
 
 		virtual void Show () = 0;
 

@@ -1,7 +1,7 @@
-#include "Win32View.h"
+#include "Win32View.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <Framework/View.h>
+#include <Framework/View.hpp>
 #include <d3d11_4.h>
 
 Win32View::Win32View (HWND _hWnd) : hWnd{_hWnd}

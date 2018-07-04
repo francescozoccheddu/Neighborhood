@@ -123,8 +123,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="View.h" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="View.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp" />
