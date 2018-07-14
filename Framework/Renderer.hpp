@@ -65,5 +65,7 @@ private:
 
 	void HandleDeviceLost ();
 
+	void Release ();
+
 };
 

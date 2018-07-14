@@ -23,7 +23,7 @@ void Renderer::OnTick (double _deltaTime)
 	{
 		HandleDeviceLost ();
 	}
-	else 
+	else
 	{
 		HR (hr);
 	}
@@ -31,19 +31,23 @@ void Renderer::OnTick (double _deltaTime)
 
 void Renderer::OnSize (View::Size _size)
 {
+	LOGM ("OnSize");
 	m_Size = _size;
 	if (!m_pDevice || !m_pDeviceContext)
 	{
 		throw std::runtime_error ("Device not created");
 	}
+	bool recreated{ false };
 	if (m_pSwapChain)
 	{
+		LOGM ("Resizing buffers");
 		ReleaseCOM (m_pRenderTargetView);
 		ReleaseCOM (m_pDepthStencilView);
 		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		{
 			HandleDeviceLost ();
+			recreated = true;
 		}
 		else
 		{
@@ -52,12 +56,16 @@ void Renderer::OnSize (View::Size _size)
 	}
 	else
 	{
+		LOGM ("Creating swap chain");
 		CreateSwapChain (_size);
 	}
-	CreateRenderTarget (_size);
-	CreateDepthStencilView (_size);
-	SetOutputMergerViews ();
-	SetOutputMergerViewport (_size);
+	if (!recreated)
+	{
+		CreateRenderTarget (_size);
+		CreateDepthStencilView (_size);
+		SetOutputMergerViews ();
+		SetOutputMergerViewport (_size);
+	}
 	OnSized (_size);
 }
 
@@ -70,11 +78,7 @@ void Renderer::OnCreate ()
 void Renderer::OnDestroy ()
 {
 	OnDeviceDestroyed ();
-	ReleaseCOM (m_pSwapChain);
-	ReleaseCOM (m_pRenderTargetView);
-	ReleaseCOM (m_pDepthStencilView);
-	ReleaseCOM (m_pDeviceContext);
-	ReleaseCOM (m_pDevice);
+	Release ();
 }
 
 ID3D11Device * Renderer::GetDevice ()
@@ -197,7 +201,9 @@ void Renderer::SetOutputMergerViewport (View::Size _viewportSize)
 
 void Renderer::HandleDeviceLost ()
 {
+	LOGM ("Device lost");
 	OnDeviceDestroyed ();
+	Release ();
 	CreateDeviceAndDeviceContext ();
 	OnDeviceCreated ();
 	CreateSwapChain (m_Size);
@@ -205,4 +211,18 @@ void Renderer::HandleDeviceLost ()
 	CreateDepthStencilView (m_Size);
 	SetOutputMergerViews ();
 	SetOutputMergerViewport (m_Size);
+}
+
+void Renderer::Release ()
+{
+	ReleaseCOM (m_pSwapChain);
+	ReleaseCOM (m_pRenderTargetView);
+	ReleaseCOM (m_pDepthStencilView);
+	ReleaseCOM (m_pDevice);
+	if (m_pDeviceContext)
+	{
+		m_pDeviceContext->ClearState ();
+		m_pDeviceContext->Flush ();
+		m_pDeviceContext->Release ();
+	}
 }
