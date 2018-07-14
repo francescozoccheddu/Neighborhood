@@ -1,30 +1,25 @@
 #pragma once
 
-#pragma comment(lib, "d3d11.lib")
-
 #include <d3d11_4.h>
-#include <comdef.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <string>
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
-#define HR_THROW(hr) { HRThrow(hr, "HRESULT failure\n" "File: "  __FILE__ "\n" "Line: " STRINGIZE (__LINE__) "\n" "Function: " __FUNCTION__); }
+#ifdef _DEBUG
 #define HR(hr) {if (!SUCCEEDED(hr)) {HR_THROW(hr);}}
-
-inline void HRThrow (HRESULT _hr, const char * _desc)
-{
-	const TCHAR * hrMsg{ _com_error (_hr).ErrorMessage () };
-	std::string msg{ _desc };
-	msg += "\nMessage: ";
-#ifndef UNICODE
-	msg += std::string{ hrMsg };
+#define HR_THROW(hr) { HRThrow(hr, "HRESULT failure\n" "File: "  __FILE__ "\n" "Line: " STRINGIZE (__LINE__) "\n" "Function: " __FUNCTION__); }
+#define LOGM(x) OutputDebugStringA(__FUNCTION__ ": " x "\n");
 #else
-	std::wstring hrWMsg{ hrMsg };
-	msg += std::string{ hrWMsg.begin (), hrWMsg.end () };
+#define HR(hr) { hr; }
+#define HR_THROW(hr) { hr; }
+#define LOGM(x)
 #endif
-	throw std::runtime_error (msg);
-}
+
+void HRThrow (HRESULT hr, const char * desc);
+
+char * LoadBlob (const std::string& filename, size_t& length);
 
 template<typename T>
 void ReleaseCOM (T& comPtr)

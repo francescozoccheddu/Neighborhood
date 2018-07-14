@@ -128,6 +128,7 @@
     <ClInclude Include="View.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Direct3D11.cpp" />
     <ClCompile Include="Renderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
