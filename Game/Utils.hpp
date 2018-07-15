@@ -58,7 +58,7 @@
 
 void ThrowIfCOMFailed (HRESULT result, const char * message);
 
-char * LoadBlob (const std::string& filename, size_t& length);
+char * LoadBlob (const std::wstring& filename, size_t& length);
 
 template<typename T>
 void ReleaseCOM (T& comPtr)

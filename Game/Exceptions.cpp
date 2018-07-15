@@ -54,7 +54,7 @@ void GameException::makeMessage (std::stringstream& _msg) const
 GameCOMFailure::GameCOMFailure (HRESULT _result, const char * _function, const char * _message) : GameException{ _function,_message }, result{ _result }, comMessage{ getCOMMessage (_result) } {}
 GameCOMFailure::GameCOMFailure (HRESULT _result, const char * _file, int _line, const char * _message) : GameException{ _file,_line,_message }, result{ _result }, comMessage{ getCOMMessage (_result) } {}
 GameCOMFailure::GameCOMFailure (HRESULT _result, const char * _function, const char * _file, int _line, const char * _message) : GameException{ _function, _file,_line,_message }, result{ _result }, comMessage{ getCOMMessage (_result) } {}
-GameCOMFailure::GameCOMFailure (HRESULT _result, const char * _message) : GameException {_message }, result{ _result }, comMessage{ getCOMMessage (_result) } {}
+GameCOMFailure::GameCOMFailure (HRESULT _result, const char * _message) : GameException{ _message }, result{ _result }, comMessage{ getCOMMessage (_result) } {}
 
 const char* GameCOMFailure::type () const
 {
@@ -71,15 +71,14 @@ void GameCOMFailure::makeMessage (std::stringstream& _msg) const
 	_msg << '\n';
 }
 
+const std::string GameCOMFailure::getCOMMessage (HRESULT _result)
+{
+
+	_com_error err (_result, nullptr);
 #ifdef UNICODE
-const std::string& GameCOMFailure::getCOMMessage (HRESULT _result)
-{
-	std::wstring msg{ _com_error (_result).ErrorMessage () };
+	std::wstring msg{ err.ErrorMessage () };
 	return std::string{ msg.begin (), msg.end () };
-}
 #else
-const char * GameCOMFailure::getCOMMessage (HRESULT _result)
-{
-	return _com_error (_result).ErrorMessage ();
-}
+	return std::string{ err.ErrorMessage () };
 #endif
+}

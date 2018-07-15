@@ -35,9 +35,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp">
       <Filter>Source Code</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\WindowListener.hpp">
-      <Filter>Source Code</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp">
       <Filter>Source Code</Filter>
     </ClInclude>

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "WindowListener.hpp"
 #include "Utils.hpp"
 #include "Direct3D11.h"
 
@@ -15,22 +14,35 @@ typedef IUnknown* NativeWindow;
 #error Unknown GAME_PLATFORM value.
 #endif
 
-class ResourceHandler : public WindowListener
+struct WindowSize
+{
+	int width;
+	int height;
+};
+
+
+class ResourceHandler
 {
 
 public:
 
-	ResourceHandler (NativeWindow nativeWindow);
+	ResourceHandler ();
 
 	virtual ~ResourceHandler ();
 
-	virtual void OnTick (double deltaTime) override final;
+	void OnTick ();
 
-	virtual void OnSize (WindowSize size) override final;
+	void OnSize (WindowSize size);
 
-	virtual void OnCreate () override final;
+	void OnDestroy ();
 
-	virtual void OnDestroy () override final;
+	void OnWindowChanged (NativeWindow nativeWindow);
+
+	void OnSuspended ();
+
+	virtual void OnShow () = 0;
+
+	virtual void OnHide () = 0;
 
 protected:
 
@@ -54,10 +66,14 @@ protected:
 
 private:
 
-	NativeWindow m_NativeWindow;
-	WindowSize m_Size;
+	static double QueryTimerFrequency ();
+
+	LARGE_INTEGER m_LastTime;
+	const double timerFreq;
+	NativeWindow m_NativeWindow{};
+	WindowSize m_Size{-1,-1};
 	ID3D11Device * m_pDevice{ nullptr };
-	ID3D11DeviceContext * m_pDeviceContext{ nullptr };
+	ID3D11DeviceContext1 * m_pDeviceContext{ nullptr };
 	IDXGISwapChain1 * m_pSwapChain{ nullptr };
 	ID3D11RenderTargetView * m_pRenderTargetView{ nullptr };
 	ID3D11DepthStencilView * m_pDepthStencilView{ nullptr };
