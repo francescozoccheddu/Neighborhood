@@ -1,15 +1,12 @@
 #pragma once
 
 #include <string>
-#include "WindowListener.hpp"
 #include "ResourceHandler.hpp"
 
 class Game : public ResourceHandler
 {
 
 public:
-
-	Game (NativeWindow nativeWindow);
 
 	virtual void OnShow () override;
 

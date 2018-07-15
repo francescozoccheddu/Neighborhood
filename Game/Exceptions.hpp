@@ -68,11 +68,7 @@ class GameCOMFailure : public GameException
 {
 public:
 	const HRESULT result;
-#if UNICODE
 	const std::string comMessage;
-#else
-	const char * const comMessage;
-#endif
 
 	GameCOMFailure (HRESULT result, const char * function, const char * message);
 	GameCOMFailure (HRESULT result, const char * file, int line, const char * message);
@@ -85,10 +81,6 @@ protected:
 	void makeMessage (std::stringstream& message) const override;
 
 private:
-#if UNICODE
-	static const std::string& getCOMMessage (HRESULT result);
-#else
-	static const char * getCOMMessage (HRESULT result);
-#endif
+	static const std::string getCOMMessage (HRESULT result);
 
 };

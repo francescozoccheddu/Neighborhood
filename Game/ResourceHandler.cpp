@@ -1,25 +1,62 @@
 #include "ResourceHandler.hpp"
-#include "WindowListener.hpp"
 #include "Exceptions.hpp"
 #include "Utils.hpp"
 #include "Direct3D11.h"
+#include <WinBase.h>
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
+#define MAX_DELTA_TIME 1.0
 
-ResourceHandler::ResourceHandler (NativeWindow _nativeWindow) : m_NativeWindow{ _nativeWindow }
-{}
+ResourceHandler::ResourceHandler () : timerFreq{ QueryTimerFrequency () }
+{
+	m_LastTime.QuadPart = 0;
+}
 
 ResourceHandler::~ResourceHandler ()
-{}
+{
+	Release ();
+}
 
-void ResourceHandler::OnTick (double _deltaTime)
+void ResourceHandler::OnTick ()
 {
 	if (!m_pSwapChain)
 	{
 		throw std::runtime_error ("Swap chain not created");
 	}
-	OnRender (_deltaTime);
-	const HRESULT hr{ m_pSwapChain->Present (1,0) };
+	double deltaTime = 0.0;
+	{
+		LARGE_INTEGER newTime;
+		if (!QueryPerformanceCounter (&newTime))
+		{
+			GAME_THROW_MSG ("Timer query failed");
+		}
+		if (m_LastTime.QuadPart == 0.0)
+		{
+			deltaTime = 0.0;
+		}
+		else
+		{
+			deltaTime = static_cast<double>(newTime.QuadPart - m_LastTime.QuadPart) / timerFreq;
+			if (deltaTime < 0.0)
+			{
+				deltaTime = 0.0;
+			}
+			else if (deltaTime > MAX_DELTA_TIME)
+			{
+				deltaTime = MAX_DELTA_TIME;
+			}
+		}
+		m_LastTime = newTime;
+	}
+	OnRender (deltaTime);
+	DXGI_PRESENT_PARAMETERS pars;
+	pars.DirtyRectsCount = 0;
+	pars.pDirtyRects = nullptr;
+	pars.pScrollOffset = nullptr;
+	pars.pScrollRect = nullptr;
+	const HRESULT hr{ m_pSwapChain->Present1 (1,0, &pars) };
+	m_pDeviceContext->DiscardView1 (m_pRenderTargetView, nullptr, 0);
+	m_pDeviceContext->DiscardView1 (m_pDepthStencilView, nullptr, 0);
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 	{
 		HandleDeviceLost ();
@@ -70,16 +107,31 @@ void ResourceHandler::OnSize (WindowSize _size)
 	OnSized (_size);
 }
 
-void ResourceHandler::OnCreate ()
-{
-	CreateDeviceAndDeviceContext ();
-	OnDeviceCreated ();
-}
-
 void ResourceHandler::OnDestroy ()
 {
 	OnDeviceDestroyed ();
 	Release ();
+}
+
+void ResourceHandler::OnWindowChanged (NativeWindow _nativeWindow)
+{
+	if (!m_pDevice)
+	{
+		CreateDeviceAndDeviceContext ();
+		OnDeviceCreated ();
+	}
+	m_NativeWindow = _nativeWindow;
+}
+
+void ResourceHandler::OnSuspended ()
+{
+	if (m_pDevice)
+	{
+		IDXGIDevice3 * pDevice;
+		GAME_COMC (m_pDevice->QueryInterface (__uuidof(IDXGIDevice3), reinterpret_cast<void**>(&pDevice)));
+		pDevice->Trim ();
+		pDevice->Release ();
+	}
 }
 
 ID3D11Device * ResourceHandler::GetDevice ()
@@ -107,6 +159,16 @@ WindowSize ResourceHandler::GetSize () const
 	return m_Size;
 }
 
+double ResourceHandler::QueryTimerFrequency ()
+{
+	LARGE_INTEGER frequency;
+	if (!QueryPerformanceFrequency (&frequency))
+	{
+		GAME_THROW_MSG ("Timer frequency query failed");
+	}
+	return static_cast<double>(frequency.QuadPart);
+}
+
 void ResourceHandler::CreateDeviceAndDeviceContext ()
 {
 	ReleaseCOM (m_pDeviceContext);
@@ -116,10 +178,10 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 #ifdef _DEBUG
 	flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-	HRESULT hr{ D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, &m_pDeviceContext) };
+	HRESULT hr{ D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)) };
 	if (FAILED (hr))
 	{
-		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, &m_pDeviceContext));
+		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)));
 	}
 }
 

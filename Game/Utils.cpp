@@ -1,10 +1,9 @@
 #include "Utils.hpp"
 
-#include <windef.h>
 #include <string>
-#include <fileapi.h>
 #include <comdef.h>
 #include "Exceptions.hpp"
+#include <fstream>
 
 void ThrowIfCOMFailed (HRESULT _result, const char * _message)
 {
@@ -14,15 +13,23 @@ void ThrowIfCOMFailed (HRESULT _result, const char * _message)
 	}
 }
 
-char * LoadBlob (const std::string & _filename, size_t& _length)
+char * LoadBlob (const std::wstring & _filename, size_t& _length)
 {
-	HANDLE file{ CreateFileA (_filename.c_str (), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr) };
+	CREATEFILE2_EXTENDED_PARAMETERS pars;
+	pars.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
+	pars.hTemplateFile = nullptr;
+	pars.dwSize = sizeof (pars);
+	pars.dwFileFlags = 0;
+	pars.lpSecurityAttributes = nullptr;
+	pars.dwSecurityQosFlags = 0;
+	HANDLE file{ CreateFile2 (_filename.c_str (), GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, &pars) };
 	if (file != INVALID_HANDLE_VALUE)
 	{
-		DWORD size{ GetFileSize (file, nullptr) };
-		char * buf{ new char[size] };
+		LARGE_INTEGER size;
+		GetFileSizeEx (file, &size);
+		char * buf{ new char[size.LowPart] };
 		DWORD read;
-		ReadFile (file, buf, size, &read, nullptr);
+		ReadFile (file, buf, size.LowPart, &read, nullptr);
 		CloseHandle (file);
 		_length = read;
 		return buf;

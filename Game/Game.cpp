@@ -1,13 +1,10 @@
 #include "Game.hpp"
-#include "WindowListener.hpp"
 #include "ResourceHandler.hpp"
 #include "Direct3D11.h"
 #include "Utils.hpp"
 
-#define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
-
-Game::Game (NativeWindow _nativeWindow) : ResourceHandler{ _nativeWindow }
-{}
+//#define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
+#define SHADER_PATH(x) x
 
 void Game::OnShow ()
 {}
@@ -27,8 +24,8 @@ void Game::OnDeviceCreated ()
 	{
 		// Shaders
 		size_t vsLen, psLen;
-		char * pVsData{ LoadBlob (SHADER_PATH ("VertexShader.cso"), vsLen) };
-		char * pPsData{ LoadBlob (SHADER_PATH ("PixelShader.cso"), psLen) };
+		char * pVsData{ LoadBlob (SHADER_PATH (L"VertexShader.cso"), vsLen) };
+		char * pPsData{ LoadBlob (SHADER_PATH (L"PixelShader.cso"), psLen) };
 		GAME_COMC (device.CreateVertexShader (pVsData, vsLen, nullptr, &m_pVertexShader));
 		GAME_COMC (device.CreatePixelShader (pPsData, psLen, nullptr, &m_pPixelShader));
 		context.VSSetShader (m_pVertexShader, nullptr, 0);
@@ -81,7 +78,6 @@ void Game::OnRender (double deltaTime)
 	GetDeviceContext ()->ClearDepthStencilView (GetDepthStencilView (), D3D11_CLEAR_DEPTH, 1, 0);
 	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), color);
 	GetDeviceContext ()->Draw (3, 0);
-	Sleep (100);
 }
 
 void Game::OnSized (WindowSize size)
