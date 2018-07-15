@@ -1,6 +1,7 @@
 #pragma once
 
 #include "View.hpp"
+#include "Utils.hpp"
 #include "Direct3D11.h"
 
 class ResourceHandler : public View::Listener

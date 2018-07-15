@@ -14,14 +14,18 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Direct3D11.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Exceptions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Direct3D11.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)View.hpp" />
   </ItemGroup>
   <ItemGroup>

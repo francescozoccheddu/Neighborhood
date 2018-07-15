@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)VertexShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)PixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Utils.cpp">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceHandler.cpp">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Exceptions.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Direct3D11.h">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Game.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHandler.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)View.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Code">
+      <UniqueIdentifier>{d37517d0-b4ba-411d-a798-d8bcba2db7c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{2f082764-d2b3-4b11-8bb5-a91d738daeb1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
