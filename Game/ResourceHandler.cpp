@@ -1,6 +1,7 @@
 #include "ResourceHandler.hpp"
 #include "View.hpp"
-#include <stdexcept>
+#include "Exceptions.hpp"
+#include "Utils.hpp"
 #include "Direct3D11.h"
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
@@ -25,22 +26,22 @@ void ResourceHandler::OnTick (double _deltaTime)
 	}
 	else
 	{
-		HR (hr);
+		GAME_COMC (hr);
 	}
 }
 
 void ResourceHandler::OnSize (View::Size _size)
 {
-	LOGM ("OnSize");
+	GAME_LOG ("OnSize");
 	m_Size = _size;
 	if (!m_pDevice || !m_pDeviceContext)
 	{
-		throw std::runtime_error ("Device not created");
+		GAME_THROW ("Device not created");
 	}
 	bool recreated{ false };
 	if (m_pSwapChain)
 	{
-		LOGM ("Resizing buffers");
+		GAME_LOG ("Resizing buffers");
 		ReleaseCOM (m_pRenderTargetView);
 		ReleaseCOM (m_pDepthStencilView);
 		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
@@ -51,12 +52,12 @@ void ResourceHandler::OnSize (View::Size _size)
 		}
 		else
 		{
-			HR (hr);
+			GAME_COMC (hr);
 		}
 	}
 	else
 	{
-		LOGM ("Creating swap chain");
+		GAME_LOG ("Creating swap chain");
 		CreateSwapChain (_size);
 	}
 	if (!recreated)
@@ -118,7 +119,7 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 	HRESULT hr{ D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, &m_pDeviceContext) };
 	if (FAILED (hr))
 	{
-		HR (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, &m_pDeviceContext));
+		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, &m_pDeviceContext));
 	}
 }
 
@@ -129,9 +130,9 @@ void ResourceHandler::CreateSwapChain (View::Size _bufferSize)
 	{
 		IDXGIDevice * pDevice;
 		IDXGIAdapter * pAdapter;
-		HR (m_pDevice->QueryInterface (__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDevice)));
-		HR (pDevice->GetAdapter (&pAdapter));
-		HR (pAdapter->GetParent (_uuidof (IDXGIFactory2), reinterpret_cast<void**>(&pFactory)));
+		GAME_COMC (m_pDevice->QueryInterface (__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDevice)));
+		GAME_COMC (pDevice->GetAdapter (&pAdapter));
+		GAME_COMC (pAdapter->GetParent (_uuidof (IDXGIFactory2), reinterpret_cast<void**>(&pFactory)));
 		ReleaseCOM (pAdapter);
 		ReleaseCOM (pDevice);
 	}
@@ -156,8 +157,8 @@ void ResourceHandler::CreateRenderTarget (View::Size _viewSize)
 {
 	ReleaseCOM (m_pRenderTargetView);
 	ID3D11Texture2D * pTexture;
-	HR (m_pSwapChain->GetBuffer (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pTexture)));
-	HR (m_pDevice->CreateRenderTargetView (pTexture, nullptr, &m_pRenderTargetView));
+	GAME_COMC (m_pSwapChain->GetBuffer (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pTexture)));
+	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture, nullptr, &m_pRenderTargetView));
 	ReleaseCOM (pTexture);
 }
 
@@ -177,8 +178,8 @@ void ResourceHandler::CreateDepthStencilView (View::Size _viewSize)
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
 	ID3D11Texture2D * pTexture;
-	HR (m_pDevice->CreateTexture2D (&desc, nullptr, &pTexture));
-	HR (m_pDevice->CreateDepthStencilView (pTexture, nullptr, &m_pDepthStencilView));
+	GAME_COMC (m_pDevice->CreateTexture2D (&desc, nullptr, &pTexture));
+	GAME_COMC (m_pDevice->CreateDepthStencilView (pTexture, nullptr, &m_pDepthStencilView));
 	ReleaseCOM (pTexture);
 }
 
@@ -201,7 +202,7 @@ void ResourceHandler::SetOutputMergerViewport (View::Size _viewportSize)
 
 void ResourceHandler::HandleDeviceLost ()
 {
-	LOGM ("Device lost");
+	GAME_LOG ("Device lost");
 	OnDeviceDestroyed ();
 	Release ();
 	CreateDeviceAndDeviceContext ();

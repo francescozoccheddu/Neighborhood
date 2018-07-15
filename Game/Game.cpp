@@ -2,6 +2,7 @@
 #include "View.hpp"
 #include "ResourceHandler.hpp"
 #include "Direct3D11.h"
+#include "Utils.hpp"
 
 #define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 
@@ -28,8 +29,8 @@ void Game::OnDeviceCreated ()
 		size_t vsLen, psLen;
 		char * pVsData{ LoadBlob (SHADER_PATH ("VertexShader.cso"), vsLen) };
 		char * pPsData{ LoadBlob (SHADER_PATH ("PixelShader.cso"), psLen) };
-		HR (device.CreateVertexShader (pVsData, vsLen, nullptr, &m_pVertexShader));
-		HR (device.CreatePixelShader (pPsData, psLen, nullptr, &m_pPixelShader));
+		GAME_COMC (device.CreateVertexShader (pVsData, vsLen, nullptr, &m_pVertexShader));
+		GAME_COMC (device.CreatePixelShader (pPsData, psLen, nullptr, &m_pPixelShader));
 		context.VSSetShader (m_pVertexShader, nullptr, 0);
 		context.PSSetShader (m_pPixelShader, nullptr, 0);
 		// Input layout
@@ -41,7 +42,7 @@ void Game::OnDeviceCreated ()
 		desc.AlignedByteOffset = 0;
 		desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		desc.InstanceDataStepRate = 0;
-		HR (device.CreateInputLayout (&desc, 1, pVsData, vsLen, &m_pInputLayout));
+		GAME_COMC (device.CreateInputLayout (&desc, 1, pVsData, vsLen, &m_pInputLayout));
 		context.IASetInputLayout (m_pInputLayout);
 	}
 	{
@@ -63,7 +64,7 @@ void Game::OnDeviceCreated ()
 		data.pSysMem = triangle;
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
-		HR (device.CreateBuffer (&desc, &data, &m_pBuffer));
+		GAME_COMC (device.CreateBuffer (&desc, &data, &m_pBuffer));
 		UINT stride{ sizeof (Vertex) };
 		UINT offset{ 0 };
 		context.IASetVertexBuffers (0, 1, &m_pBuffer, &stride, &offset);
