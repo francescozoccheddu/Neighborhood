@@ -1,11 +1,11 @@
 #include "Game.hpp"
-#include <Framework/View.hpp>
-#include <Framework/Renderer.hpp>
-#include <Framework/Direct3D11.h>
+#include "View.hpp"
+#include "ResourceHandler.hpp"
+#include "Direct3D11.h"
 
 #define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 
-Game::Game (View & _view) : Renderer{ _view }
+Game::Game (View & _view) : ResourceHandler{ _view }
 {}
 
 void Game::OnShow ()
@@ -71,21 +71,13 @@ void Game::OnDeviceCreated ()
 	{
 		// State
 		context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		D3D11_RASTERIZER_DESC desc{};
-		desc.AntialiasedLineEnable = FALSE;
-		desc.CullMode = D3D11_CULL_NONE;
-		desc.DepthClipEnable = FALSE;
-		desc.ScissorEnable = FALSE;
-		desc.FillMode = D3D11_FILL_SOLID;
-		ID3D11RasterizerState * state;
-		HR (device.CreateRasterizerState (&desc, &state));
-		context.RSSetState (state);
 	}
 }
 
 void Game::OnRender (double deltaTime)
 {
-	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), DirectX::Colors::Aquamarine);
+	float color[]{ 0.0f,0.0f,0.0f,0.0f };
+	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), color);
 	GetDeviceContext ()->Draw (3, 0);
 }
 

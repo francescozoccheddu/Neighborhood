@@ -1,8 +1,8 @@
 #include "Win32View.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <Framework/View.hpp>
-#include <Framework/Direct3D11.h>
+#include "View.hpp"
+#include "Direct3D11.h"
 
 Win32View::Win32View (HWND _hWnd) : m_hWnd{ _hWnd }
 {}

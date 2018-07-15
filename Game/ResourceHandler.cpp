@@ -1,17 +1,17 @@
-#include "Renderer.hpp"
+#include "ResourceHandler.hpp"
 #include "View.hpp"
 #include <stdexcept>
 #include "Direct3D11.h"
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 
-Renderer::Renderer (View & _view) : m_View{ _view }
+ResourceHandler::ResourceHandler (View & _view) : m_View{ _view }
 {}
 
-Renderer::~Renderer ()
+ResourceHandler::~ResourceHandler ()
 {}
 
-void Renderer::OnTick (double _deltaTime)
+void ResourceHandler::OnTick (double _deltaTime)
 {
 	if (!m_pSwapChain)
 	{
@@ -29,7 +29,7 @@ void Renderer::OnTick (double _deltaTime)
 	}
 }
 
-void Renderer::OnSize (View::Size _size)
+void ResourceHandler::OnSize (View::Size _size)
 {
 	LOGM ("OnSize");
 	m_Size = _size;
@@ -69,44 +69,44 @@ void Renderer::OnSize (View::Size _size)
 	OnSized (_size);
 }
 
-void Renderer::OnCreate ()
+void ResourceHandler::OnCreate ()
 {
 	CreateDeviceAndDeviceContext ();
 	OnDeviceCreated ();
 }
 
-void Renderer::OnDestroy ()
+void ResourceHandler::OnDestroy ()
 {
 	OnDeviceDestroyed ();
 	Release ();
 }
 
-ID3D11Device * Renderer::GetDevice ()
+ID3D11Device * ResourceHandler::GetDevice ()
 {
 	return m_pDevice;
 }
 
-ID3D11DeviceContext * Renderer::GetDeviceContext ()
+ID3D11DeviceContext * ResourceHandler::GetDeviceContext ()
 {
 	return m_pDeviceContext;
 }
 
-ID3D11RenderTargetView * Renderer::GetRenderTargetView ()
+ID3D11RenderTargetView * ResourceHandler::GetRenderTargetView ()
 {
 	return m_pRenderTargetView;
 }
 
-ID3D11DepthStencilView * Renderer::GetDepthStencilView ()
+ID3D11DepthStencilView * ResourceHandler::GetDepthStencilView ()
 {
 	return m_pDepthStencilView;
 }
 
-View::Size Renderer::GetSize () const
+View::Size ResourceHandler::GetSize () const
 {
 	return m_Size;
 }
 
-void Renderer::CreateDeviceAndDeviceContext ()
+void ResourceHandler::CreateDeviceAndDeviceContext ()
 {
 	ReleaseCOM (m_pDeviceContext);
 	ReleaseCOM (m_pDevice);
@@ -122,7 +122,7 @@ void Renderer::CreateDeviceAndDeviceContext ()
 	}
 }
 
-void Renderer::CreateSwapChain (View::Size _bufferSize)
+void ResourceHandler::CreateSwapChain (View::Size _bufferSize)
 {
 	ReleaseCOM (m_pSwapChain);
 	IDXGIFactory2* pFactory;
@@ -146,13 +146,13 @@ void Renderer::CreateSwapChain (View::Size _bufferSize)
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	desc.Stereo = FALSE;
-	desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
 	m_pSwapChain = m_View.CreateSwapChain (*m_pDevice, *pFactory, desc);
 	ReleaseCOM (pFactory);
 }
 
-void Renderer::CreateRenderTarget (View::Size _viewSize)
+void ResourceHandler::CreateRenderTarget (View::Size _viewSize)
 {
 	ReleaseCOM (m_pRenderTargetView);
 	ID3D11Texture2D * pTexture;
@@ -161,7 +161,7 @@ void Renderer::CreateRenderTarget (View::Size _viewSize)
 	ReleaseCOM (pTexture);
 }
 
-void Renderer::CreateDepthStencilView (View::Size _viewSize)
+void ResourceHandler::CreateDepthStencilView (View::Size _viewSize)
 {
 	ReleaseCOM (m_pDepthStencilView);
 	D3D11_TEXTURE2D_DESC desc;
@@ -182,12 +182,12 @@ void Renderer::CreateDepthStencilView (View::Size _viewSize)
 	ReleaseCOM (pTexture);
 }
 
-void Renderer::SetOutputMergerViews ()
+void ResourceHandler::SetOutputMergerViews ()
 {
-	m_pDeviceContext->OMSetRenderTargets (1, &m_pRenderTargetView, m_pDepthStencilView);
+	m_pDeviceContext->OMSetRenderTargets (1, &m_pRenderTargetView, nullptr);
 }
 
-void Renderer::SetOutputMergerViewport (View::Size _viewportSize)
+void ResourceHandler::SetOutputMergerViewport (View::Size _viewportSize)
 {
 	D3D11_VIEWPORT viewport;
 	viewport.Width = static_cast<FLOAT>(_viewportSize.width);
@@ -199,7 +199,7 @@ void Renderer::SetOutputMergerViewport (View::Size _viewportSize)
 	m_pDeviceContext->RSSetViewports (1, &viewport);
 }
 
-void Renderer::HandleDeviceLost ()
+void ResourceHandler::HandleDeviceLost ()
 {
 	LOGM ("Device lost");
 	OnDeviceDestroyed ();
@@ -213,7 +213,7 @@ void Renderer::HandleDeviceLost ()
 	SetOutputMergerViewport (m_Size);
 }
 
-void Renderer::Release ()
+void ResourceHandler::Release ()
 {
 	ReleaseCOM (m_pSwapChain);
 	ReleaseCOM (m_pRenderTargetView);

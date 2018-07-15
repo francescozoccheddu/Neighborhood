@@ -1,10 +1,10 @@
 #pragma once
 
 #include <string>
-#include <Framework/View.hpp>
-#include <Framework/Renderer.hpp>
+#include "View.hpp"
+#include "ResourceHandler.hpp"
 
-class Game : public Renderer
+class Game : public ResourceHandler
 {
 
 public:

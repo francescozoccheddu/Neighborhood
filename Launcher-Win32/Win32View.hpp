@@ -2,8 +2,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windef.h>
-#include <Framework/View.hpp>
-#include <Framework/Direct3D11.h>
+#include <Game/View.hpp>
+#include <Game/Direct3D11.h>
 
 class Win32View : public View
 {
