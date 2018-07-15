@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "View.hpp"
+#include "WindowListener.hpp"
 #include "ResourceHandler.hpp"
 
 class Game : public ResourceHandler
@@ -9,7 +9,7 @@ class Game : public ResourceHandler
 
 public:
 
-	Game (View& view);
+	Game (NativeWindow nativeWindow);
 
 	virtual void OnShow () override;
 
@@ -21,7 +21,7 @@ public:
 
 	virtual void OnRender (double deltaTime) override;
 
-	virtual void OnSized (View::Size size) override;
+	virtual void OnSized (WindowSize size) override;
 
 private:
 

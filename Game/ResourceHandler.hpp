@@ -1,21 +1,32 @@
 #pragma once
 
-#include "View.hpp"
+#include "WindowListener.hpp"
 #include "Utils.hpp"
 #include "Direct3D11.h"
 
-class ResourceHandler : public View::Listener
+#define GAME_PLATFORM_WIN32 4
+#define GAME_PLATFORM_UWP 5
+
+#if GAME_PLATFORM == GAME_PLATFORM_WIN32
+typedef HWND NativeWindow;
+#elif GAME_PLATFORM == GAME_PLATFORM_UWP
+typedef IUnknown* NativeWindow;
+#else
+#error Unknown GAME_PLATFORM value.
+#endif
+
+class ResourceHandler : public WindowListener
 {
 
 public:
 
-	ResourceHandler (View& view);
+	ResourceHandler (NativeWindow nativeWindow);
 
 	virtual ~ResourceHandler ();
 
 	virtual void OnTick (double deltaTime) override final;
 
-	virtual void OnSize (View::Size size) override final;
+	virtual void OnSize (WindowSize size) override final;
 
 	virtual void OnCreate () override final;
 
@@ -29,7 +40,7 @@ protected:
 
 	virtual void OnRender (double deltaTime) = 0;
 
-	virtual void OnSized (View::Size size) = 0;
+	virtual void OnSized (WindowSize size) = 0;
 
 	ID3D11Device * GetDevice ();
 
@@ -39,12 +50,12 @@ protected:
 
 	ID3D11DepthStencilView * GetDepthStencilView ();
 
-	View::Size GetSize () const;
+	WindowSize GetSize () const;
 
 private:
 
-	View& m_View;
-	View::Size m_Size;
+	NativeWindow m_NativeWindow;
+	WindowSize m_Size;
 	ID3D11Device * m_pDevice{ nullptr };
 	ID3D11DeviceContext * m_pDeviceContext{ nullptr };
 	IDXGISwapChain1 * m_pSwapChain{ nullptr };
@@ -54,15 +65,15 @@ private:
 
 	void CreateDeviceAndDeviceContext ();
 
-	void CreateSwapChain (View::Size bufferSize);
+	void CreateSwapChain (WindowSize bufferSize);
 
-	void CreateRenderTarget (View::Size viewSize);
+	void CreateRenderTarget (WindowSize viewSize);
 
-	void CreateDepthStencilView (View::Size viewSize);
+	void CreateDepthStencilView (WindowSize viewSize);
 
 	void SetOutputMergerViews ();
 
-	void SetOutputMergerViewport (View::Size viewportSize);
+	void SetOutputMergerViewport (WindowSize viewportSize);
 
 	void HandleDeviceLost ();
 

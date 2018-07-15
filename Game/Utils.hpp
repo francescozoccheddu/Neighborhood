@@ -33,13 +33,13 @@
 #endif
 
 #if GAME_LOG_FILE_ENABLE && GAME_LOG_FUNCTION_ENABLE
-#define GAME_LOGF(msg) { OutputDebugStringA( __FUNCTION__ " in file " __FILE__ " at line " _STRINGIZE(__LINE__) ": " msg ); }
+#define GAME_LOGF(msg) { OutputDebugStringA( __FUNCTION__ " in file " __FILE__ " at line " _STRINGIZE(__LINE__) ": " msg "\n" ); }
 #elif GAME_LOG_FILE_ENABLE
-#define GAME_LOGF(msg) { OutputDebugStringA( __FILE__ " at line " _STRINGIZE(__LINE__) ": " msg ); }
+#define GAME_LOGF(msg) { OutputDebugStringA( __FILE__ " at line " _STRINGIZE(__LINE__) ": " msg "\n" ); }
 #elif GAME_LOG_FUNCTION_ENABLE
-#define GAME_LOGF(msg) { OutputDebugStringA( __FUNCTION__ ": " msg ); }
+#define GAME_LOGF(msg) { OutputDebugStringA( __FUNCTION__ ": " msg "\n" ); }
 #else
-#define GAME_LOGF(msg) { OutputDebugStringA( msg ); }
+#define GAME_LOGF(msg) { OutputDebugStringA( msg "\n" ); }
 #endif
 
 #if GAME_LOG_ENABLE

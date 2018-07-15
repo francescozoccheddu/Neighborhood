@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "Common\DeviceResources.h"
-#include "Launcher_UWPMain.h"
+#include <Game/WindowListener.hpp>
 
 namespace Launcher_UWP
 {
@@ -36,8 +36,7 @@ namespace Launcher_UWP
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
 	private:
-		std::shared_ptr<DX::DeviceResources> m_deviceResources;
-		std::unique_ptr<Launcher_UWPMain> m_main;
+		WindowListener * m_pWindowListener;
 		bool m_windowClosed;
 		bool m_windowVisible;
 	};

@@ -1,12 +1,12 @@
 #include "ResourceHandler.hpp"
-#include "View.hpp"
+#include "WindowListener.hpp"
 #include "Exceptions.hpp"
 #include "Utils.hpp"
 #include "Direct3D11.h"
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 
-ResourceHandler::ResourceHandler (View & _view) : m_View{ _view }
+ResourceHandler::ResourceHandler (NativeWindow _nativeWindow) : m_NativeWindow{ _nativeWindow }
 {}
 
 ResourceHandler::~ResourceHandler ()
@@ -30,7 +30,7 @@ void ResourceHandler::OnTick (double _deltaTime)
 	}
 }
 
-void ResourceHandler::OnSize (View::Size _size)
+void ResourceHandler::OnSize (WindowSize _size)
 {
 	GAME_LOG ("OnSize");
 	m_Size = _size;
@@ -102,7 +102,7 @@ ID3D11DepthStencilView * ResourceHandler::GetDepthStencilView ()
 	return m_pDepthStencilView;
 }
 
-View::Size ResourceHandler::GetSize () const
+WindowSize ResourceHandler::GetSize () const
 {
 	return m_Size;
 }
@@ -123,7 +123,7 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 	}
 }
 
-void ResourceHandler::CreateSwapChain (View::Size _bufferSize)
+void ResourceHandler::CreateSwapChain (WindowSize _bufferSize)
 {
 	ReleaseCOM (m_pSwapChain);
 	IDXGIFactory2* pFactory;
@@ -145,15 +145,20 @@ void ResourceHandler::CreateSwapChain (View::Size _bufferSize)
 	desc.Scaling = DXGI_SCALING_STRETCH;
 	desc.Format = SWAP_CHAIN_FORMAT;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	desc.Stereo = FALSE;
 	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
-	m_pSwapChain = m_View.CreateSwapChain (*m_pDevice, *pFactory, desc);
+#if GAME_PLATFORM == GAME_PLATFORM_WIN32
+	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice, m_NativeWindow, &desc, nullptr, nullptr, &m_pSwapChain));
+#elif GAME_PLATFORM == GAME_PLATFORM_UWP
+	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice, m_NativeWindow, &desc, nullptr, &m_pSwapChain));
+#endif
 	ReleaseCOM (pFactory);
 }
 
-void ResourceHandler::CreateRenderTarget (View::Size _viewSize)
+void ResourceHandler::CreateRenderTarget (WindowSize _viewSize)
 {
 	ReleaseCOM (m_pRenderTargetView);
 	ID3D11Texture2D * pTexture;
@@ -162,7 +167,7 @@ void ResourceHandler::CreateRenderTarget (View::Size _viewSize)
 	ReleaseCOM (pTexture);
 }
 
-void ResourceHandler::CreateDepthStencilView (View::Size _viewSize)
+void ResourceHandler::CreateDepthStencilView (WindowSize _viewSize)
 {
 	ReleaseCOM (m_pDepthStencilView);
 	D3D11_TEXTURE2D_DESC desc;
@@ -185,10 +190,10 @@ void ResourceHandler::CreateDepthStencilView (View::Size _viewSize)
 
 void ResourceHandler::SetOutputMergerViews ()
 {
-	m_pDeviceContext->OMSetRenderTargets (1, &m_pRenderTargetView, nullptr);
+	m_pDeviceContext->OMSetRenderTargets (1, &m_pRenderTargetView, m_pDepthStencilView);
 }
 
-void ResourceHandler::SetOutputMergerViewport (View::Size _viewportSize)
+void ResourceHandler::SetOutputMergerViewport (WindowSize _viewportSize)
 {
 	D3D11_VIEWPORT viewport;
 	viewport.Width = static_cast<FLOAT>(_viewportSize.width);
