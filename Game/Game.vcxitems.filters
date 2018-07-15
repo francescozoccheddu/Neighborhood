@@ -9,16 +9,18 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Utils.cpp">
-      <Filter>Source Code</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp">
       <Filter>Source Code</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ResourceHandler.cpp">
       <Filter>Source Code</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Exceptions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Exceptions.cpp">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Utils.cpp">
+      <Filter>Source Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Direct3D11.h">
@@ -33,11 +35,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp">
       <Filter>Source Code</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)View.hpp">
+    <ClInclude Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\WindowListener.hpp">
       <Filter>Source Code</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp">
+      <Filter>Source Code</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Code">

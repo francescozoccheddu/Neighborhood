@@ -1,12 +1,12 @@
 #include "Game.hpp"
-#include "View.hpp"
+#include "WindowListener.hpp"
 #include "ResourceHandler.hpp"
 #include "Direct3D11.h"
 #include "Utils.hpp"
 
 #define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 
-Game::Game (View & _view) : ResourceHandler{ _view }
+Game::Game (NativeWindow _nativeWindow) : ResourceHandler{ _nativeWindow }
 {}
 
 void Game::OnShow ()
@@ -77,11 +77,13 @@ void Game::OnDeviceCreated ()
 
 void Game::OnRender (double deltaTime)
 {
-	float color[]{ 0.0f,0.0f,0.0f,0.0f };
+	float color[]{ 0.1f,0.2f,0.3f,1.0f };
+	GetDeviceContext ()->ClearDepthStencilView (GetDepthStencilView (), D3D11_CLEAR_DEPTH, 1, 0);
 	GetDeviceContext ()->ClearRenderTargetView (GetRenderTargetView (), color);
 	GetDeviceContext ()->Draw (3, 0);
+	Sleep (100);
 }
 
-void Game::OnSized (View::Size size)
+void Game::OnSized (WindowSize size)
 {}
 

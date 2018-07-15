@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 #include "App.h"
 
+#include <Game/Game.hpp>
+
 #include <ppltasks.h>
 
 using namespace Launcher_UWP;
@@ -83,9 +85,9 @@ void App::SetWindow(CoreWindow^ window)
 // Initializes scene resources, or loads a previously saved app state.
 void App::Load(Platform::String^ entryPoint)
 {
-	if (m_main == nullptr)
+	if (m_pWindowListener == nullptr)
 	{
-		m_main = std::unique_ptr<Launcher_UWPMain>(new Launcher_UWPMain(m_deviceResources));
+		m_pWindowListener = new Game ();
 	}
 }
 

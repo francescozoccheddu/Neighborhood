@@ -26,7 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHandler.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)View.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)WindowListener.hpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)PixelShader.hlsl">
