@@ -3,14 +3,14 @@
 #include "View.hpp"
 #include "Direct3D11.h"
 
-class Renderer : public View::Listener
+class ResourceHandler : public View::Listener
 {
 
 public:
 
-	Renderer (View& view);
+	ResourceHandler (View& view);
 
-	virtual ~Renderer ();
+	virtual ~ResourceHandler ();
 
 	virtual void OnTick (double deltaTime) override final;
 
