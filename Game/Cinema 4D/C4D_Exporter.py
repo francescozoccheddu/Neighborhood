@@ -1,6 +1,6 @@
-import c4d
 import json
 import os
+import c4d
 from c4d import gui
 from c4d import documents
 

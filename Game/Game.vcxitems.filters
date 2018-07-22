@@ -4,9 +4,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{2f082764-d2b3-4b11-8bb5-a91d738daeb1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Meshes">
-      <UniqueIdentifier>{7469934d-737c-4898-b710-a017d6d1418f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Cinema 4D">
       <UniqueIdentifier>{ff3c497a-928a-4f6e-8e84-01efd69026d2}</UniqueIdentifier>
     </Filter>
@@ -18,6 +15,9 @@
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
       <Filter>Cinema 4D</Filter>
     </None>
+    <Content Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
+      <Filter>Cinema 4D</Filter>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
@@ -60,5 +60,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Utils.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path">
+      <Filter>Cinema 4D</Filter>
+    </Text>
   </ItemGroup>
 </Project>
