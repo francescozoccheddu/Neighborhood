@@ -15,6 +15,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
+    <Content Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
@@ -37,5 +40,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sources\ResourceHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path">
+      <FileType>Document</FileType>
+    </Text>
   </ItemGroup>
 </Project>
