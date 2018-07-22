@@ -14,25 +14,28 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Exceptions.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Utils.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Game.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ResourceHandler.cpp" />
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Direct3D11.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Exceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Game.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameExceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ResourceHandler.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Utils.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)PixelShader.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)VertexShader.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\VertexShader.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Direct3D11.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Exceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\GameExceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Exceptions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\ResourceHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Utils.cpp" />
   </ItemGroup>
 </Project>

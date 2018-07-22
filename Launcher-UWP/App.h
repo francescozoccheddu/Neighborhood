@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #include "Common\DeviceResources.h"
-#include <Game/Game.hpp>
+#include <Game.hpp>
 
 namespace Launcher_UWP
 {
