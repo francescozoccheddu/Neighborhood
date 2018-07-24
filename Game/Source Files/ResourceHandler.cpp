@@ -1,7 +1,7 @@
-#include "ResourceHandler.hpp"
-#include "Exceptions.hpp"
-#include "Utils.hpp"
-#include "Direct3D11.h"
+#include <Game/Exceptions.hpp>
+#include <Game/Direct3D11.hpp>
+#include <Game/ResourceHandler.hpp>
+#include <Game/Utils.hpp>
 #include <WinBase.h>
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM

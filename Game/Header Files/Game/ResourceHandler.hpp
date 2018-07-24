@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Utils.hpp"
-#include "Direct3D11.h"
+#include "Direct3D11.hpp"
 
 #define GAME_PLATFORM_WIN32 4
 #define GAME_PLATFORM_UWP 5

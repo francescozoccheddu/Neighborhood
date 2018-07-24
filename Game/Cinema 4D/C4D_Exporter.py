@@ -6,7 +6,7 @@ from c4d import documents
 
 def_outpath_filename = "c4d_exporter_path"
 
-def jsonizePolygonObject(obj,scale=1):
+def jsonizePolygonObject(obj,scale=1.0):
     if obj.GetType() == c4d.Opolygon:
         jobj = {}
         jobj["name"] = obj.GetName()
@@ -52,7 +52,7 @@ def getOutputFilename():
 def main():
     doc = documents.GetActiveDocument()
     objs = doc.GetActiveObjects(c4d.GETACTIVEOBJECTFLAGS_0)
-    scale = 1/100
+    scale = 1.0/100.0
     jobjs = []
     
     for obj in objs:

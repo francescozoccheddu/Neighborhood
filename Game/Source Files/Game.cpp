@@ -1,7 +1,12 @@
-#include "Game.hpp"
-#include "ResourceHandler.hpp"
-#include "Direct3D11.h"
-#include "Utils.hpp"
+#include <Game/Game.hpp>
+#include <Game/ResourceHandler.hpp>
+#include <Game/Utils.hpp>
+#include <Game/Exceptions.hpp>
+
+//TODO Cleanup
+#include <fstream>
+#include <RapidJSON/document.h>
+
 
 //#define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 #define SHADER_PATH(x) x
@@ -15,6 +20,28 @@ void Game::OnHide ()
 void Game::OnDeviceDestroyed ()
 {
 	ReleaseCOM (m_pBuffer);
+}
+
+void loadMeshesJSON (float *& _buf, int & _size)
+{
+	//TODO Delete this
+	std::ifstream file{ "meshes.json", std::ios::in };
+	GAME_ASSERT (file.is_open ());
+	std::string json ((std::istreambuf_iterator<char> (file)), std::istreambuf_iterator<char> ());
+	rapidjson::Document document;
+	document.Parse (json.c_str ());
+	GAME_ASSERT (document.IsArray ());
+	rapidjson::Value& mesh{ document[0] };
+	GAME_ASSERT (mesh.IsObject ());
+	rapidjson::Value& verts{ mesh["vertices"] };
+	GAME_ASSERT (verts.IsArray ());
+	float * buf = new float[verts.Size ()];
+	for (rapidjson::SizeType i = 0; i < verts.Size (); i++)
+	{
+		buf[i] = verts[i].GetFloat ();
+	}
+	_buf = buf;
+	_size = verts.Size ();
 }
 
 void Game::OnDeviceCreated ()
@@ -45,24 +72,23 @@ void Game::OnDeviceCreated ()
 	{
 		// Buffer
 		ReleaseCOM (m_pBuffer);
-		struct Vertex
-		{
-			float x, y, z;
-		};
-		Vertex triangle[]{ { 0.0f, 0.5f, 0.0f }, { 0.45f, -0.5f, 0.0f }, { -0.45f, -0.5f, 0.0f }, };
+		float * verts;
+		int count;
+		UINT size{ sizeof (float) * 3 };
+		loadMeshesJSON (verts, count);
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = sizeof (Vertex) * ARRAYSIZE (triangle);
+		desc.ByteWidth = count * size;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (Vertex);
+		desc.StructureByteStride = size;
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = triangle;
+		data.pSysMem = verts;
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 		GAME_COMC (device.CreateBuffer (&desc, &data, &m_pBuffer));
-		UINT stride{ sizeof (Vertex) };
+		UINT stride{ size };
 		UINT offset{ 0 };
 		context.IASetVertexBuffers (0, 1, &m_pBuffer, &stride, &offset);
 	}

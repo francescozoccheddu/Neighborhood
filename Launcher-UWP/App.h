@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "pch.h"
-#include "Common\DeviceResources.h"
-#include <Game.hpp>
+#include "Common/DeviceResources.h"
+#include <Game/Game.hpp>
 
 namespace Launcher_UWP
 {

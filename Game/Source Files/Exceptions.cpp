@@ -1,12 +1,12 @@
-#include "Exceptions.hpp"
+#include <Game/Exceptions.hpp>
 
 #include <string>
 #include <exception>
 #include <sstream>
 #include <comdef.h>
 
-GameException::GameException (const char * _file, int _line, const char * _message) : file{ _file }, line{ _line }, message{ _message } {}
 GameException::GameException (const char * _function, const char * _message) : function{ _function }, message{ _message } {}
+GameException::GameException (const char * _file, int _line, const char * _message) : file{ _file }, line{ _line }, message{ _message } {}
 GameException::GameException (const char * _function, const char * _file, int _line, const char * _message) : function{ _function }, file{ _file }, line{ _line }, message{ _message } {}
 GameException::GameException (const char * _message) : message{ _message } {}
 

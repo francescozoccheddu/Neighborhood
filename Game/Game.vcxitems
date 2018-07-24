@@ -15,9 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
-    <Content Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
@@ -28,22 +25,21 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Direct3D11.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Exceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Game.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\GameExceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\ResourceHandler.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Sources\Utils.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Exceptions.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Game.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\ResourceHandler.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Sources\Utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path">
       <FileType>Document</FileType>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D11.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Exceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ResourceHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils.cpp" />
   </ItemGroup>
 </Project>
