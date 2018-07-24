@@ -1,5 +1,6 @@
 #pragma once
 
+#define NOMINMAX
 #include <comdef.h>
 #include <string>
 #include "Exceptions.hpp"

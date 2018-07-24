@@ -1,8 +1,8 @@
-#include "Utils.hpp"
+#include <Game/Utils.hpp>
+#include <Game/Exceptions.hpp>
 
 #include <string>
 #include <comdef.h>
-#include "Exceptions.hpp"
 #include <fstream>
 
 void ThrowIfCOMFailed (HRESULT _result, const char * _message)

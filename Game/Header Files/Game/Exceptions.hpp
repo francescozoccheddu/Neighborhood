@@ -35,6 +35,7 @@
 #define GAME_COM_THROW_MSG(hr,msg) { throw GameCOMFailure{ hr, msg }; }
 #endif
 
+#define GAME_ASSERT(x) {if (!x) { GAME_THROW_MSG("Assertion failed") }}
 #define GAME_THROW GAME_THROW_MSG(nullptr)
 #define GAME_COM_THROW(hr) GAME_COM_THROW_MSG(hr,nullptr)
 

@@ -1,7 +1,7 @@
 ﻿#include "pch.h"
 #include "App.h"
 
-#include <Game.hpp>
+#include <Game/Game.hpp>
 
 #include <cmath>
 #include <ppltasks.h>
