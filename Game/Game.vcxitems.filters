@@ -13,9 +13,18 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{f5ab26e9-2e4f-41aa-b7a8-4775d42bf008}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Camera">
+      <UniqueIdentifier>{090c4627-1074-46cf-8a6a-123683d9db7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{dfae5576-ffae-453d-b5e7-214521ba6f83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
+      <Filter>Cinema 4D</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Scene.c4d">
       <Filter>Cinema 4D</Filter>
     </None>
   </ItemGroup>
@@ -48,6 +57,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\Projection.hpp">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp">
+      <Filter>Header Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInputUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp">
@@ -60,6 +78,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\XInputUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
