@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{dfae5576-ffae-453d-b5e7-214521ba6f83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{0da35ac9-ff0a-4187-aa9d-65114ff405ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{0d7306a2-66f8-4d0d-b30d-56dabc29e5c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
@@ -63,8 +69,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp">
       <Filter>Header Files\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInputUtils.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Header Files\Game\Input\Gamepad.hpp">
+      <Filter>Header Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +92,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\XInputUtils.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Source Files\Input\Gamepad.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
