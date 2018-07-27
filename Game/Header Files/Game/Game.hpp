@@ -2,6 +2,8 @@
 
 #include <string>
 #include "ResourceHandler.hpp"
+#include "Camera/View.hpp"
+#include "Camera/Projection.hpp"
 
 class Game : public ResourceHandler
 {
@@ -22,7 +24,12 @@ public:
 
 private:
 
-	ID3D11Buffer * m_pBuffer;
+	Camera::Projection m_CamProjection;
+	Camera::ViewWithTarget m_CamView;
+	UINT m_cInds;
+	ID3D11Buffer * m_pVertexBuffer;
+	ID3D11Buffer * m_pIndexBuffer;
+	ID3D11Buffer * m_pConstantBuffer;
 	ID3D11VertexShader * m_pVertexShader;
 	ID3D11PixelShader * m_pPixelShader;
 	ID3D11InputLayout * m_pInputLayout;
