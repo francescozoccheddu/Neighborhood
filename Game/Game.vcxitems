@@ -41,17 +41,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D11.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\ResourceHandler.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInputUtils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ResourceHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\XInputUtils.cpp" />
   </ItemGroup>
 </Project>

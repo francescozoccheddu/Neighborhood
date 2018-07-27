@@ -2,7 +2,7 @@
 
 #include <Xinput.h>
 
-class Controller
+class Gamepad
 {
 
 public:
@@ -26,17 +26,17 @@ public:
 
 		Listener () = default;
 
-		friend class Controller;
+		friend class Gamepad;
 
-		virtual void OnConnected (const Controller& controller);
+		virtual void OnConnected (const Gamepad& controller);
 
-		virtual void OnDisconnected (const Controller& controller);
+		virtual void OnDisconnected (const Gamepad& controller);
 
-		virtual void OnButtonChanged (const Controller& controller, WORD button, bool pressed);
+		virtual void OnButtonChanged (const Gamepad& controller, WORD button, bool pressed);
 		
-		virtual void OnTriggerChanged (const Controller& controller, float value, Side side);
+		virtual void OnTriggerChanged (const Gamepad& controller, float value, Side side);
 
-		virtual void OnThumbChanged (const Controller& controller, Thumb thumb, Side side);
+		virtual void OnThumbChanged (const Gamepad& controller, Thumb thumb, Side side);
 
 	};
 
@@ -64,7 +64,7 @@ public:
 
 	void SetUserIndex (DWORD index);
 
-	virtual ~Controller () = default;
+	virtual ~Gamepad () = default;
 
 protected:
 

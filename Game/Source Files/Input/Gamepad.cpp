@@ -1,4 +1,4 @@
-#include <Game/XInputUtils.hpp>
+#include <Game/Input/Gamepad.hpp>
 
 #include <Xinput.h>
 
@@ -14,7 +14,7 @@
 #define BUTTONS_BITS (sizeof(WORD) * CHAR_BIT)
 #define MAX_CONTROLLER_COUNT 4
 
-bool Controller::FindNextController (DWORD _startIndex, DWORD& _iOut)
+bool Gamepad::FindNextController (DWORD _startIndex, DWORD& _iOut)
 {
 	if (_startIndex < 0 || _startIndex >= MAX_CONTROLLER_COUNT)
 	{
@@ -37,13 +37,13 @@ bool Controller::FindNextController (DWORD _startIndex, DWORD& _iOut)
 	return false;
 }
 
-void Controller::Listener::OnConnected (const Controller& _ctrl) {}
-void Controller::Listener::OnDisconnected (const Controller& _ctrl) {}
-void Controller::Listener::OnButtonChanged (const Controller& _ctrl, WORD _buttons, bool _pressed) {}
-void Controller::Listener::OnThumbChanged (const Controller& _ctrl, Controller::Thumb _thumb, Controller::Side _side) {}
-void Controller::Listener::OnTriggerChanged (const Controller& _ctrl, float _value, Controller::Side _side) {}
+void Gamepad::Listener::OnConnected (const Gamepad& _ctrl) {}
+void Gamepad::Listener::OnDisconnected (const Gamepad& _ctrl) {}
+void Gamepad::Listener::OnButtonChanged (const Gamepad& _ctrl, WORD _buttons, bool _pressed) {}
+void Gamepad::Listener::OnThumbChanged (const Gamepad& _ctrl, Gamepad::Thumb _thumb, Gamepad::Side _side) {}
+void Gamepad::Listener::OnTriggerChanged (const Gamepad& _ctrl, float _value, Gamepad::Side _side) {}
 
-bool Controller::Update ()
+bool Gamepad::Update ()
 {
 	const bool bWasStateValid{ m_bStateValid };
 	const bool bWasConnected{ m_bConnected };
@@ -89,12 +89,12 @@ bool Controller::Update ()
 	}
 }
 
-bool Controller::IsConnected () const
+bool Gamepad::IsConnected () const
 {
 	return m_bConnected;
 }
 
-Controller::Thumb Controller::GetThumb (Side _side) const
+Gamepad::Thumb Gamepad::GetThumb (Side _side) const
 {
 	if (!IsConnected ())
 	{
@@ -117,12 +117,12 @@ Controller::Thumb Controller::GetThumb (Side _side) const
 	return thumb;
 }
 
-Controller::Thumb Controller::GetThumb (Side _side, Thumb _def) const
+Gamepad::Thumb Gamepad::GetThumb (Side _side, Thumb _def) const
 {
 	return IsConnected () ? GetThumb (_side) : _def;
 }
 
-bool Controller::AreButtonsPressed (WORD _msk) const
+bool Gamepad::AreButtonsPressed (WORD _msk) const
 {
 	if (!IsConnected ())
 	{
@@ -131,12 +131,12 @@ bool Controller::AreButtonsPressed (WORD _msk) const
 	return (m_State.Gamepad.wButtons & _msk) == _msk;
 }
 
-bool Controller::AreButtonsPressed (WORD _msk, bool _def) const
+bool Gamepad::AreButtonsPressed (WORD _msk, bool _def) const
 {
 	return IsConnected () ? AreButtonsPressed (_msk) : _def;
 }
 
-float Controller::GetTrigger (Side _side) const
+float Gamepad::GetTrigger (Side _side) const
 {
 	if (!IsConnected ())
 	{
@@ -153,12 +153,12 @@ float Controller::GetTrigger (Side _side) const
 	}
 }
 
-float Controller::GetTrigger (Side _side, float _def) const
+float Gamepad::GetTrigger (Side _side, float _def) const
 {
 	return IsConnected () ? GetTrigger (_side) : _def;
 }
 
-void Controller::SetVibration (float _lf, float _hf) const
+void Gamepad::SetVibration (float _lf, float _hf) const
 {
 	if (!IsConnected ())
 	{
@@ -170,12 +170,12 @@ void Controller::SetVibration (float _lf, float _hf) const
 	XInputSetState (m_iUser, &vibration);
 }
 
-DWORD Controller::GetUserIndex () const
+DWORD Gamepad::GetUserIndex () const
 {
 	return m_iUser;
 }
 
-void Controller::SetUserIndex (DWORD _ind)
+void Gamepad::SetUserIndex (DWORD _ind)
 {
 	if (_ind < 0 || _ind >= MAX_CONTROLLER_COUNT)
 	{
@@ -188,7 +188,7 @@ void Controller::SetUserIndex (DWORD _ind)
 	m_iUser = _ind;
 }
 
-bool Controller::ProcessEvents (const XINPUT_STATE& _prevState) const
+bool Gamepad::ProcessEvents (const XINPUT_STATE& _prevState) const
 {
 	if (_prevState.dwPacketNumber != m_State.dwPacketNumber)
 	{
@@ -230,7 +230,7 @@ bool Controller::ProcessEvents (const XINPUT_STATE& _prevState) const
 	}
 }
 
-void Controller::FireAllEvents () const
+void Gamepad::FireAllEvents () const
 {
 	if (pListener)
 	{
