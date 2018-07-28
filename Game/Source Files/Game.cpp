@@ -155,7 +155,7 @@ void Game::OnDeviceCreated ()
 	}
 }
 
-void Game::OnRender (double deltaTime)
+void Game::OnRender (double _deltaTime)
 {
 
 	m_Gamepad.Update ();
@@ -169,10 +169,8 @@ void Game::OnRender (double deltaTime)
 		}
 	}
 
-	Gamepad::Thumb thumb{ m_Gamepad.GetThumb (Gamepad::Side::RIGHT,{0.0f,0.0f} )};
-	m_CamView.position = DirectX::XMVectorSet (thumb.x, thumb.y, -2.0f, 1.0f);
+	m_CamView.UpdateFlyingView (_deltaTime, m_Gamepad);
 	m_CamProjection.Update ();
-	m_CamView.Update ();
 
 	cbPerFrameBuffer cb;
 	cb.mProjection = m_CamProjection.Get ();
