@@ -60,6 +60,8 @@ namespace Camera
 
 		DirectX::CXMVECTOR GetRight () const;
 
+		void Move (float right, float up, float forward, float speed = 1.0f);
+
 		void UpdateFlyingView (float deltaTime, const Gamepad& gamepad);
 
 	private:

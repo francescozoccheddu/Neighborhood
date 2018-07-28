@@ -42,6 +42,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Game.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Mesh.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\ResourceHandler.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils.hpp" />
   </ItemGroup>
@@ -51,6 +52,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Game.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Mesh.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ResourceHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils.cpp" />
   </ItemGroup>
