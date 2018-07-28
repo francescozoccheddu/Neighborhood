@@ -14,15 +14,15 @@
 #define BUTTONS_BITS (sizeof(WORD) * CHAR_BIT)
 #define MAX_CONTROLLER_COUNT 4
 
-bool Gamepad::FindNextController (DWORD _startIndex, DWORD& _iOut)
+bool Gamepad::FindNextController (DWORD _iFirst, DWORD& _iOut)
 {
-	if (_startIndex < 0 || _startIndex >= MAX_CONTROLLER_COUNT)
+	if (_iFirst < 0 || _iFirst >= MAX_CONTROLLER_COUNT)
 	{
 		throw std::logic_error ("Start index argument out of bounds");
 	}
 	for (DWORD iU{ 0 }; iU < MAX_CONTROLLER_COUNT; iU++)
 	{
-		DWORD iCand{ (_startIndex + iU) % MAX_CONTROLLER_COUNT };
+		DWORD iCand{ (_iFirst + iU) % MAX_CONTROLLER_COUNT };
 
 		XINPUT_STATE state;
 		switch (XInputGetState (iCand, &state))
