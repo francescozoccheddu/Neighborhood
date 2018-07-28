@@ -27,7 +27,7 @@ private:
 
 	Gamepad m_Gamepad;
 	Camera::Projection m_CamProjection;
-	Camera::ViewWithTarget m_CamView;
+	Camera::View m_CamView;
 	UINT m_cInds;
 	ID3D11Buffer * m_pVertexBuffer;
 	ID3D11Buffer * m_pIndexBuffer;
