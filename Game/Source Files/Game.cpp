@@ -157,7 +157,20 @@ void Game::OnDeviceCreated ()
 
 void Game::OnRender (double deltaTime)
 {
-	m_CamView.position = DirectX::XMVectorAdd (m_CamView.position, DirectX::XMVectorSet (0.0f, 0.0f, -1.0f * deltaTime, 0.0f));
+
+	m_Gamepad.Update ();
+	if (!m_Gamepad.IsConnected ())
+	{
+		DWORD iUser;
+		if (Gamepad::FindNextController (0, iUser))
+		{
+			m_Gamepad.SetUserIndex (iUser);
+			m_Gamepad.Update ();
+		}
+	}
+
+	Gamepad::Thumb thumb{ m_Gamepad.GetThumb (Gamepad::Side::RIGHT,{0.0f,0.0f} )};
+	m_CamView.position = DirectX::XMVectorSet (thumb.x, thumb.y, -2.0f, 1.0f);
 	m_CamProjection.Update ();
 	m_CamView.Update ();
 
@@ -174,7 +187,7 @@ void Game::OnRender (double deltaTime)
 	float color[]{ 0.1f,0.2f,0.3f,1.0f };
 	deviceContext.ClearDepthStencilView (GetDepthStencilView (), D3D11_CLEAR_DEPTH, 1, 0);
 	deviceContext.ClearRenderTargetView (GetRenderTargetView (), color);
-	deviceContext.DrawIndexed (m_cInds, 0,0);
+	deviceContext.DrawIndexed (m_cInds, 0, 0);
 }
 
 void Game::OnSized (WindowSize size)

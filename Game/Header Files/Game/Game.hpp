@@ -4,6 +4,7 @@
 #include "ResourceHandler.hpp"
 #include "Camera/View.hpp"
 #include "Camera/Projection.hpp"
+#include "Input/Gamepad.hpp"
 
 class Game : public ResourceHandler
 {
@@ -24,6 +25,7 @@ public:
 
 private:
 
+	Gamepad m_Gamepad;
 	Camera::Projection m_CamProjection;
 	Camera::ViewWithTarget m_CamView;
 	UINT m_cInds;

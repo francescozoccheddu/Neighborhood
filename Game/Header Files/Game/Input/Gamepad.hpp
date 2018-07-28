@@ -7,7 +7,7 @@ class Gamepad
 
 public:
 
-	static bool FindNextController (DWORD startingIndex, DWORD& iOut);
+	static bool FindNextController (DWORD iFirst, DWORD& iOut);
 
 	struct Thumb
 	{
