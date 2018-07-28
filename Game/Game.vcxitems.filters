@@ -72,6 +72,9 @@
     <ClInclude Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Header Files\Game\Input\Gamepad.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="C:\Users\zocch\Documents\Visual Studio 2017\Projects\Neighborhood\Game\Source Files\Input\Gamepad.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Mesh.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

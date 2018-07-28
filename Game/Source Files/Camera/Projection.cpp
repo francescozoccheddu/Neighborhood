@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 #include <cmath>
 
+using namespace DirectX;
+
 namespace Camera
 {
 
@@ -25,10 +27,10 @@ namespace Camera
 
 	void Projection::Update ()
 	{
-		m_mTransform = DirectX::XMMatrixTranspose (DirectX::XMMatrixPerspectiveFovLH (vFov, aspectRatio, nearZ, farZ));
+		m_mTransform = XMMatrixTranspose (XMMatrixPerspectiveFovLH (vFov, aspectRatio, nearZ, farZ));
 	}
 
-	DirectX::CXMMATRIX Projection::Get () const
+	CXMMATRIX Projection::Get () const
 	{
 		return m_mTransform;
 	}
