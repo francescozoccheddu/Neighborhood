@@ -8,6 +8,8 @@
 #include <climits>
 #include <stdexcept>
 
+#include <Game/Utils/Exceptions.hpp>
+
 #define MAX_THUMB_VALUE 32768.0f
 #define MAX_TRIGGER_VALUE 255.0f
 #define MAX_VIBRATION_VALUE 65535
@@ -16,10 +18,7 @@
 
 bool Gamepad::FindNextController (DWORD _iFirst, DWORD& _iOut)
 {
-	if (_iFirst < 0 || _iFirst >= MAX_CONTROLLER_COUNT)
-	{
-		throw std::logic_error ("Start index argument out of bounds");
-	}
+	GAME_ASSERT_MSG (_iFirst >= 0 && _iFirst < MAX_CONTROLLER_COUNT, "Start index argument out of bounds");
 	for (DWORD iU{ 0 }; iU < MAX_CONTROLLER_COUNT; iU++)
 	{
 		DWORD iCand{ (_iFirst + iU) % MAX_CONTROLLER_COUNT };
@@ -96,10 +95,7 @@ bool Gamepad::IsConnected () const
 
 Gamepad::Thumb Gamepad::GetThumb (Side _side) const
 {
-	if (!IsConnected ())
-	{
-		throw std::logic_error ("Not connected");
-	}
+	GAME_ASSERT_MSG (m_bConnected, "Not connected");
 	Thumb thumb;
 	switch (_side)
 	{
@@ -124,10 +120,7 @@ Gamepad::Thumb Gamepad::GetThumb (Side _side, Thumb _def) const
 
 bool Gamepad::AreButtonsPressed (WORD _msk) const
 {
-	if (!IsConnected ())
-	{
-		throw std::logic_error ("Not connected");
-	}
+	GAME_ASSERT_MSG (m_bConnected, "Not connected");
 	return (m_State.Gamepad.wButtons & _msk) == _msk;
 }
 
@@ -138,10 +131,7 @@ bool Gamepad::AreButtonsPressed (WORD _msk, bool _def) const
 
 float Gamepad::GetTrigger (Side _side) const
 {
-	if (!IsConnected ())
-	{
-		throw std::logic_error ("Not connected");
-	}
+	GAME_ASSERT_MSG (m_bConnected, "Not connected");
 	switch (_side)
 	{
 		case Side::LEFT:
@@ -160,10 +150,7 @@ float Gamepad::GetTrigger (Side _side, float _def) const
 
 void Gamepad::SetVibration (float _lf, float _hf) const
 {
-	if (!IsConnected ())
-	{
-		throw std::logic_error ("Not connected");
-	}
+	GAME_ASSERT_MSG (m_bConnected, "Not connected");
 	XINPUT_VIBRATION vibration;
 	vibration.wLeftMotorSpeed = static_cast<WORD>(_lf * MAX_VIBRATION_VALUE);
 	vibration.wRightMotorSpeed = static_cast<WORD>(_hf * MAX_VIBRATION_VALUE);
@@ -177,10 +164,7 @@ DWORD Gamepad::GetUserIndex () const
 
 void Gamepad::SetUserIndex (DWORD _ind)
 {
-	if (_ind < 0 || _ind >= MAX_CONTROLLER_COUNT)
-	{
-		throw std::logic_error ("Index argument out of bounds");
-	}
+	GAME_ASSERT_MSG (_ind >= 0 && _ind < MAX_CONTROLLER_COUNT, "Index argument out of bounds");
 	if (m_iUser != _ind)
 	{
 		m_bStateValid = false;

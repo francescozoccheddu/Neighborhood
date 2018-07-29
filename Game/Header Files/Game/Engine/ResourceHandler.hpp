@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Utils.hpp"
-#include "Direct3D11.hpp"
+#include <Game/Utils/Direct3D11.hpp>
 
 #define GAME_PLATFORM_WIN32 4
 #define GAME_PLATFORM_UWP 5
@@ -20,39 +19,45 @@ struct WindowSize
 	int height;
 };
 
-
 class ResourceHandler
 {
 
 public:
 
+	class Listener
+	{
+
+	protected:
+
+		friend class ResourceHandler;
+
+		Listener () = default;
+
+		virtual ~Listener () = default;
+
+		virtual void OnDeviceDestroyed () = 0;
+
+		virtual void OnDeviceCreated () = 0;
+
+		virtual void OnRender (float deltaTime) = 0;
+
+		virtual void OnSized (WindowSize size) = 0;
+
+	};
+
 	ResourceHandler ();
 
 	virtual ~ResourceHandler ();
 
-	void OnTick ();
+	void Tick ();
 
-	void OnSize (WindowSize size);
+	void Size (WindowSize size);
 
-	void OnDestroy ();
+	void Destroy ();
 
-	void OnWindowChanged (NativeWindow nativeWindow);
+	void SetWindow (NativeWindow nativeWindow);
 
-	void OnSuspended ();
-
-	virtual void OnShow () = 0;
-
-	virtual void OnHide () = 0;
-
-protected:
-
-	virtual void OnDeviceDestroyed () = 0;
-
-	virtual void OnDeviceCreated () = 0;
-
-	virtual void OnRender (double deltaTime) = 0;
-
-	virtual void OnSized (WindowSize size) = 0;
+	void Suspend ();
 
 	ID3D11Device * GetDevice ();
 
@@ -63,6 +68,8 @@ protected:
 	ID3D11DepthStencilView * GetDepthStencilView ();
 
 	WindowSize GetSize () const;
+
+	Listener * pListener{ nullptr };
 
 private:
 

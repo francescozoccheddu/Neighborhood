@@ -1,11 +1,12 @@
-#include <Game/Exceptions.hpp>
-#include <Game/Direct3D11.hpp>
-#include <Game/ResourceHandler.hpp>
-#include <Game/Utils.hpp>
+#include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Utils/Exceptions.hpp>
+#include <Game/Utils/COMExceptions.hpp>
+#include <Game/Utils/Direct3D11.hpp>
 #include <WinBase.h>
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 #define MAX_DELTA_TIME 1.0
+#define FIRE_EVENT(x) { if (pListener) pListener -> x ; }
 
 ResourceHandler::ResourceHandler () : timerFreq{ QueryTimerFrequency () }
 {
@@ -17,7 +18,7 @@ ResourceHandler::~ResourceHandler ()
 	Release ();
 }
 
-void ResourceHandler::OnTick ()
+void ResourceHandler::Tick ()
 {
 	if (!m_pSwapChain)
 	{
@@ -48,7 +49,7 @@ void ResourceHandler::OnTick ()
 		}
 		m_LastTime = newTime;
 	}
-	OnRender (deltaTime);
+	FIRE_EVENT (OnRender (static_cast<float>(deltaTime)));
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
 	pars.pDirtyRects = nullptr;
@@ -67,9 +68,8 @@ void ResourceHandler::OnTick ()
 	}
 }
 
-void ResourceHandler::OnSize (WindowSize _size)
+void ResourceHandler::Size (WindowSize _size)
 {
-	GAME_LOG ("OnSize");
 	m_Size = _size;
 	if (!m_pDevice || !m_pDeviceContext)
 	{
@@ -78,7 +78,6 @@ void ResourceHandler::OnSize (WindowSize _size)
 	bool recreated{ false };
 	if (m_pSwapChain)
 	{
-		GAME_LOG ("Resizing buffers");
 		ReleaseCOM (m_pRenderTargetView);
 		ReleaseCOM (m_pDepthStencilView);
 		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
@@ -94,7 +93,6 @@ void ResourceHandler::OnSize (WindowSize _size)
 	}
 	else
 	{
-		GAME_LOG ("Creating swap chain");
 		CreateSwapChain (_size);
 	}
 	if (!recreated)
@@ -104,26 +102,26 @@ void ResourceHandler::OnSize (WindowSize _size)
 		SetOutputMergerViews ();
 		SetOutputMergerViewport (_size);
 	}
-	OnSized (_size);
+	FIRE_EVENT (OnSized (_size));
 }
 
-void ResourceHandler::OnDestroy ()
+void ResourceHandler::Destroy ()
 {
-	OnDeviceDestroyed ();
+	FIRE_EVENT (OnDeviceDestroyed ());
 	Release ();
 }
 
-void ResourceHandler::OnWindowChanged (NativeWindow _nativeWindow)
+void ResourceHandler::SetWindow (NativeWindow _nativeWindow)
 {
 	if (!m_pDevice)
 	{
 		CreateDeviceAndDeviceContext ();
-		OnDeviceCreated ();
+		FIRE_EVENT (OnDeviceCreated ());
 	}
 	m_NativeWindow = _nativeWindow;
 }
 
-void ResourceHandler::OnSuspended ()
+void ResourceHandler::Suspend ()
 {
 	if (m_pDevice)
 	{
@@ -269,11 +267,10 @@ void ResourceHandler::SetOutputMergerViewport (WindowSize _viewportSize)
 
 void ResourceHandler::HandleDeviceLost ()
 {
-	GAME_LOG ("Device lost");
-	OnDeviceDestroyed ();
+	FIRE_EVENT (OnDeviceDestroyed ());
 	Release ();
 	CreateDeviceAndDeviceContext ();
-	OnDeviceCreated ();
+	FIRE_EVENT (OnDeviceCreated ());
 	CreateSwapChain (m_Size);
 	CreateRenderTarget (m_Size);
 	CreateDepthStencilView (m_Size);

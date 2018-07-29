@@ -2,13 +2,7 @@
 
 #define NOMINMAX
 #include <comdef.h>
-#include <string>
-#include "Exceptions.hpp"
 
-#ifdef _DEBUG
-#ifndef GAME_COMC_ENABLE
-#define GAME_COMC_ENABLE 1
-#endif
 #ifndef GAME_LOG_ENABLE
 #define GAME_LOG_ENABLE 1
 #endif
@@ -49,24 +43,3 @@
 #define GAME_LOG(msg)
 #endif
 
-#if GAME_COMC_ENABLE
-#define GAME_COMC_MSG(res,msg) { ThrowIfCOMFailed(res,msg); }
-#else
-#define GAME_COMC_MSG(res,msg) { res; }
-#endif
-
-#define GAME_COMC(res) GAME_COMC_MSG(res,nullptr)
-
-void ThrowIfCOMFailed (HRESULT result, const char * message);
-
-char * LoadBlob (const std::wstring& filename, size_t& length);
-
-template<typename T>
-void ReleaseCOM (T& comPtr)
-{
-	if (comPtr)
-	{
-		comPtr->Release ();
-		comPtr = nullptr;
-	}
-}

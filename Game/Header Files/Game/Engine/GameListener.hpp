@@ -1,30 +1,29 @@
 #pragma once
 
 #include <string>
-#include "ResourceHandler.hpp"
-#include "Camera/View.hpp"
-#include "Camera/Projection.hpp"
-#include "Input/Gamepad.hpp"
+#include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Camera/View.hpp>
+#include <Game/Camera/Projection.hpp>
+#include <Game/Input/Gamepad.hpp>
 
-class Game : public ResourceHandler
+class GameListener : public ResourceHandler::Listener
 {
 
 public:
 
-	virtual void OnShow () override;
-
-	virtual void OnHide () override;
+	GameListener (ResourceHandler& resourceHandler);
 
 	virtual void OnDeviceDestroyed () override;
 
 	virtual void OnDeviceCreated () override;
 
-	virtual void OnRender (double deltaTime) override;
+	virtual void OnRender (float deltaTime) override;
 
 	virtual void OnSized (WindowSize size) override;
 
 private:
 
+	ResourceHandler & m_ResourceHandler;
 	Gamepad m_Gamepad;
 	Camera::Projection m_CamProjection;
 	Camera::View m_CamView;

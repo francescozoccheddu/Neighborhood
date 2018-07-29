@@ -3,7 +3,6 @@
 #include <string>
 #include <exception>
 #include <sstream>
-#include <comdef.h>
 
 #ifdef _DEBUG
 #ifndef GAME_THROW_FILE_ENABLE
@@ -23,21 +22,18 @@
 
 #if GAME_THROW_FILE_ENABLE && GAME_THROW_FUNCTION_ENABLE
 #define GAME_THROW_MSG(msg) { throw GameException{ __FUNCTION__, __FILE__, __LINE__, msg }; }
-#define GAME_COM_THROW_MSG(hr,msg) { throw GameCOMFailure{ hr, __FUNCTION__, __FILE__, __LINE__, msg }; }
 #elif GAME_THROW_FILE_ENABLE
 #define GAME_THROW_MSG(msg) { throw GameException{ __FILE__, __LINE__, msg }; }
-#define GAME_COM_THROW_MSG(hr,msg) { throw GameCOMFailure{ hr, __FILE__, __LINE__, msg }; }
 #elif GAME_THROW_FUNCTION_ENABLE
 #define GAME_THROW_MSG(msg) { throw GameException{ __FUNCTION__, msg }; }
-#define GAME_COM_THROW_MSG(hr,msg) { throw GameCOMFailure{ hr, __FUNCTION__, msg }; }
 #else
 #define GAME_THROW_MSG(msg) { throw GameException{ msg }; }
-#define GAME_COM_THROW_MSG(hr,msg) { throw GameCOMFailure{ hr, msg }; }
 #endif
 
-#define GAME_ASSERT(x) {if (!x) { GAME_THROW_MSG("Assertion failed") }}
 #define GAME_THROW GAME_THROW_MSG(nullptr)
-#define GAME_COM_THROW(hr) GAME_COM_THROW_MSG(hr,nullptr)
+#define GAME_ASSERT(x) {if (!(x)) { GAME_THROW }}
+#define GAME_ASSERT_MSG(x,msg) {if (!(x)) { GAME_THROW_MSG(msg) }}
+
 
 class GameException : public std::exception
 {
@@ -65,23 +61,3 @@ private:
 
 };
 
-class GameCOMFailure : public GameException
-{
-public:
-	const HRESULT result;
-	const std::string comMessage;
-
-	GameCOMFailure (HRESULT result, const char * function, const char * message);
-	GameCOMFailure (HRESULT result, const char * file, int line, const char * message);
-	GameCOMFailure (HRESULT result, const char * function, const char * file, int line, const char * message);
-	GameCOMFailure (HRESULT result, const char * message);
-
-	const char* type () const override;
-
-protected:
-	void makeMessage (std::stringstream& message) const override;
-
-private:
-	static const std::string getCOMMessage (HRESULT result);
-
-};

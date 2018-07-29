@@ -9,7 +9,6 @@ def_outpath_filename = "c4d_exporter_path"
 def jsonizePolygonObject(obj,scale=1.0):
     if obj.GetType() == c4d.Opolygon:
         jobj = {}
-        jobj["name"] = obj.GetName()
         jobj["indices"] = []
         for poly in obj.GetAllPolygons():
             if poly.IsTriangle():
@@ -53,17 +52,20 @@ def main():
     doc = documents.GetActiveDocument()
     objs = doc.GetActiveObjects(c4d.GETACTIVEOBJECTFLAGS_0)
     scale = 1.0/100.0
-    jobjs = []
+    jobjmap = {}
     
     for obj in objs:
         try:
-            jobjs += [jsonizePolygonObject(obj,scale)]
+            jobj = jsonizePolygonObject(obj,scale)
+            if obj.GetName() in jobjmap:
+                print("Object name '%s' appears multiple times, only one object with this name will be exported" % obj.GetName())
+            jobjmap[obj.GetName()] = jobj
         except ValueError as ex:
             print("Error while exporting object '%s': '%s'" % (obj.GetName(), ex.message))
     
     filename = getOutputFilename()
     with open(filename,"w") as out:
-        out.write(json.dumps(jobjs))
+        out.write(json.dumps(jobjmap))
         
     print("Successfully written to file '%s'" % filename)
     
