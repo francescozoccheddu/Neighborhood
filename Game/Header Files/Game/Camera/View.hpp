@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
-#include "../Input/Gamepad.hpp"
+#include <Game/Input/Gamepad.hpp>
 
 namespace Camera
 {

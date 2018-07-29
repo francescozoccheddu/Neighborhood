@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "pch.h"
-#include "Common/DeviceResources.h"
-#include <Game/Game.hpp>
+#include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Engine/GameListener.hpp>
 
 namespace Launcher_UWP
 {
@@ -11,6 +11,8 @@ namespace Launcher_UWP
 	{
 	public:
 		App();
+
+		virtual ~App ();
 
 		// IFrameworkView Methods.
 		virtual void Initialize(Windows::ApplicationModel::Core::CoreApplicationView^ applicationView);
@@ -36,7 +38,7 @@ namespace Launcher_UWP
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
 	private:
-		Game game;
+		ResourceHandler m_ResourceHandler;
 		bool m_windowClosed;
 		bool m_windowVisible;
 	};

@@ -1,7 +1,8 @@
 ﻿#include "pch.h"
 #include "App.h"
 
-#include <Game/Game.hpp>
+#include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Engine/GameListener.hpp>
 
 #include <cmath>
 #include <ppltasks.h>
@@ -36,6 +37,12 @@ App::App() :
 	m_windowClosed(false),
 	m_windowVisible(true)
 {
+	m_ResourceHandler.pListener = new GameListener (m_ResourceHandler);
+}
+
+App::~App ()
+{
+	delete m_ResourceHandler.pListener;
 }
 
 // The first method called when the IFrameworkView is being created.
@@ -80,11 +87,11 @@ void App::SetWindow(CoreWindow^ window)
 	DisplayInformation::DisplayContentsInvalidated +=
 		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &App::OnDisplayContentsInvalidated);
 
-	game.OnWindowChanged (reinterpret_cast<NativeWindow>(window));
+	m_ResourceHandler.SetWindow (reinterpret_cast<NativeWindow>(window));
 	WindowSize size;
 	size.width = static_cast<int>(std::round (window->Bounds.Width));
 	size.height = static_cast<int>(std::round (window->Bounds.Height));
-	game.OnSize (size);
+	m_ResourceHandler.Size (size);
 	
 }
 
@@ -108,7 +115,7 @@ void App::Run()
 			{
 				m_deviceResources->Present();
 			}*/
-			game.OnTick ();
+			m_ResourceHandler.Tick ();
 		}
 		else
 		{
@@ -142,7 +149,7 @@ void App::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 
 	create_task([this, deferral]()
 	{
-		game.OnSuspended();
+		m_ResourceHandler.Suspend();
 
 		// Insert your code here.
 
@@ -166,7 +173,7 @@ void App::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ ar
 	WindowSize size;
 	size.width = static_cast<int>(std::round (sender->Bounds.Width));
 	size.height = static_cast<int>(std::round (sender->Bounds.Height));
-	game.OnSize (size);
+	m_ResourceHandler.Size (size);
 }
 
 void App::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
@@ -201,3 +208,4 @@ void App::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
 {
 	/*m_deviceResources->ValidateDevice();*/
 }
+
