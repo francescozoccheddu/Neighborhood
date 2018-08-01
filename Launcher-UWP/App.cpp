@@ -1,24 +1,73 @@
-﻿#include "pch.h"
-#include "App.h"
-
-#include <Game/Engine/ResourceHandler.hpp>
-#include <Game/Engine/GameListener.hpp>
-
+﻿
 #include <cmath>
 #include <ppltasks.h>
 
-using namespace Launcher_UWP;
+#pragma comment(lib, "windowsapp")
 
-using namespace concurrency;
-using namespace Windows::ApplicationModel;
+#include <winrt/Windows.ApplicationModel.Core.h>
+#include <winrt/Windows.UI.Core.h>
+#include <winrt/Windows.Graphics.Display.h>
+WINRT_WARNING_PUSH
+
+using namespace winrt;
+using namespace Windows;
 using namespace Windows::ApplicationModel::Core;
-using namespace Windows::ApplicationModel::Activation;
+using namespace Windows::UI;
 using namespace Windows::UI::Core;
-using namespace Windows::UI::Input;
-using namespace Windows::System;
-using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
+using namespace Windows::ApplicationModel::Activation;
+using namespace Windows::Foundation::Numerics;
 
+
+struct App : implements<App, IFrameworkViewSource, IFrameworkView>
+{
+
+	IFrameworkView CreateView ()
+	{
+		return *this;
+	}
+
+	void Initialize (CoreApplicationView const& applicationView)
+	{
+		applicationView.Activated ({ this, &App::OnActivated });
+	}
+
+	void Load (winrt::hstring const& /*entryPoint*/)
+	{}
+
+	void OnActivated (CoreApplicationView const& /* applicationView */, IActivatedEventArgs const& /* args */)
+	{
+		// Activate the application window, making it visible and enabling it to receive events.
+		CoreWindow::GetForCurrentThread ().Activate ();
+	}
+
+	// This method is called after Load.
+	void Run ()
+	{
+		CoreWindow const window = CoreWindow::GetForCurrentThread ();
+		window.Activate ();
+
+		CoreDispatcher const dispatcher = window.Dispatcher ();
+		dispatcher.ProcessEvents (CoreProcessEventsOption::ProcessUntilQuit);
+	}
+
+	void SetWindow (CoreWindow const& /*window*/)
+	{}
+
+	// This method is called before the application exits.
+	void Uninitialize ()
+	{}
+
+};
+
+int WINAPI wWinMain (HINSTANCE, HINSTANCE, PWSTR, int)
+{
+	CoreApplication::Run (App ());
+}
+
+
+
+/*
 // The main function is only used to initialize our IFrameworkView class.
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
@@ -59,7 +108,7 @@ void App::Initialize(CoreApplicationView^ applicationView)
 	CoreApplication::Resuming +=
 		ref new EventHandler<Platform::Object^>(this, &App::OnResuming);
 
-	// At this point we have access to the device. 
+	// At this point we have access to the device.
 	// We can create the device-dependent resources.
 	//m_deviceResources = std::make_shared<DX::DeviceResources>();
 }
@@ -67,13 +116,13 @@ void App::Initialize(CoreApplicationView^ applicationView)
 // Called when the CoreWindow object is created (or re-created).
 void App::SetWindow(CoreWindow^ window)
 {
-	window->SizeChanged += 
+	window->SizeChanged +=
 		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &App::OnWindowSizeChanged);
 
 	window->VisibilityChanged +=
 		ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &App::OnVisibilityChanged);
 
-	window->Closed += 
+	window->Closed +=
 		ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &App::OnWindowClosed);
 
 	DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
@@ -92,7 +141,7 @@ void App::SetWindow(CoreWindow^ window)
 	size.width = static_cast<int>(std::round (window->Bounds.Width));
 	size.height = static_cast<int>(std::round (window->Bounds.Height));
 	m_ResourceHandler.Size (size);
-	
+
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -114,12 +163,12 @@ void App::Run()
 			if (m_main->Render())
 			{
 				m_deviceResources->Present();
-			}*/
-			m_ResourceHandler.Tick ();
+			}*//*
+m_ResourceHandler.Tick ();
 		}
 		else
 		{
-			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
+			CoreWindow::GetForCurrentThread ()->Dispatcher->ProcessEvents (CoreProcessEventsOption::ProcessOneAndAllPending);
 		}
 	}
 }
@@ -127,37 +176,36 @@ void App::Run()
 // Required for IFrameworkView.
 // Terminate events do not cause Uninitialize to be called. It will be called if your IFrameworkView
 // class is torn down while the app is in the foreground.
-void App::Uninitialize()
-{
-}
+void App::Uninitialize ()
+{}
 
 // Application lifecycle event handlers.
 
-void App::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
+void App::OnActivated (CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
 {
 	// Run() won't start until the CoreWindow is activated.
-	CoreWindow::GetForCurrentThread()->Activate();
+	CoreWindow::GetForCurrentThread ()->Activate ();
 }
 
-void App::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
+void App::OnSuspending (Platform::Object^ sender, SuspendingEventArgs^ args)
 {
 	// Save app state asynchronously after requesting a deferral. Holding a deferral
 	// indicates that the application is busy performing suspending operations. Be
 	// aware that a deferral may not be held indefinitely. After about five seconds,
 	// the app will be forced to exit.
-	SuspendingDeferral^ deferral = args->SuspendingOperation->GetDeferral();
+	SuspendingDeferral^ deferral = args->SuspendingOperation->GetDeferral ();
 
-	create_task([this, deferral]()
+	create_task ([this, deferral]()
 	{
-		m_ResourceHandler.Suspend();
+		m_ResourceHandler.Suspend ();
 
 		// Insert your code here.
 
-		deferral->Complete();
+		deferral->Complete ();
 	});
 }
 
-void App::OnResuming(Platform::Object^ sender, Platform::Object^ args)
+void App::OnResuming (Platform::Object^ sender, Platform::Object^ args)
 {
 	// Restore any data or state that was unloaded on suspend. By default, data
 	// and state are persisted when resuming from suspend. Note that this event
@@ -168,7 +216,7 @@ void App::OnResuming(Platform::Object^ sender, Platform::Object^ args)
 
 // Window event handlers.
 
-void App::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
+void App::OnWindowSizeChanged (CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	WindowSize size;
 	size.width = static_cast<int>(std::round (sender->Bounds.Width));
@@ -176,36 +224,37 @@ void App::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ ar
 	m_ResourceHandler.Size (size);
 }
 
-void App::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
+void App::OnVisibilityChanged (CoreWindow^ sender, VisibilityChangedEventArgs^ args)
 {
 	m_windowVisible = args->Visible;
 }
 
-void App::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
+void App::OnWindowClosed (CoreWindow^ sender, CoreWindowEventArgs^ args)
 {
 	m_windowClosed = true;
 }
 
 // DisplayInformation event handlers.
 
-void App::OnDpiChanged(DisplayInformation^ sender, Object^ args)
+void App::OnDpiChanged (DisplayInformation^ sender, Object^ args)
 {
 	// Note: The value for LogicalDpi retrieved here may not match the effective DPI of the app
 	// if it is being scaled for high resolution devices. Once the DPI is set on DeviceResources,
 	// you should always retrieve it using the GetDpi method.
 	// See DeviceResources.cpp for more details.
 	/*m_deviceResources->SetDpi(sender->LogicalDpi);
-	m_main->CreateWindowSizeDependentResources();*/
+	m_main->CreateWindowSizeDependentResources();*//*
 }
 
-void App::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
+void App::OnOrientationChanged (DisplayInformation^ sender, Object^ args)
 {
 	/*m_deviceResources->SetCurrentOrientation(sender->CurrentOrientation);
-	m_main->CreateWindowSizeDependentResources();*/
+	m_main->CreateWindowSizeDependentResources();*//*
 }
 
-void App::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
+void App::OnDisplayContentsInvalidated (DisplayInformation^ sender, Object^ args)
 {
-	/*m_deviceResources->ValidateDevice();*/
+	/*m_deviceResources->ValidateDevice();*//*
 }
 
+*/

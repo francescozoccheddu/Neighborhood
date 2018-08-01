@@ -13,7 +13,7 @@ char * Storage::LoadBinaryFile (const std::string& _filename, int& _size)
 	char * pBuf{ new char[static_cast<unsigned int>(size)] };
 	file.read (pBuf, size);
 	file.close ();
-	_size = size;
+	_size = static_cast<int>(size);
 	return pBuf;
 }
 

@@ -11,8 +11,8 @@ namespace Camera
 
 	public:
 
-		DirectX::XMVECTOR unrotatedUp{ 0.0f, 1.0f, 0.0f, 0.0f };
-		DirectX::XMVECTOR position{ 0.0f, 0.0f, 0.0f, 1.0f };
+		DirectX::XMVECTOR unrotatedUp { 0.0f, 1.0f, 0.0f, 0.0f };
+		DirectX::XMVECTOR position { 0.0f, 0.0f, 0.0f, 1.0f };
 
 		DirectX::CXMMATRIX Get () const;
 
@@ -31,7 +31,7 @@ namespace Camera
 
 	public:
 
-		DirectX::XMVECTOR target{ 0.0f, 0.0f, 1.0f, 1.0f };
+		DirectX::XMVECTOR target { 0.0f, 0.0f, 1.0f, 1.0f };
 
 		ViewWithTarget ();
 
@@ -44,13 +44,13 @@ namespace Camera
 
 	public:
 
-		float turn{ 0.0f };
-		float lookUp{ 0.0f };
-		float tilt{ 0.0f };
+		DirectX::XMVECTOR unrotatedForward { 0.0f, 0.0f, 1.0f, 0.0f };
+		float turn { 0.0f };
+		float lookUp { 0.0f };
+		float tilt { 0.0f };
 
 		View ();
 
-		DirectX::XMVECTOR unrotatedForward{ 0.0f, 0.0f, 1.0f, 0.0f };
 
 		void Update () override;
 
@@ -66,9 +66,9 @@ namespace Camera
 
 	private:
 
-		DirectX::XMVECTOR m_Up{ 0.0f, 1.0f, 0.0f, 0.0f };
-		DirectX::XMVECTOR m_Forward{ 0.0f, 0.0f, 1.0f, 0.0f };
-		DirectX::XMVECTOR m_Right{ 1.0f, 0.0f, 0.0f, 0.0f };
+		DirectX::XMVECTOR m_Up { 0.0f, 1.0f, 0.0f, 0.0f };
+		DirectX::XMVECTOR m_Forward { 0.0f, 0.0f, 1.0f, 0.0f };
+		DirectX::XMVECTOR m_Right { 1.0f, 0.0f, 0.0f, 0.0f };
 
 	};
 
