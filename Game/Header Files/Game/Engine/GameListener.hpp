@@ -13,6 +13,8 @@ public:
 
 	GameListener (ResourceHandler& resourceHandler);
 
+	~GameListener () override = default;
+
 	virtual void OnDeviceDestroyed () override;
 
 	virtual void OnDeviceCreated () override;
