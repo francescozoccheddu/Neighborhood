@@ -26,14 +26,15 @@ public:
 
 	class Listener
 	{
+	public:
+
+		virtual ~Listener () = default;
 
 	protected:
 
 		friend class ResourceHandler;
 
 		Listener () = default;
-
-		virtual ~Listener () = default;
 
 		virtual void OnDeviceDestroyed () = 0;
 
@@ -69,7 +70,7 @@ public:
 
 	WindowSize GetSize () const;
 
-	Listener * pListener{ nullptr };
+	Listener * pListener { nullptr };
 
 private:
 
@@ -77,13 +78,13 @@ private:
 
 	LARGE_INTEGER m_LastTime;
 	const double timerFreq;
-	NativeWindow m_NativeWindow{};
-	WindowSize m_Size{-1,-1};
-	ID3D11Device * m_pDevice{ nullptr };
-	ID3D11DeviceContext1 * m_pDeviceContext{ nullptr };
-	IDXGISwapChain1 * m_pSwapChain{ nullptr };
-	ID3D11RenderTargetView * m_pRenderTargetView{ nullptr };
-	ID3D11DepthStencilView * m_pDepthStencilView{ nullptr };
+	NativeWindow m_NativeWindow {};
+	WindowSize m_Size { -1, -1 };
+	ID3D11Device * m_pDevice { nullptr };
+	ID3D11DeviceContext1 * m_pDeviceContext { nullptr };
+	IDXGISwapChain1 * m_pSwapChain { nullptr };
+	ID3D11RenderTargetView * m_pRenderTargetView { nullptr };
+	ID3D11DepthStencilView * m_pDepthStencilView { nullptr };
 	D3D_FEATURE_LEVEL m_supportedFeatureLevel;
 
 	void CreateDeviceAndDeviceContext ();
