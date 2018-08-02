@@ -52,7 +52,7 @@ public:
 
 	void SetWindow (void * nativeWindow, Platform ePlatform);
 
-	void Suspend ();
+	void Trim ();
 
 	ID3D11Device * GetDevice ();
 

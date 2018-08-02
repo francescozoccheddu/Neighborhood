@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <CustomBuildStep>
-      <Command>copy "$(BuildResDir)*" "$(LocalDebuggerWorkingDirectory)"</Command>
+      <Command>copy "$(BuildResDir)*" "$(LocalDebuggerWorkingDirectory)*"</Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup>
@@ -26,9 +26,12 @@
       <Inputs>$(BuildResDir)*</Inputs>
     </CustomBuildStep>
     <Link>
-      <AdditionalDependencies>Game.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Game.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(BuildDir)Output\Game\$(BuildConfSubdir);</AdditionalLibraryDirectories>
     </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

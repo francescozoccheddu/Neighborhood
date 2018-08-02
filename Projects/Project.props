@@ -15,6 +15,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BuildDir">

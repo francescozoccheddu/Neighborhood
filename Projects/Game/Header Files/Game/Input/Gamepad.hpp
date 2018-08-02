@@ -33,14 +33,14 @@ public:
 		virtual void OnDisconnected (const Gamepad& controller);
 
 		virtual void OnButtonChanged (const Gamepad& controller, WORD button, bool pressed);
-		
+
 		virtual void OnTriggerChanged (const Gamepad& controller, float value, Side side);
 
 		virtual void OnThumbChanged (const Gamepad& controller, Thumb thumb, Side side);
 
 	};
 
-	Listener * pListener;
+	Listener * pListener { nullptr };
 
 	bool Update ();
 
@@ -57,7 +57,7 @@ public:
 	float GetTrigger (Side side) const;
 
 	float GetTrigger (Side side, float defaultValue) const;
-	
+
 	void SetVibration (float lowFreqSpeed, float highFreqSpeed) const;
 
 	DWORD GetUserIndex () const;
@@ -74,9 +74,9 @@ protected:
 
 private:
 
-	DWORD m_iUser{ 0 };
-	bool m_bStateValid{ false };
-	bool m_bConnected{ false };
+	DWORD m_iUser { 0 };
+	bool m_bStateValid { false };
+	bool m_bConnected { false };
 	XINPUT_STATE m_State;
 
 
