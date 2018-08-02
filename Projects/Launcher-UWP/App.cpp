@@ -108,7 +108,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void OnWindowClosed (CoreWindow const &, CoreWindowEventArgs const &)
 	{
-
+		m_pResourceHandler->Destroy ();
 	}
 
 	void OnDpiChanged (DisplayInformation const &, IInspectable const &)

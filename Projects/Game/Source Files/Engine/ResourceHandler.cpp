@@ -49,6 +49,7 @@ void ResourceHandler::Tick ()
 		}
 		m_LastTime = newTime;
 	}
+	SetOutputMergerViews ();
 	FIRE_EVENT (OnRender (static_cast<float>(deltaTime)));
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
