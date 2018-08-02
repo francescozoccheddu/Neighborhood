@@ -35,7 +35,7 @@ namespace Camera
 
 	void View::Update ()
 	{
-		XMVECTOR quat{ XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };
+		XMVECTOR quat { XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };
 		m_Up = XMVector3Rotate (unrotatedUp, quat);
 		m_Forward = XMVector3Rotate (unrotatedForward, quat);
 		m_Right = XMVector3Cross (m_Up, m_Forward);
@@ -61,15 +61,15 @@ namespace Camera
 		{
 			const float currTranslSpeed = _gamepad.AreButtonsPressed (FLYINGVIEW_BUTTON_TURBO, false) ? FLYINGVIEW_TRANSLATION_TURBO_SPEED : FLYINGVIEW_TRANSLATION_SPEED;
 
-			const Gamepad::Thumb rThumb{ _gamepad.GetThumb (Gamepad::Side::RIGHT,{ 0.0f, 0.0f }) };
-			const Gamepad::Thumb lThumb{ _gamepad.GetThumb (Gamepad::Side::LEFT,{ 0.0f, 0.0f }) };
-			const float rTrig{ _gamepad.GetTrigger (Gamepad::Side::RIGHT, 0.0f) };
-			const float lTrig{ _gamepad.GetTrigger (Gamepad::Side::LEFT, 0.0f) };
+			const Gamepad::Thumb rThumb { _gamepad.GetThumb (Gamepad::Side::RIGHT, { 0.0f, 0.0f }) };
+			const Gamepad::Thumb lThumb { _gamepad.GetThumb (Gamepad::Side::LEFT, { 0.0f, 0.0f }) };
+			const float rTrig { _gamepad.GetTrigger (Gamepad::Side::RIGHT, 0.0f) };
+			const float lTrig { _gamepad.GetTrigger (Gamepad::Side::LEFT, 0.0f) };
 
 			Move (lThumb.x, lThumb.y, rTrig - lTrig, currTranslSpeed * _deltaTime);
 
-			turn += rThumb.x * _deltaTime;
-			lookUp -= rThumb.y * _deltaTime;
+			turn += rThumb.x * FLYINGVIEW_ROTATION_SPEED * _deltaTime;
+			lookUp -= rThumb.y *  FLYINGVIEW_ROTATION_SPEED * _deltaTime;
 			if (lookUp > FLYINGVIEW_MAX_LOOKUP)
 			{
 				lookUp = FLYINGVIEW_MAX_LOOKUP;
