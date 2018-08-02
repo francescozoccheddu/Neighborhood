@@ -2,17 +2,6 @@
 
 #include <Game/Utils/Direct3D11.hpp>
 
-#define GAME_PLATFORM_WIN32 4
-#define GAME_PLATFORM_UWP 5
-
-#if GAME_PLATFORM == GAME_PLATFORM_WIN32
-typedef HWND NativeWindow;
-#elif GAME_PLATFORM == GAME_PLATFORM_UWP
-typedef IUnknown* NativeWindow;
-#else
-#error Unknown GAME_PLATFORM value.
-#endif
-
 struct WindowSize
 {
 	int width;
@@ -23,6 +12,11 @@ class ResourceHandler
 {
 
 public:
+
+	enum class Platform
+	{
+		Win32, UWP
+	};
 
 	class Listener
 	{
@@ -56,7 +50,7 @@ public:
 
 	void Destroy ();
 
-	void SetWindow (NativeWindow nativeWindow);
+	void SetWindow (void * nativeWindow, Platform ePlatform);
 
 	void Suspend ();
 
@@ -76,9 +70,10 @@ private:
 
 	static double QueryTimerFrequency ();
 
+	Platform m_ePlatform;
 	LARGE_INTEGER m_LastTime;
 	const double timerFreq;
-	NativeWindow m_NativeWindow {};
+	void * m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	ID3D11Device * m_pDevice { nullptr };
 	ID3D11DeviceContext1 * m_pDeviceContext { nullptr };

@@ -8,7 +8,7 @@
 #define MAX_DELTA_TIME 1.0
 #define FIRE_EVENT(x) { if (pListener) pListener -> x ; }
 
-ResourceHandler::ResourceHandler () : timerFreq{ QueryTimerFrequency () }
+ResourceHandler::ResourceHandler () : timerFreq { QueryTimerFrequency () }
 {
 	m_LastTime.QuadPart = 0;
 }
@@ -55,7 +55,7 @@ void ResourceHandler::Tick ()
 	pars.pDirtyRects = nullptr;
 	pars.pScrollOffset = nullptr;
 	pars.pScrollRect = nullptr;
-	const HRESULT hr{ m_pSwapChain->Present1 (1,0, &pars) };
+	const HRESULT hr { m_pSwapChain->Present1 (1, 0, &pars) };
 	m_pDeviceContext->DiscardView1 (m_pRenderTargetView, nullptr, 0);
 	m_pDeviceContext->DiscardView1 (m_pDepthStencilView, nullptr, 0);
 	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
@@ -75,12 +75,12 @@ void ResourceHandler::Size (WindowSize _size)
 	{
 		GAME_THROW ("Device not created");
 	}
-	bool recreated{ false };
+	bool recreated { false };
 	if (m_pSwapChain)
 	{
 		ReleaseCOM (m_pRenderTargetView);
 		ReleaseCOM (m_pDepthStencilView);
-		const HRESULT hr{ m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
+		const HRESULT hr { m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
 		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 		{
 			HandleDeviceLost ();
@@ -111,7 +111,7 @@ void ResourceHandler::Destroy ()
 	Release ();
 }
 
-void ResourceHandler::SetWindow (NativeWindow _nativeWindow)
+void ResourceHandler::SetWindow (void * _nativeWindow, Platform _ePlatform)
 {
 	if (!m_pDevice)
 	{
@@ -119,6 +119,7 @@ void ResourceHandler::SetWindow (NativeWindow _nativeWindow)
 		FIRE_EVENT (OnDeviceCreated ());
 	}
 	m_NativeWindow = _nativeWindow;
+	m_ePlatform = _ePlatform;
 }
 
 void ResourceHandler::Suspend ()
@@ -171,12 +172,12 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 {
 	ReleaseCOM (m_pDeviceContext);
 	ReleaseCOM (m_pDevice);
-	const D3D_FEATURE_LEVEL featureLevels[]{ D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
-	UINT flags{ D3D11_CREATE_DEVICE_SINGLETHREADED };
+	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
+	UINT flags { D3D11_CREATE_DEVICE_SINGLETHREADED };
 #ifdef _DEBUG
 	flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-	HRESULT hr{ D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)) };
+	HRESULT hr { D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)) };
 	if (FAILED (hr))
 	{
 		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)));
@@ -208,13 +209,24 @@ void ResourceHandler::CreateSwapChain (WindowSize _bufferSize)
 	desc.Stereo = FALSE;
 	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
-#if GAME_PLATFORM == GAME_PLATFORM_WIN32
-	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice, m_NativeWindow, &desc, nullptr, nullptr, &m_pSwapChain));
-#elif GAME_PLATFORM == GAME_PLATFORM_UWP
-	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice, m_NativeWindow, &desc, nullptr, &m_pSwapChain));
-#endif
+	switch (m_ePlatform)
+	{
+		case Platform::Win32:
+		{
+			desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+			GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice, reinterpret_cast<HWND>(m_NativeWindow), &desc, nullptr, nullptr, &m_pSwapChain));
+		}
+		break;
+		case Platform::UWP:
+		{
+			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+			GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice, reinterpret_cast<IUnknown*>(m_NativeWindow), &desc, nullptr, &m_pSwapChain));
+		}
+		break;
+		default:
+			GAME_THROW_MSG ("Unknown platform");
+			break;
+	}
 	ReleaseCOM (pFactory);
 }
 
