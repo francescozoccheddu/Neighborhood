@@ -1,13 +1,11 @@
 ﻿
-#include <cmath>
-#include <ppltasks.h>
-
-#pragma comment(lib, "windowsapp")
 
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.Graphics.Display.h>
 WINRT_WARNING_PUSH
+
+#pragma comment(lib,"windowsapp")
 
 using namespace winrt;
 using namespace Windows;
@@ -18,6 +16,9 @@ using namespace Windows::Graphics::Display;
 using namespace Windows::ApplicationModel::Activation;
 using namespace Windows::Foundation::Numerics;
 
+
+#include <cmath>
+#include <ppltasks.h>
 
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 {

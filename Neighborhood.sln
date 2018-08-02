@@ -4,8 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher-Win32", "Launcher-Win32\Launcher-Win32.vcxproj", "{43CF0D5A-0B57-4F43-B906-F0C7CB7F0561}"
+	ProjectSection(ProjectDependencies) = postProject
+		{275ACCF2-FCC0-4369-B0A6-172E0F0522F8} = {275ACCF2-FCC0-4369-B0A6-172E0F0522F8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher-UWP", "Launcher-UWP\Launcher-UWP.vcxproj", "{7A87479F-2E9D-4645-BFDD-921635F36327}"
+	ProjectSection(ProjectDependencies) = postProject
+		{275ACCF2-FCC0-4369-B0A6-172E0F0522F8} = {275ACCF2-FCC0-4369-B0A6-172E0F0522F8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{275ACCF2-FCC0-4369-B0A6-172E0F0522F8}"
 EndProject
