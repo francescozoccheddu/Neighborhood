@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <BuildDir>$(SolutionDir)Build\</BuildDir>
+    <BuildConfSubdir>$(Configuration)\$(Platform)\</BuildConfSubdir>
+    <BuildResDir>$(BuildDir)Resources\$(BuildConfSubdir)</BuildResDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(BuildDir)Output\$(ProjectName)\$(BuildConfSubdir)</OutDir>
+    <IntDir>$(BuildDir)Intermediate\$(ProjectName)\$(BuildConfSubdir)</IntDir>
+    <_PropertySheetDisplayName>Project</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="BuildDir">
+      <Value>$(BuildDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BuildConfSubdir">
+      <Value>$(BuildConfSubdir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BuildResDir">
+      <Value>$(BuildResDir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
