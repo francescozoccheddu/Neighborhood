@@ -122,7 +122,7 @@ void ResourceHandler::SetWindow (void * _nativeWindow, Platform _ePlatform)
 	m_ePlatform = _ePlatform;
 }
 
-void ResourceHandler::Suspend ()
+void ResourceHandler::Trim ()
 {
 	if (m_pDevice)
 	{
