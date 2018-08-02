@@ -18,35 +18,79 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Cinema 4D\C4D_Exporter.py" />
+    <None Include="Cinema 4D\c4d_exporter_path" />
+    <None Include="Cinema 4D\Scene.c4d" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source Files\Camera\Projection.cpp" />
+    <ClCompile Include="Source Files\Camera\View.cpp" />
+    <ClCompile Include="Source Files\Engine\GameListener.cpp" />
+    <ClCompile Include="Source Files\Engine\ResourceHandler.cpp" />
+    <ClCompile Include="Source Files\Input\Gamepad.cpp" />
+    <ClCompile Include="Source Files\Scene\Loader.cpp" />
+    <ClCompile Include="Source Files\Scene\Mesh.cpp" />
+    <ClCompile Include="Source Files\Utils\Exceptions.cpp" />
+    <ClCompile Include="Source Files\Utils\Storage.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header Files\Game\Camera\Projection.hpp" />
+    <ClInclude Include="Header Files\Game\Camera\View.hpp" />
+    <ClInclude Include="Header Files\Game\Engine\GameListener.hpp" />
+    <ClInclude Include="Header Files\Game\Engine\ResourceHandler.hpp" />
+    <ClInclude Include="Header Files\Game\Input\Gamepad.hpp" />
+    <ClInclude Include="Header Files\Game\Scene\Loader.hpp" />
+    <ClInclude Include="Header Files\Game\Scene\Mesh.hpp" />
+    <ClInclude Include="Header Files\Game\Utils\COMExceptions.hpp" />
+    <ClInclude Include="Header Files\Game\Utils\Direct3D11.hpp" />
+    <ClInclude Include="Header Files\Game\Utils\Exceptions.hpp" />
+    <ClInclude Include="Header Files\Game\Utils\Log.hpp" />
+    <ClInclude Include="Header Files\Game\Utils\Storage.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{43CF0D5A-0B57-4F43-B906-F0C7CB7F0561}</ProjectGuid>
+    <ProjectGuid>{275ACCF2-FCC0-4369-B0A6-172E0F0522F8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>LauncherWin32</RootNamespace>
+    <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -55,7 +99,8 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared" />
+  <ImportGroup Label="Shared">
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -69,57 +114,27 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions);SOLUTIONNAME="$(SolutionName)"</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Game\Header Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile />
-      <PrecompiledHeaderOutputFile />
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <ResourceCompile>
-      <NullTerminateStrings>true</NullTerminateStrings>
-    </ResourceCompile>
-    <CustomBuildStep>
-      <Command>copy "$(SolutionDir)Game\Cinema 4D\meshes.json" "$(LocalDebuggerWorkingDirectory)meshes.json";</Command>
-      <Outputs>$(LocalDebuggerWorkingDirectory)meshes.json</Outputs>
-      <Inputs>$(SolutionDir)Game\Cinema 4D\meshes.json</Inputs>
-      <Message>Copying meshes file</Message>
-    </CustomBuildStep>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);SOLUTIONNAME="$(SolutionName)"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_AMD64_;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Game\Header Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Header Files\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -127,15 +142,23 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <ResourceCompile>
-      <NullTerminateStrings>true</NullTerminateStrings>
-    </ResourceCompile>
-    <CustomBuildStep>
-      <Command>copy "$(SolutionDir)Game\Cinema 4D\meshes.json" "$(LocalDebuggerWorkingDirectory)meshes.json";</Command>
-      <Message>Copying meshes file</Message>
-      <Outputs>$(LocalDebuggerWorkingDirectory)meshes.json</Outputs>
-      <Inputs>$(SolutionDir)Game\Cinema 4D\meshes.json</Inputs>
-    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_X86_;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)Header Files\</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -145,9 +168,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions);SOLUTIONNAME="$(SolutionName)"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_X86_;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Game\Header Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Header Files\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -157,15 +180,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <ResourceCompile>
-      <NullTerminateStrings>true</NullTerminateStrings>
-    </ResourceCompile>
-    <CustomBuildStep>
-      <Command>copy "$(SolutionDir)Game\Cinema 4D\meshes.json" "$(LocalDebuggerWorkingDirectory)meshes.json";</Command>
-      <Message>Copying meshes file</Message>
-      <Outputs>$(LocalDebuggerWorkingDirectory)meshes.json</Outputs>
-      <Inputs>$(SolutionDir)Game\Cinema 4D\meshes.json</Inputs>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -175,9 +189,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions);SOLUTIONNAME="$(SolutionName)"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_AMD64_;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Game\Header Files;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Header Files\</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -187,34 +201,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <ResourceCompile>
-      <NullTerminateStrings>true</NullTerminateStrings>
-    </ResourceCompile>
-    <CustomBuildStep>
-      <Command>copy "$(SolutionDir)Game\Cinema 4D\meshes.json" "$(LocalDebuggerWorkingDirectory)meshes.json";</Command>
-      <Message>Copying meshes file</Message>
-      <Outputs>$(LocalDebuggerWorkingDirectory)meshes.json</Outputs>
-      <Inputs>$(SolutionDir)Game\Cinema 4D\meshes.json</Inputs>
-    </CustomBuildStep>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Launcher-Win32.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.ico" />
-    <Image Include="icon_sm.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Game\Game.vcxproj">
-      <Project>{275accf2-fcc0-4369-b0a6-172e0f0522f8}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
