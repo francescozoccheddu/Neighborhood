@@ -1,10 +1,10 @@
 cbuffer cbPerFrame
 {
-    float4x4 mProjection;
-    float4x4 mView;
+	float4x4 mProjection;
+	float4x4 mView;
 };
 
-float4 main (float3 inPos : POSITION) : SV_POSITION
+float4 main (float3 inPos : POSITION, float3 inNorm : NORMAL) : SV_POSITION
 {
-    return mul(mul(float4(inPos, 1.0), mView), mProjection);
+	return mul (mul (float4(inPos, 1.0), mView), mProjection);
 }

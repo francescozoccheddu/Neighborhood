@@ -5,8 +5,8 @@
 
 void Mesh::SetIAVertexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer * _pBuffer)
 {
-	UINT stride{ sizeof(float) * 3 };
-	UINT offset{ 0 };
+	UINT stride { sizeof (Vertex) };
+	UINT offset { 0 };
 	_deviceContext.IASetVertexBuffers (0, 1, &_pBuffer, &stride, &offset);
 }
 
@@ -15,16 +15,16 @@ void Mesh::SetIAIndexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer 
 	_deviceContext.IASetIndexBuffer (_pBuffer, DXGI_FORMAT_R32_UINT, 0);
 }
 
-Mesh::Mesh() : m_pVertices{nullptr}, m_cVertices{0}, m_pIndices{nullptr}, m_cIndices{0} {}
+Mesh::Mesh () : m_pVertices { nullptr }, m_cVertices { 0 }, m_pIndices { nullptr }, m_cIndices { 0 } {}
 
-Mesh::Mesh (float * _pVertices, int _cVertices, unsigned int * _pIndices, int _cIndices)
-	: m_pVertices{ _pVertices }, m_cVertices{ _cVertices }, m_pIndices{ _pIndices }, m_cIndices{ _cIndices }
+Mesh::Mesh (Vertex * _pVertices, int _cVertices, unsigned int * _pIndices, int _cIndices)
+	: m_pVertices { _pVertices }, m_cVertices { _cVertices }, m_pIndices { _pIndices }, m_cIndices { _cIndices }
 {
 	GAME_ASSERT_MSG (_pVertices && _pIndices, "Vertices and indices pointers cannot be nullptr");
 	GAME_ASSERT_MSG (_cVertices >= 0 && _cIndices >= 0, "Vertices and indices count cannot be negative");
 }
 
-void Mesh::Set (float * _pVertices, int _cVertices, unsigned int * _pIndices, int _cIndices)
+void Mesh::Set (Vertex * _pVertices, int _cVertices, unsigned int * _pIndices, int _cIndices)
 {
 	GAME_ASSERT_MSG (_pVertices && _pIndices, "Vertices and indices pointers cannot be nullptr");
 	GAME_ASSERT_MSG (_cVertices >= 0 && _cIndices >= 0, "Vertices and indices count cannot be negative");
@@ -48,10 +48,10 @@ ID3D11Buffer * Mesh::CreateD3DVertexBuffer (ID3D11Device & _device) const
 {
 	D3D11_BUFFER_DESC desc;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.ByteWidth = m_cVertices * sizeof (float);
+	desc.ByteWidth = m_cVertices * sizeof (Vertex);
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
-	desc.StructureByteStride = sizeof(float) * 3;
+	desc.StructureByteStride = sizeof (Vertex);
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = m_pVertices;

@@ -100,7 +100,6 @@ void ResourceHandler::Size (WindowSize _size)
 	{
 		CreateRenderTarget (_size);
 		CreateDepthStencilView (_size);
-		SetOutputMergerViews ();
 		SetOutputMergerViewport (_size);
 	}
 	FIRE_EVENT (OnSized (_size));
@@ -287,7 +286,6 @@ void ResourceHandler::HandleDeviceLost ()
 	CreateSwapChain (m_Size);
 	CreateRenderTarget (m_Size);
 	CreateDepthStencilView (m_Size);
-	SetOutputMergerViews ();
 	SetOutputMergerViewport (m_Size);
 }
 

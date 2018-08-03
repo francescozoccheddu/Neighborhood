@@ -1,5 +1,6 @@
 #pragma once
 
+#include <DirectXMath.h>
 struct ID3D11Buffer;
 struct ID3D11Device;
 struct ID3D11DeviceContext;
@@ -9,15 +10,21 @@ class Mesh
 
 public:
 
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 normal;
+	};
+
 	static void SetIAVertexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
 
 	static void SetIAIndexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
 
 	Mesh ();
 
-	Mesh (float * pVertices, int cVertices, unsigned int * pIndices, int cIndices);
+	Mesh (Vertex * pVertices, int cVertices, unsigned int * pIndices, int cIndices);
 
-	void Set (float * pVertices, int cVertices, unsigned int * pIndices, int cIndices);
+	void Set (Vertex * pVertices, int cVertices, unsigned int * pIndices, int cIndices);
 
 	void Destroy ();
 
@@ -29,7 +36,7 @@ public:
 
 private:
 
-	float * m_pVertices;
+	Vertex * m_pVertices;
 	int m_cVertices;
 	unsigned int * m_pIndices;
 	int m_cIndices;
