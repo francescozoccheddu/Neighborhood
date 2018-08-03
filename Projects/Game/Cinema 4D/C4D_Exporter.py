@@ -14,8 +14,29 @@ def isCloseToNumber(a,b,tollerance=0.0):
 def isCloseToVector(a,b,tollerance=0.0):
     return a == b if tollerance == 0.0 else (isCloseToNumber(a.x,b.x,tollerance) and isCloseToNumber(a.y,b.y,tollerance) and isCloseToNumber(a.x,b.y,tollerance))
 
-def isLessThanVector(a,b):
-    return a.x < b.x or a.y < b.y or a.z < b.z
+class CompareResult:
+
+    SMALLER = 1,
+    EQUAL = 0,
+    GREATER = -1
+
+def compare(a,b):
+    if a < b:
+        return CompareResult.SMALLER
+    if a == b:
+        return CompareResult.EQUAL
+    return CompareResult.GREATER
+
+def compareChain(*ress):
+    for res in ress:
+        if res == CompareResult.SMALLER:
+            return CompareResult.SMALLER
+        if res == CompareResult.GREATER:
+            return CompareResult.GREATER
+    return CompareResult.EQUAL
+
+def compareVector(a,b):
+    return compareChain(compare(a.x,b.x), compare(a.y,b.y), compare(a.z,b.z))
 
 def vectorToDict(vec):
     return {
@@ -31,7 +52,7 @@ class Vertex:
         self._normal = normal
 
     def __lt__(self, other):
-        return isLessThanVector(self._position, other._position) or isLessThanVector(self._normal, other._normal)
+        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal)) == CompareResult.SMALLER
 
     def __eq__(self, other):
         return self._position == other._position and self._normal == other._normal
@@ -114,10 +135,6 @@ class BisectMeshBuilder(LinearMeshBuilder):
             return
         elif ii + 1 < len(self._verticesh) and self._verticesh[ii + 1].isCloseTo(vert, tollerance):
             self._indices.append(self._verticesh[ii + 1].getIndex())
-            self.dups+=1
-            return
-        elif ii - 1 < len(self._verticesh) and ii - 1 > 0 and self._verticesh[ii - 1].isCloseTo(vert, tollerance):
-            self._indices.append(self._verticesh[ii - 1].getIndex())
             self.dups+=1
             return
         self._verticesh.insert(ii,VertexSortHelper(vert,len(self._vertices)))
