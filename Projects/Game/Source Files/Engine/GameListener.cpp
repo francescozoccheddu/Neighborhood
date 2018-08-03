@@ -13,7 +13,7 @@
 //#define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 #define SHADER_PATH(x) x
 
-GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler{ _resourceHandler } {}
+GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler { _resourceHandler } {}
 
 void GameListener::OnDeviceDestroyed ()
 {
@@ -28,33 +28,40 @@ struct cbPerFrameBuffer
 
 void GameListener::OnDeviceCreated ()
 {
-	ID3D11Device & device{ *m_ResourceHandler.GetDevice () };
-	ID3D11DeviceContext & context{ *m_ResourceHandler.GetDeviceContext () };
+	ID3D11Device & device { *m_ResourceHandler.GetDevice () };
+	ID3D11DeviceContext & context { *m_ResourceHandler.GetDeviceContext () };
 	{
 		// Shaders
 		int vsLen, psLen;
-		char * pVsData{ Storage::LoadBinaryFile (SHADER_PATH ("VertexShader.cso"), vsLen) };
-		char * pPsData{ Storage::LoadBinaryFile (SHADER_PATH ("PixelShader.cso"), psLen) };
+		char * pVsData { Storage::LoadBinaryFile (SHADER_PATH ("VertexShader.cso"), vsLen) };
+		char * pPsData { Storage::LoadBinaryFile (SHADER_PATH ("PixelShader.cso"), psLen) };
 		GAME_COMC (device.CreateVertexShader (pVsData, vsLen, nullptr, &m_pVertexShader));
 		GAME_COMC (device.CreatePixelShader (pPsData, psLen, nullptr, &m_pPixelShader));
 		context.VSSetShader (m_pVertexShader, nullptr, 0);
 		context.PSSetShader (m_pPixelShader, nullptr, 0);
 		// Input layout
-		D3D11_INPUT_ELEMENT_DESC desc;
-		desc.SemanticName = "POSITION";
-		desc.SemanticIndex = 0;
-		desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-		desc.InputSlot = 0;
-		desc.AlignedByteOffset = 0;
-		desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-		desc.InstanceDataStepRate = 0;
-		GAME_COMC (device.CreateInputLayout (&desc, 1, pVsData, vsLen, &m_pInputLayout));
+		D3D11_INPUT_ELEMENT_DESC desc[2];
+		desc[0].SemanticName = "POSITION";
+		desc[0].SemanticIndex = 0;
+		desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		desc[0].InputSlot = 0;
+		desc[0].AlignedByteOffset = 0;
+		desc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		desc[0].InstanceDataStepRate = 0;
+		desc[1].SemanticName = "NORMAL";
+		desc[1].SemanticIndex = 0;
+		desc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		desc[1].InputSlot = 0;
+		desc[1].AlignedByteOffset = 0;
+		desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+		desc[1].InstanceDataStepRate = 0;
+		GAME_COMC (device.CreateInputLayout (desc, ARRAYSIZE (desc), pVsData, vsLen, &m_pInputLayout));
 		context.IASetInputLayout (m_pInputLayout);
 	}
 	{
 		// Buffer
-		auto map{ Scene::LoadFromJSON (Storage::LoadTextFile ("meshes.json")) };
-		Mesh mesh{ map["Figure"] };
+		auto map { Scene::LoadFromJSON (Storage::LoadTextFile ("meshes.json")) };
+		Mesh mesh { map["Figure"] };
 		m_pIndexBuffer = mesh.CreateD3DIndexBuffer (device);
 		m_pVertexBuffer = mesh.CreateD3DVertexBuffer (device);
 		m_cInds = mesh.GetIndicesCount ();
@@ -106,7 +113,7 @@ void GameListener::OnRender (float _deltaTime)
 
 	deviceContext.VSSetConstantBuffers (0, 1, &m_pConstantBuffer);
 
-	float color[]{ 0.1f,0.2f,0.3f,1.0f };
+	float color[] { 0.1f, 0.2f, 0.3f, 1.0f };
 	deviceContext.ClearDepthStencilView (m_ResourceHandler.GetDepthStencilView (), D3D11_CLEAR_DEPTH, 1, 0);
 	deviceContext.ClearRenderTargetView (m_ResourceHandler.GetRenderTargetView (), color);
 	deviceContext.DrawIndexed (m_cInds, 0, 0);

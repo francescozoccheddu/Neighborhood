@@ -25,11 +25,47 @@ namespace Scene
 	inline Mesh LoadFromJSONObject (const rapidjson::Value& _jObj)
 	{
 		GAME_ASSERT_MSG (_jObj.IsObject (), "Not a JSON object");
-		float * pVerts;
+		Mesh::Vertex * pVerts;
 		unsigned int * pInds;
 		int cVerts, cInds;
-		CopyJSONArray (_jObj["positions"], pVerts, cVerts);
-		CopyJSONArray (_jObj["indices"], pInds, cInds);
+		{
+			const rapidjson::Value & jVerts { _jObj["vertices"] };
+			GAME_ASSERT_MSG (jVerts.IsArray (), "Not a JSON array");
+			rapidjson::SizeType cArr { jVerts.Size () };
+			cVerts = static_cast<int>(cArr);
+			pVerts = new Mesh::Vertex[cVerts];
+			for (rapidjson::SizeType iArr { 0 }; iArr < cArr; iArr++)
+			{
+				Mesh::Vertex & vert { pVerts[iArr] };
+				const rapidjson::Value & jVert { jVerts[iArr] };
+				GAME_ASSERT_MSG (_jObj.IsObject (), "Not a JSON object");
+				{
+					const rapidjson::Value & jPos { jVert["position"] };
+					GAME_ASSERT_MSG (_jObj.IsObject (), "Not a JSON object");
+					vert.position.x = jPos["x"].GetFloat ();
+					vert.position.y = jPos["y"].GetFloat ();
+					vert.position.z = jPos["z"].GetFloat ();
+				}
+				{
+					const rapidjson::Value & jNorm { jVert["normal"] };
+					GAME_ASSERT_MSG (_jObj.IsObject (), "Not a JSON object");
+					vert.normal.x = jNorm["x"].GetFloat ();
+					vert.normal.y = jNorm["y"].GetFloat ();
+					vert.normal.z = jNorm["z"].GetFloat ();
+				}
+			}
+		}
+		{
+			const rapidjson::Value & jInds { _jObj["indices"] };
+			GAME_ASSERT_MSG (jInds.IsArray (), "Not a JSON array");
+			rapidjson::SizeType cArr { jInds.Size () };
+			cInds = static_cast<int>(cArr);
+			pInds = new unsigned int[cInds];
+			for (rapidjson::SizeType iArr { 0 }; iArr < cArr; iArr++)
+			{
+				pInds[iArr] = jInds[iArr].GetUint ();
+			}
+		}
 		return Mesh { pVerts, cVerts, pInds, cInds };
 	}
 
