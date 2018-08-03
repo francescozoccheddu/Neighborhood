@@ -1,18 +1,11 @@
 import json
 import os
-import math
 import bisect
 import c4d
 from c4d import gui
 from c4d import documents
 
 outpath_desc_filename = "c4d_exporter_path"
-
-def isCloseToNumber(a,b,tollerance=0.0):
-    return a == b if tollerance == 0.0 else math.isclose(a,b, abs_tol = tollerance)
-
-def isCloseToVector(a,b,tollerance=0.0):
-    return a == b if tollerance == 0.0 else (isCloseToNumber(a.x,b.x,tollerance) and isCloseToNumber(a.y,b.y,tollerance) and isCloseToNumber(a.x,b.y,tollerance))
 
 class CompareResult:
 
@@ -51,14 +44,11 @@ class Vertex:
         self._position = position
         self._normal = normal
 
-    def __lt__(self, other):
+    def __lt__(self,other):
         return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal)) == CompareResult.SMALLER
 
     def __eq__(self, other):
         return self._position == other._position and self._normal == other._normal
-
-    def isCloseTo(self, other, tollerance=0.0):
-        return self == other if tollerance == 0.0 else (isCloseToVector(self._position, other._position, tollerance) and isCloseToVector(self._normal, other._normal, tollerance))
 
     def toDict(self):
         return {
@@ -66,79 +56,57 @@ class Vertex:
             "normal" : vectorToDict(self._normal)
         }
 
-    def __format__(self, format_spec):
-        return self.__str__()
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return "<Pos: {} Norm: {}>".format(str(self._position), str(self._normal))
-
-class VertexSortHelper(Vertex):
-
-    def __init__(self, vert, index):
-        self._index = index
-        return Vertex.__init__(self, vert._position, vert._normal)
-
-    def getIndex(self):
-        return self._index
-
 class MeshBuilder:
 
     def __init__(self):
         self._vertices = []
         self._indices = []
 
-    def append(self, vert):
+    def _buildVertices(self):
+        return self._vertices
+
+    def _buildIndices(self):
+        return self._indices
+
+    def add(self, vert):
+        for i, v in enumerate(self._vertices):
+            if v == vert:
+                self._indices.append(i)
+                return
         self._indices.append(len(self._vertices))
         self._vertices.append(vert)
 
-    def getVertices(self):
-        return self._vertices
-
-    def getIndices(self):
-        return self._indices
-
     def toDict(self):
         return {
-            "vertices" : list(map(lambda v: v.toDict(), self._vertices)),
-            "indices" : self._indices
+            "vertices" : list(map(lambda v: v.toDict(), self._buildVertices())),
+            "indices" : self._buildIndices()
             }
 
-class LinearMeshBuilder(MeshBuilder):
+class BisectMeshBuilder(MeshBuilder):
 
     def __init__(self):
-        self.dups = 0 # TODO
-                      # Deletemeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!
-        MeshBuilder.__init__(self)
+        self._flatinds = []
+        return MeshBuilder.__init__(self)
+    
+    def _trySkip(self, vert, ind):
+        if ind < len(self._vertices) and self._vertices[ind] == vert:
+            self._indices.append(self._flatinds[ind])
+            return True
+        return False
 
-    def add(self, vert, tollerance=0.0):
-        for pind, pvert in enumerate(self._vertices):
-            if pvert.isCloseTo(vert, tollerance):
-                self._indices += [pind]
-                self.dups +=1
-                return
-        self.append(vert)
-
-class BisectMeshBuilder(LinearMeshBuilder):
-
-    def __init__(self):
-        self._verticesh = []
-        return LinearMeshBuilder.__init__(self)
-
-    def add(self, vert, tollerance=0.0):
-        ii = bisect.bisect_left(self._verticesh, vert)
-        if ii < len(self._verticesh) and self._verticesh[ii].isCloseTo(vert, tollerance):
-            self._indices.append(self._verticesh[ii].getIndex())
-            self.dups+=1
+    def add(self, vert):
+        insp = bisect.bisect_left(self._vertices, vert)
+        if self._trySkip(vert, insp) or self._trySkip(vert, insp + 1):
             return
-        elif ii + 1 < len(self._verticesh) and self._verticesh[ii + 1].isCloseTo(vert, tollerance):
-            self._indices.append(self._verticesh[ii + 1].getIndex())
-            self.dups+=1
-            return
-        self._verticesh.insert(ii,VertexSortHelper(vert,len(self._vertices)))
-        self.append(vert)            
+        self._flatinds.insert(insp, len(self._vertices))
+        self._indices.append(len(self._vertices))
+        self._vertices.insert(insp, vert)
+
+    def _buildVertices(self):
+        verts = [None for _ in range(len(self._vertices))]
+        for ind, flatind in enumerate(self._flatinds):
+            verts[flatind] = self._vertices[ind]
+        return verts
 
 def getTriangleIndices(obj):
     inds = []
@@ -174,7 +142,7 @@ def calculatePerTriangleNormals(obj):
             raise ValueError("Polygon object is not triangulated")
     return norms
 
-def makeMeshForObject(obj,scale=1.0, tollerance=0.0, useBisect=True):
+def makeMeshForObject(obj, scale=1.0, useBisect=True):
     if obj.GetType() == c4d.Opolygon:
         inds = getTriangleIndices(obj)
         points = obj.GetAllPoints()
@@ -184,22 +152,21 @@ def makeMeshForObject(obj,scale=1.0, tollerance=0.0, useBisect=True):
             norms = calculatePerTriangleNormals(obj)
         else:
             phong = True
-        mesh = BisectMeshBuilder() if useBisect else LinearMeshBuilder()
+        mesh = BisectMeshBuilder() if useBisect else MeshBuilder()
         for ii, ind in enumerate(inds):
             position = points[ind] * scale
             if phong:
                 normal = norms[ii]
             else:
                 normal = norms[ii / 3]
-            vert = Vertex(position,normal)
-            mesh.add(vert, tollerance)
-        print("Found %d dups" % mesh.dups)
+            vert = Vertex(position, normal)
+            mesh.add(vert)
         return mesh
     else:
         raise ValueError("Object is not a polygon object")
 
-def objToDict(obj, scale=1.0, tollerance=0.0):
-    return makeMeshForObject(obj,scale,tollerance).toDict()
+def objToDict(obj, scale=1.0):
+    return makeMeshForObject(obj, scale).toDict()
 
 def getOutputFilenames():
     doc_path = documents.GetActiveDocument().GetDocumentPath()
@@ -232,14 +199,13 @@ def main():
     doc = documents.GetActiveDocument()
     objs = doc.GetActiveObjects(c4d.GETACTIVEOBJECTFLAGS_0)
     scale = 1.0 / 100.0
-    tollerance = 0.0
     jobjmap = {}
     
     print("-- C4D Export to JSON for Neighborhood project --")
     
     for obj in objs:
         try:
-            jobj = objToDict(obj,scale,tollerance)
+            jobj = objToDict(obj, scale)
             if obj.GetName() in jobjmap:
                 print("Object name '%s' appears multiple times, only one object with this name will be exported" % obj.GetName())
             jobjmap[obj.GetName()] = jobj
