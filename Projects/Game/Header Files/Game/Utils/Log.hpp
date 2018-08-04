@@ -3,6 +3,7 @@
 #define NOMINMAX
 #include <comdef.h>
 
+#ifdef _DEBUG
 #ifndef GAME_LOG_ENABLE
 #define GAME_LOG_ENABLE 1
 #endif

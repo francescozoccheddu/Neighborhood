@@ -3,19 +3,26 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <BuildDir>$(SolutionDir)Build\</BuildDir>
-    <BuildConfSubdir>$(Configuration)\$(Platform)\</BuildConfSubdir>
-    <BuildResDir>$(BuildDir)Resources\$(BuildConfSubdir)</BuildResDir>
+    <BuildConfSubdir>%(ProjectName)\$(Configuration)\$(Platform)\</BuildConfSubdir>
   </PropertyGroup>
   <PropertyGroup>
-    <OutDir>$(BuildDir)Output\$(ProjectName)\$(BuildConfSubdir)</OutDir>
-    <IntDir>$(BuildDir)Intermediate\$(ProjectName)\$(BuildConfSubdir)</IntDir>
+    <OutDir>$(BuildDir)Output\$(BuildConfSubdir)</OutDir>
+    <IntDir>$(BuildDir)Intermediate\$(BuildConfSubdir)</IntDir>
     <_PropertySheetDisplayName>Project</_PropertySheetDisplayName>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
     </ClCompile>
     <Link />
+    <Link>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BuildDir">
@@ -23,9 +30,6 @@
     </BuildMacro>
     <BuildMacro Include="BuildConfSubdir">
       <Value>$(BuildConfSubdir)</Value>
-    </BuildMacro>
-    <BuildMacro Include="BuildResDir">
-      <Value>$(BuildResDir)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>
