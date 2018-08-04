@@ -1,9 +1,8 @@
 #pragma once
 
 #include <DirectXMath.h>
-struct ID3D11Buffer;
-struct ID3D11Device;
-struct ID3D11DeviceContext;
+#define NOMINMAX
+#include <Game/Utils/Direct3D11.hpp>
 
 class Mesh
 {
