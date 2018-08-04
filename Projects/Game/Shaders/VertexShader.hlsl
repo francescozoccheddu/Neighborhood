@@ -4,7 +4,16 @@ cbuffer cbPerFrame
 	float4x4 mView;
 };
 
-float4 main (float3 inPos : POSITION, float3 inNorm : NORMAL) : SV_POSITION
+struct VOut
 {
-	return mul (mul (float4(inPos, 1.0), mView), mProjection);
+	float4 Pos : SV_POSITION;
+	float3 Norm : COLOR;
+};
+
+VOut main (float3 inPos : POSITION, float3 inNorm : NORMAL)
+{
+	VOut v;
+	v.Pos = mul (mul (float4(inPos, 1.0), mView), mProjection);
+	v.Norm = inNorm;
+	return v;
 }
