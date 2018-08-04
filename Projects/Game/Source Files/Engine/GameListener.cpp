@@ -9,8 +9,6 @@
 //TODO Cleanup
 #include <fstream>
 
-
-//#define SHADER_PATH(x) ("C:\\Users\\zocch\\Documents\\Visual Studio 2017\\Projects\\Neighborhood\\Debug\\" x)
 #define SHADER_PATH(x) x
 
 GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler { _resourceHandler } {}

@@ -16,9 +16,9 @@ class CompareResult:
 def compare(a,b):
     if a < b:
         return CompareResult.SMALLER
-    if a == b:
-        return CompareResult.EQUAL
-    return CompareResult.GREATER
+    if a > b:
+        return CompareResult.GREATER
+    return CompareResult.EQUAL
 
 def compareChain(*ress):
     for res in ress:
@@ -31,6 +31,14 @@ def compareChain(*ress):
 def compareVector(a,b):
     return compareChain(compare(a.x,b.x), compare(a.y,b.y), compare(a.z,b.z))
 
+def compareList(a,b):
+    for ea, eb in zip(a,b):
+        if ea < eb:
+            return CompareResult.SMALLER
+        elif ea > eb:
+            return CompareResult.GREATER 
+    return CompareResult.EQUAL
+
 def vectorToDict(vec):
     return {
             "x" : vec.x,
@@ -40,20 +48,25 @@ def vectorToDict(vec):
 
 class Vertex:
 
-    def __init__(self, position, normal):
+    def __init__(self, position, normal, textcoord):
         self._position = position
         self._normal = normal
+        self._textcoord = textcoord
 
     def __lt__(self,other):
-        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal)) == CompareResult.SMALLER
+        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal), compareList(self._textcoord, other._textcoord)) == CompareResult.SMALLER
 
     def __eq__(self, other):
-        return self._position == other._position and self._normal == other._normal
+        return self._position == other._position and self._normal == other._normal and self._textcoord == other._textcoord
 
     def toDict(self):
         return {
             "position" : vectorToDict(self._position),
-            "normal" : vectorToDict(self._normal)
+            "normal" : vectorToDict(self._normal),
+            "textcoord" : {
+                    "x" : self._textcoord[0],
+                    "y" : self._textcoord[1]
+                } if self._textcoord is not None else None
         }
 
 class MeshBuilder:
@@ -85,12 +98,12 @@ class MeshBuilder:
 class BisectMeshBuilder(MeshBuilder):
 
     def __init__(self):
-        self._flatinds = []
+        self._flat_inds = []
         return MeshBuilder.__init__(self)
     
     def _trySkip(self, vert, ind):
         if ind < len(self._vertices) and self._vertices[ind] == vert:
-            self._indices.append(self._flatinds[ind])
+            self._indices.append(self._flat_inds[ind])
             return True
         return False
 
@@ -98,69 +111,49 @@ class BisectMeshBuilder(MeshBuilder):
         insp = bisect.bisect_left(self._vertices, vert)
         if self._trySkip(vert, insp) or self._trySkip(vert, insp + 1):
             return
-        self._flatinds.insert(insp, len(self._vertices))
+        self._flat_inds.insert(insp, len(self._vertices))
         self._indices.append(len(self._vertices))
         self._vertices.insert(insp, vert)
 
     def _buildVertices(self):
         verts = [None for _ in range(len(self._vertices))]
-        for ind, flatind in enumerate(self._flatinds):
-            verts[flatind] = self._vertices[ind]
+        for ind, flat_ind in enumerate(self._flat_inds):
+            verts[flat_ind] = self._vertices[ind]
         return verts
-
-def getTriangleIndices(obj):
-    inds = []
-    for poly in obj.GetAllPolygons():
-        if poly.IsTriangle():
-            inds += [poly.a, poly.b, poly.c]
-        else:
-            raise ValueError("Polygon object is not triangulated")
-    return inds
-
-def getPerTriangleIndexPhongNormals(obj):
-    pnorms = obj.CreatePhongNormals()
-    if pnorms is None:
-        return None
-    tnorms = []
-    for pi, pnorm in enumerate(pnorms):
-        if not pi % 4 > 2:
-            tnorms.append(pnorm)
-    return tnorms
    
-def calculatePerTriangleNormals(obj):
-    norms = []
-    points = obj.GetAllPoints()
-    for poly in obj.GetAllPolygons():
-        if poly.IsTriangle():
-            a = points[poly.a]
-            b = points[poly.b]
-            c = points[poly.c]
-            v = b - a
-            w = c - a
-            norms.append(v.Cross(w).GetNormalized())
-        else:
-            raise ValueError("Polygon object is not triangulated")
-    return norms
+def calculateTriangleNormal(verts):
+    v = verts[1] - verts[0]
+    w = verts[2] - verts[0]
+    return v.Cross(w).GetNormalized()
+
+
+def getTextCoordFromVector(vec):
+    if vec.z != 0:
+        raise ValueError("Unexpected UVW mapping")
+    return [vec.x, vec.y]
 
 def makeMeshForObject(obj, scale=1.0, useBisect=True):
     if obj.GetType() == c4d.Opolygon:
-        inds = getTriangleIndices(obj)
         points = obj.GetAllPoints()
-        norms = getPerTriangleIndexPhongNormals(obj)
-        if norms is None:
-            phong = False
-            norms = calculatePerTriangleNormals(obj)
-        else:
-            phong = True
+        phong_norms = obj.CreatePhongNormals()
+        uvw_tag = obj.GetTag(c4d.Tuvw)
         mesh = BisectMeshBuilder() if useBisect else MeshBuilder()
-        for ii, ind in enumerate(inds):
-            position = points[ind] * scale
-            if phong:
-                normal = norms[ii]
+        for poly_ind, poly in enumerate(obj.GetAllPolygons()):
+            if not poly.IsTriangle():
+                raise ValueError("Polygon object is not triangulated")
+            poly_poss = [points[poly.a] * scale, points[poly.b] * scale, points[poly.c] * scale]
+            if phong_norms is not None:
+                poly_norms = [phong_norms[poly_ind * 4 + i] for i in range(3)]
             else:
-                normal = norms[ii / 3]
-            vert = Vertex(position, normal)
-            mesh.add(vert)
+                poly_norms = [calculateTriangleNormal(poly_poss)] * 3
+            if uvw_tag is not None:
+                uvw = uvw_tag.GetSlow(poly_ind)
+                poly_uvs = [getTextCoordFromVector(uvw[key]) for key in ["a","b","c"]]
+            else:
+                poly_uvs = [None] * 3
+            for vert_ind in range(3):
+                mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_uvs[vert_ind]))
+        #print("Verts %d Inds %d" % (len(mesh._vertices),len(mesh._indices)))
         return mesh
     else:
         raise ValueError("Object is not a polygon object")
