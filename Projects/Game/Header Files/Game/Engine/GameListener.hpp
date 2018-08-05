@@ -4,7 +4,6 @@
 #include <Game/Engine/ResourceHandler.hpp>
 #include <Game/Camera/View.hpp>
 #include <Game/Camera/Projection.hpp>
-#include <Game/Input/Gamepad.hpp>
 
 class GameListener : public ResourceHandler::Listener
 {
@@ -26,7 +25,6 @@ public:
 private:
 
 	ResourceHandler & m_ResourceHandler;
-	Gamepad m_Gamepad;
 	Camera::Projection m_CamProjection;
 	Camera::View m_CamView;
 	UINT m_cInds;

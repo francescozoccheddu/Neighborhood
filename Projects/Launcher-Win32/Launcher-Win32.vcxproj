@@ -172,9 +172,12 @@
     <CustomBuildStep />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ErrorLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ErrorLogger.hpp" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
