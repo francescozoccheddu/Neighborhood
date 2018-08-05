@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.h"
+#include <Game/pch.hpp>
 #include <string>
 
 std::string GetErrorMessage (DWORD error);
