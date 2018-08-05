@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <CppWinRTEnabled>true</CppWinRTEnabled>
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{43CF0D5A-0B57-4F43-B906-F0C7CB7F0561}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

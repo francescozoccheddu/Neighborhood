@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <CppWinRTEnabled>true</CppWinRTEnabled>
     <ProjectGuid>{7a87479f-2e9d-4645-bfdd-921635f36327}</ProjectGuid>
     <Keyword>DirectXApp</Keyword>
     <RootNamespace>Launcher_UWP</RootNamespace>

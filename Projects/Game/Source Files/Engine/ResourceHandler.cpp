@@ -89,12 +89,12 @@ void ResourceHandler::Size (WindowSize _size, bool _bForce)
 {
 	if (_bForce || _size != m_Size)
 	{
+		m_pRenderTargetView = nullptr;
+		m_pDepthStencilView = nullptr;
 		m_Size = _size;
 		bool recreated { false };
 		if (m_pSwapChain)
 		{
-			m_pRenderTargetView = nullptr;
-			m_pDepthStencilView = nullptr;
 			const HRESULT hr { m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
 			if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
 			{
@@ -122,8 +122,8 @@ void ResourceHandler::Size (WindowSize _size, bool _bForce)
 
 void ResourceHandler::Destroy ()
 {
-	FIRE_EVENT (OnDeviceDestroyed ());
 	ReleaseAll ();
+	FIRE_EVENT (OnDeviceDestroyed ());
 }
 
 void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize size)
@@ -205,6 +205,7 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 
 void ResourceHandler::CreateSwapChain ()
 {
+	m_pSwapChain = nullptr;
 	com_ptr<IDXGIFactory2> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -239,6 +240,7 @@ void ResourceHandler::CreateSwapChain ()
 
 void ResourceHandler::CreateRenderTarget ()
 {
+	m_pRenderTargetView = nullptr;
 	com_ptr<ID3D11Texture2D> pTexture;
 	GAME_COMC (m_pSwapChain->GetBuffer (0, __uuidof(ID3D11Texture2D), pTexture.put_void ()));
 	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture.get (), nullptr, m_pRenderTargetView.put ()));
@@ -246,6 +248,7 @@ void ResourceHandler::CreateRenderTarget ()
 
 void ResourceHandler::CreateDepthStencilView ()
 {
+	m_pDepthStencilView = nullptr;
 	D3D11_TEXTURE2D_DESC desc;
 	desc.Width = m_Size.width;
 	desc.Height = m_Size.height;
@@ -283,8 +286,8 @@ void ResourceHandler::SetOutputMergerViewport ()
 
 void ResourceHandler::HandleDeviceLost ()
 {
-	FIRE_EVENT (OnDeviceDestroyed ());
 	ReleaseAll ();
+	FIRE_EVENT (OnDeviceDestroyed ());
 	CreateDeviceAndDeviceContext ();
 	FIRE_EVENT (OnDeviceCreated ());
 	CreateSwapChain ();
