@@ -14,31 +14,6 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\Projection.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Loader.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Mesh.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Direct3D11.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Loader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path" />
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Scene.c4d" />
@@ -50,5 +25,17 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\VertexShader.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
   </ItemGroup>
 </Project>

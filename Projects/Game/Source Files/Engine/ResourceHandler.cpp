@@ -1,29 +1,34 @@
 #include <Game/Engine/ResourceHandler.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include <Game/Utils/Direct3D11.hpp>
-#include <WinBase.h>
+
+#include <pch.h>
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 #define MAX_DELTA_TIME 1.0
 #define FIRE_EVENT(x) { if (pListener) pListener -> x ; }
 
-ResourceHandler::ResourceHandler () : timerFreq { QueryTimerFrequency () }
+double ResourceHandler::s_TimerFreq = 0.0;
+
+void ResourceHandler::InitializeTimer ()
 {
-	m_LastTime.QuadPart = 0;
+	LARGE_INTEGER timerFreq;
+	if (!QueryPerformanceFrequency (&timerFreq))
+	{
+		GAME_THROW_MSG ("Timer frequency query failed");
+	}
+	s_TimerFreq = static_cast<double>(timerFreq.QuadPart);
 }
+
+ResourceHandler::ResourceHandler () {}
 
 ResourceHandler::~ResourceHandler ()
 {
-	Release ();
+	ReleaseAll ();
 }
 
 void ResourceHandler::Tick ()
 {
-	if (!m_pSwapChain)
-	{
-		throw std::runtime_error ("Swap chain not created");
-	}
 	double deltaTime = 0.0;
 	{
 		LARGE_INTEGER newTime;
@@ -31,13 +36,14 @@ void ResourceHandler::Tick ()
 		{
 			GAME_THROW_MSG ("Timer query failed");
 		}
-		if (m_LastTime.QuadPart == 0.0)
+		if (!m_LastTimeValid)
 		{
+			m_LastTimeValid = true;
 			deltaTime = 0.0;
 		}
 		else
 		{
-			deltaTime = static_cast<double>(newTime.QuadPart - m_LastTime.QuadPart) / timerFreq;
+			deltaTime = static_cast<double>(newTime.QuadPart - m_LastTime.QuadPart) / s_TimerFreq;
 			if (deltaTime < 0.0)
 			{
 				deltaTime = 0.0;
@@ -51,106 +57,125 @@ void ResourceHandler::Tick ()
 	}
 	SetOutputMergerViews ();
 	FIRE_EVENT (OnRender (static_cast<float>(deltaTime)));
+
+
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
 	pars.pDirtyRects = nullptr;
 	pars.pScrollOffset = nullptr;
 	pars.pScrollRect = nullptr;
-	const HRESULT hr { m_pSwapChain->Present1 (1, 0, &pars) };
-	m_pDeviceContext->DiscardView1 (m_pRenderTargetView, nullptr, 0);
-	m_pDeviceContext->DiscardView1 (m_pDepthStencilView, nullptr, 0);
-	if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+	const HRESULT hResPresent { m_pSwapChain->Present1 (1, 0, &pars) };
+
+	com_ptr<ID3D11DeviceContext1> pDeviceContext1;
+	m_pDeviceContext.try_as (pDeviceContext1);
+	if (pDeviceContext1)
+	{
+		pDeviceContext1->DiscardView1 (m_pRenderTargetView.get (), nullptr, 0);
+		pDeviceContext1->DiscardView1 (m_pDepthStencilView.get (), nullptr, 0);
+	}
+
+	if (hResPresent == DXGI_ERROR_DEVICE_REMOVED || hResPresent == DXGI_ERROR_DEVICE_RESET)
 	{
 		HandleDeviceLost ();
 	}
 	else
 	{
-		GAME_COMC (hr);
+		GAME_COMC (hResPresent);
 	}
 }
 
-void ResourceHandler::Size (WindowSize _size)
+void ResourceHandler::Size (WindowSize _size, bool _bForce)
 {
-	m_Size = _size;
-	if (!m_pDevice || !m_pDeviceContext)
+	if (_bForce || _size != m_Size)
 	{
-		GAME_THROW ("Device not created");
-	}
-	bool recreated { false };
-	if (m_pSwapChain)
-	{
-		ReleaseCOM (m_pRenderTargetView);
-		ReleaseCOM (m_pDepthStencilView);
-		const HRESULT hr { m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
-		if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+		m_Size = _size;
+		bool recreated { false };
+		if (m_pSwapChain)
 		{
-			HandleDeviceLost ();
-			recreated = true;
+			m_pRenderTargetView = nullptr;
+			m_pDepthStencilView = nullptr;
+			const HRESULT hr { m_pSwapChain->ResizeBuffers (2, _size.width, _size.height, SWAP_CHAIN_FORMAT, 0) };
+			if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+			{
+				HandleDeviceLost ();
+				recreated = true;
+			}
+			else
+			{
+				GAME_COMC (hr);
+			}
 		}
 		else
 		{
-			GAME_COMC (hr);
+			CreateSwapChain ();
 		}
+		if (!recreated)
+		{
+			CreateRenderTarget ();
+			CreateDepthStencilView ();
+			SetOutputMergerViewport ();
+		}
+		FIRE_EVENT (OnSized (_size));
 	}
-	else
-	{
-		CreateSwapChain (_size);
-	}
-	if (!recreated)
-	{
-		CreateRenderTarget (_size);
-		CreateDepthStencilView (_size);
-		SetOutputMergerViewport (_size);
-	}
-	FIRE_EVENT (OnSized (_size));
 }
 
 void ResourceHandler::Destroy ()
 {
 	FIRE_EVENT (OnDeviceDestroyed ());
-	Release ();
+	ReleaseAll ();
 }
 
-void ResourceHandler::SetWindow (void * _nativeWindow, Platform _ePlatform)
+void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize size)
 {
 	if (!m_pDevice)
 	{
 		CreateDeviceAndDeviceContext ();
 		FIRE_EVENT (OnDeviceCreated ());
 	}
-	m_NativeWindow = _nativeWindow;
-	m_ePlatform = _ePlatform;
+	m_NativeWindow = _window;
+	m_pSwapChain = nullptr;
+	m_pRenderTargetView = nullptr;
+	m_pDepthStencilView = nullptr;
+	m_pDeviceContext->ClearState ();
+	m_pDeviceContext->Flush ();
+	Size (size, true);
 }
 
 void ResourceHandler::Trim ()
 {
 	if (m_pDevice)
 	{
-		IDXGIDevice3 * pDevice;
-		GAME_COMC (m_pDevice->QueryInterface (__uuidof(IDXGIDevice3), reinterpret_cast<void**>(&pDevice)));
-		pDevice->Trim ();
-		pDevice->Release ();
+		com_ptr<IDXGIDevice3> pDevice;
+		if (m_pDevice.try_as (pDevice))
+		{
+			pDevice->Trim ();
+		}
 	}
+}
+
+void ResourceHandler::InvalidateTimer ()
+{
+	m_LastTimeValid = false;
 }
 
 ID3D11Device * ResourceHandler::GetDevice ()
 {
-	return m_pDevice;
+	return m_pDevice.get ();
 }
 
 ID3D11DeviceContext * ResourceHandler::GetDeviceContext ()
 {
-	return m_pDeviceContext;
+	return m_pDeviceContext.get ();
 }
 
 ID3D11RenderTargetView * ResourceHandler::GetRenderTargetView ()
 {
-	return m_pRenderTargetView;
+	return m_pRenderTargetView.get ();
 }
 
 ID3D11DepthStencilView * ResourceHandler::GetDepthStencilView ()
 {
-	return m_pDepthStencilView;
+	return m_pDepthStencilView.get ();
 }
 
 WindowSize ResourceHandler::GetSize () const
@@ -158,93 +183,71 @@ WindowSize ResourceHandler::GetSize () const
 	return m_Size;
 }
 
-double ResourceHandler::QueryTimerFrequency ()
+D3D_FEATURE_LEVEL ResourceHandler::GetSupportedFeatureLevel () const
 {
-	LARGE_INTEGER frequency;
-	if (!QueryPerformanceFrequency (&frequency))
-	{
-		GAME_THROW_MSG ("Timer frequency query failed");
-	}
-	return static_cast<double>(frequency.QuadPart);
+	return m_SupportedFeatureLevel;
 }
 
 void ResourceHandler::CreateDeviceAndDeviceContext ()
 {
-	ReleaseCOM (m_pDeviceContext);
-	ReleaseCOM (m_pDevice);
-	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1, D3D_FEATURE_LEVEL_11_0 };
+	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1 };
 	UINT flags { D3D11_CREATE_DEVICE_SINGLETHREADED };
 #ifdef _DEBUG
 	flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-	HRESULT hr { D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)) };
+	HRESULT hr { D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, m_pDevice.put (), &m_SupportedFeatureLevel, m_pDeviceContext.put ()) };
 	if (FAILED (hr))
 	{
-		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, &m_pDevice, &m_supportedFeatureLevel, reinterpret_cast<ID3D11DeviceContext**>(&m_pDeviceContext)));
+		GAME_COMC (D3D11CreateDevice (nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0, featureLevels, ARRAYSIZE (featureLevels), D3D11_SDK_VERSION, m_pDevice.put (), &m_SupportedFeatureLevel, m_pDeviceContext.put ()));
 	}
 }
 
-void ResourceHandler::CreateSwapChain (WindowSize _bufferSize)
+void ResourceHandler::CreateSwapChain ()
 {
-	ReleaseCOM (m_pSwapChain);
-	IDXGIFactory2* pFactory;
+	com_ptr<IDXGIFactory2> pFactory;
 	{
-		IDXGIDevice * pDevice;
-		IDXGIAdapter * pAdapter;
-		GAME_COMC (m_pDevice->QueryInterface (__uuidof(IDXGIDevice), reinterpret_cast<void**>(&pDevice)));
-		GAME_COMC (pDevice->GetAdapter (&pAdapter));
-		GAME_COMC (pAdapter->GetParent (_uuidof (IDXGIFactory2), reinterpret_cast<void**>(&pFactory)));
-		ReleaseCOM (pAdapter);
-		ReleaseCOM (pDevice);
+		com_ptr<IDXGIDevice> pDevice;
+		com_ptr<IDXGIAdapter> pAdapter;
+		m_pDevice.as (pDevice);
+		pDevice->GetAdapter (pAdapter.put ());
+		pAdapter->GetParent (IID_PPV_ARGS (pFactory.put ()));
 	}
+
 	DXGI_SWAP_CHAIN_DESC1 desc;
 	desc.BufferCount = 2;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
-	desc.Width = _bufferSize.width;
-	desc.Height = _bufferSize.height;
+	desc.Width = m_Size.width;
+	desc.Height = m_Size.height;
 	desc.Scaling = DXGI_SCALING_STRETCH;
 	desc.Format = SWAP_CHAIN_FORMAT;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc.Stereo = FALSE;
 	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
-	switch (m_ePlatform)
-	{
-		case Platform::Win32:
-		{
-			desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-			GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice, reinterpret_cast<HWND>(m_NativeWindow), &desc, nullptr, nullptr, &m_pSwapChain));
-		}
-		break;
-		case Platform::UWP:
-		{
-			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-			GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice, reinterpret_cast<IUnknown*>(m_NativeWindow), &desc, nullptr, &m_pSwapChain));
-		}
-		break;
-		default:
-			GAME_THROW_MSG ("Unknown platform");
-			break;
-	}
-	ReleaseCOM (pFactory);
+#if _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_HWND
+	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice.get (), reinterpret_cast<HWND>(m_NativeWindow), &desc, nullptr, nullptr, m_pSwapChain.put ()));
+#elif _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_COREWINDOW
+	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice.get (), reinterpret_cast<IUnknown*>(m_NativeWindow), &desc, nullptr, m_pSwapChain.put ()));
+#else
+#error Unknown native window type
+#endif
 }
 
-void ResourceHandler::CreateRenderTarget (WindowSize _viewSize)
+void ResourceHandler::CreateRenderTarget ()
 {
-	ReleaseCOM (m_pRenderTargetView);
-	ID3D11Texture2D * pTexture;
-	GAME_COMC (m_pSwapChain->GetBuffer (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&pTexture)));
-	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture, nullptr, &m_pRenderTargetView));
-	ReleaseCOM (pTexture);
+	com_ptr<ID3D11Texture2D> pTexture;
+	GAME_COMC (m_pSwapChain->GetBuffer (0, __uuidof(ID3D11Texture2D), pTexture.put_void ()));
+	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture.get (), nullptr, m_pRenderTargetView.put ()));
 }
 
-void ResourceHandler::CreateDepthStencilView (WindowSize _viewSize)
+void ResourceHandler::CreateDepthStencilView ()
 {
-	ReleaseCOM (m_pDepthStencilView);
 	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = _viewSize.width;
-	desc.Height = _viewSize.height;
+	desc.Width = m_Size.width;
+	desc.Height = m_Size.height;
 	desc.ArraySize = 1;
 	desc.MipLevels = 1;
 	desc.Format = DXGI_FORMAT_D16_UNORM;
@@ -254,22 +257,22 @@ void ResourceHandler::CreateDepthStencilView (WindowSize _viewSize)
 	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
-	ID3D11Texture2D * pTexture;
-	GAME_COMC (m_pDevice->CreateTexture2D (&desc, nullptr, &pTexture));
-	GAME_COMC (m_pDevice->CreateDepthStencilView (pTexture, nullptr, &m_pDepthStencilView));
-	ReleaseCOM (pTexture);
+	com_ptr<ID3D11Texture2D> pTexture;
+	GAME_COMC (m_pDevice->CreateTexture2D (&desc, nullptr, pTexture.put ()));
+	GAME_COMC (m_pDevice->CreateDepthStencilView (pTexture.get (), nullptr, m_pDepthStencilView.put ()));
 }
 
 void ResourceHandler::SetOutputMergerViews ()
 {
-	m_pDeviceContext->OMSetRenderTargets (1, &m_pRenderTargetView, m_pDepthStencilView);
+	ID3D11RenderTargetView *aTargetViews[] { m_pRenderTargetView.get () };
+	m_pDeviceContext->OMSetRenderTargets (1, aTargetViews, m_pDepthStencilView.get ());
 }
 
-void ResourceHandler::SetOutputMergerViewport (WindowSize _viewportSize)
+void ResourceHandler::SetOutputMergerViewport ()
 {
 	D3D11_VIEWPORT viewport;
-	viewport.Width = static_cast<FLOAT>(_viewportSize.width);
-	viewport.Height = static_cast<FLOAT>(_viewportSize.height);
+	viewport.Width = static_cast<FLOAT>(m_Size.width);
+	viewport.Height = static_cast<FLOAT>(m_Size.height);
 	viewport.MaxDepth = 1.0f;
 	viewport.MinDepth = 0.0f;
 	viewport.TopLeftX = 0.0f;
@@ -280,25 +283,25 @@ void ResourceHandler::SetOutputMergerViewport (WindowSize _viewportSize)
 void ResourceHandler::HandleDeviceLost ()
 {
 	FIRE_EVENT (OnDeviceDestroyed ());
-	Release ();
+	ReleaseAll ();
 	CreateDeviceAndDeviceContext ();
 	FIRE_EVENT (OnDeviceCreated ());
-	CreateSwapChain (m_Size);
-	CreateRenderTarget (m_Size);
-	CreateDepthStencilView (m_Size);
-	SetOutputMergerViewport (m_Size);
+	CreateSwapChain ();
+	CreateRenderTarget ();
+	CreateDepthStencilView ();
+	SetOutputMergerViewport ();
 }
 
-void ResourceHandler::Release ()
+void ResourceHandler::ReleaseAll ()
 {
-	ReleaseCOM (m_pSwapChain);
-	ReleaseCOM (m_pRenderTargetView);
-	ReleaseCOM (m_pDepthStencilView);
-	ReleaseCOM (m_pDevice);
+	m_pRenderTargetView = nullptr;
+	m_pDepthStencilView = nullptr;
+	m_pSwapChain = nullptr;
+	m_pDevice = nullptr;
 	if (m_pDeviceContext)
 	{
 		m_pDeviceContext->ClearState ();
 		m_pDeviceContext->Flush ();
-		m_pDeviceContext->Release ();
+		m_pDeviceContext = nullptr;
 	}
 }

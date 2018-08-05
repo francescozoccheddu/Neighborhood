@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <BuildDir>$(SolutionDir)Build\</BuildDir>
-    <BuildConfSubdir>%(ProjectName)\$(Configuration)\$(Platform)\</BuildConfSubdir>
+    <BuildConfSubdir>$(ProjectName)\$(Configuration)\$(Platform)\</BuildConfSubdir>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(BuildDir)Output\$(BuildConfSubdir)</OutDir>
@@ -12,12 +12,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;$(ProjectDir);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>$(ProjectDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link />
     <Link>

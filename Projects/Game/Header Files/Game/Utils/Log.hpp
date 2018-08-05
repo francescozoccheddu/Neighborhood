@@ -1,7 +1,6 @@
 #pragma once
 
-#define NOMINMAX
-#include <comdef.h>
+#include <WinBase.h>
 
 #ifdef _DEBUG
 #ifndef GAME_LOG_ENABLE
