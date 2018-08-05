@@ -1,24 +1,19 @@
-﻿
+﻿#include <Game/pch.hpp>
+
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Graphics.Display.h>
-WINRT_WARNING_PUSH
 
-#pragma comment(lib,"windowsapp")
+using namespace winrt::Windows;
+using namespace winrt::Windows::ApplicationModel::Core;
+using namespace winrt::Windows::ApplicationModel;
+using namespace winrt::Windows::UI;
+using namespace winrt::Windows::UI::Core;
+using namespace winrt::Windows::Graphics::Display;
+using namespace winrt::Windows::ApplicationModel::Activation;
+using namespace winrt::Windows::Foundation::Numerics;
 
-using namespace winrt;
-using namespace Windows;
-using namespace Windows::ApplicationModel::Core;
-using namespace Windows::ApplicationModel;
-using namespace Windows::UI;
-using namespace Windows::UI::Core;
-using namespace Windows::Graphics::Display;
-using namespace Windows::ApplicationModel::Activation;
-using namespace Windows::Foundation::Numerics;
-
-#include <Game/Engine/ResourceHandler.hpp>
-#include <Game/Engine/GameListener.hpp>
 #include <cmath>
 #include <ppltasks.h>
 
@@ -26,7 +21,6 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 {
 	bool m_visible;
 	bool m_windowClosed { false };
-	ResourceHandler * m_pResourceHandler { nullptr };
 
 	IFrameworkView CreateView ()
 	{
@@ -42,7 +36,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void SetWindow (CoreWindow const & window)
 	{
-		if (!m_pResourceHandler)
+		/*if (!m_pResourceHandler)
 		{
 			m_pResourceHandler = new ResourceHandler ();
 			m_pResourceHandler->pListener = new GameListener (*m_pResourceHandler);
@@ -51,7 +45,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		WindowSize size;
 		size.width = static_cast<int>(std::round (window.Bounds ().Width));
 		size.height = static_cast<int>(std::round (window.Bounds ().Height));
-		m_pResourceHandler->Size (size);
+		m_pResourceHandler->Size (size);*/
 
 		window.Activated ({ this, &App::OnWindowActivationChanged });
 		window.SizeChanged ({ this, &App::OnWindowSizeChanged });
@@ -74,10 +68,10 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		SuspendingDeferral deferral = args.SuspendingOperation ().GetDeferral ();
 		concurrency::create_task ([this, deferral]
 		{
-			if (m_pResourceHandler)
+			/*if (m_pResourceHandler)
 			{
 				m_pResourceHandler->Trim ();
-			}
+			}*/
 			deferral.Complete ();
 		});
 	}
@@ -94,10 +88,10 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void OnWindowSizeChanged (CoreWindow const & /*window*/, WindowSizeChangedEventArgs const & args)
 	{
-		WindowSize size;
+		/*WindowSize size;
 		size.width = static_cast<int>(std::round (args.Size ().Width));
 		size.height = static_cast<int>(std::round (args.Size ().Height));
-		m_pResourceHandler->Size (size);
+		m_pResourceHandler->Size (size);*/
 	}
 
 	void OnWindowVisibilityChanged (CoreWindow const & /* sender */, VisibilityChangedEventArgs const & args)
@@ -108,7 +102,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void OnWindowClosed (CoreWindow const &, CoreWindowEventArgs const &)
 	{
-		m_pResourceHandler->Destroy ();
+		//m_pResourceHandler->Destroy ();
 	}
 
 	void OnDpiChanged (DisplayInformation const &, IInspectable const &)
@@ -123,19 +117,19 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void OnDisplayContentsInvalidated (DisplayInformation const &, IInspectable const &)
 	{
-		if (m_pResourceHandler)
+		/*if (m_pResourceHandler)
 		{
 			m_pResourceHandler->Tick ();
-		}
+		}*/
 	}
 
 	void Load (hstring /*entry*/)
 	{
-		if (!m_pResourceHandler)
+		/*if (!m_pResourceHandler)
 		{
 			m_pResourceHandler = new ResourceHandler ();
 			m_pResourceHandler->pListener = new GameListener (*m_pResourceHandler);
-		}
+		}*/
 	}
 
 	void Run ()
@@ -145,31 +139,30 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 			if (m_visible)
 			{
 				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessAllIfPresent);
-				m_pResourceHandler->Tick ();
+				//m_pResourceHandler->Tick ();
 			}
 			else
 			{
 				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessOneAndAllPending);
 			}
 		}
-		m_pResourceHandler->Trim ();
+		//m_pResourceHandler->Trim ();
 	}
 
 	void Uninitialize ()
 	{
-		if (m_pResourceHandler)
+		/*if (m_pResourceHandler)
 		{
 			delete m_pResourceHandler->pListener;
 			delete m_pResourceHandler;
 			m_pResourceHandler = nullptr;
-		}
+		}*/
 	}
 
 };
 
 int WINAPI wWinMain (HINSTANCE, HINSTANCE, PWSTR, int)
 {
-	Windows::Storage::StorageFolder installedLocation { Windows::ApplicationModel::Package::Current ().InstalledLocation () };
 	CoreApplication::Run (App ());
 }
 

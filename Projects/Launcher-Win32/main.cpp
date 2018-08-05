@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.h"
+#include <Game/pch.hpp>
 
 #include "Resource.h"
 #include "ErrorLogger.hpp"
@@ -17,7 +17,7 @@
 
 #define HANDLE_SIZING_ON_DRAG_RESIZING 1
 
-#define ALT_MOD_BIT (1 << 29)
+//#define ALT_MOD_BIT (1 << 29)
 
 #define GAME_TRY(x) { try { x; } catch(const GameException& ex) { PostError(ex.what()); } }
 

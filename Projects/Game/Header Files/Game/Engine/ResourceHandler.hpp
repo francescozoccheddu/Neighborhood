@@ -1,13 +1,13 @@
 #pragma once
 
-#include <pch.h>
+#include <Game/pch.hpp>
 
 #define _GAME_NATIVE_WINDOW_TYPE_COREWINDOW 7
 #define _GAME_NATIVE_WINDOW_TYPE_HWND 8
 
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
 #define _GAME_NATIVE_WINDOW_TYPE _GAME_NATIVE_WINDOW_TYPE_COREWINDOW
-#define GAME_NATIVE_WINDOW_T CoreWindow&
+#define GAME_NATIVE_WINDOW_T IUnknown*
 #elif !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 #define _GAME_NATIVE_WINDOW_TYPE _GAME_NATIVE_WINDOW_TYPE_HWND
 #define GAME_NATIVE_WINDOW_T HWND
@@ -97,7 +97,7 @@ private:
 
 	bool m_LastTimeValid { false };
 	LARGE_INTEGER m_LastTime;
-	void * m_NativeWindow { nullptr };
+	GAME_NATIVE_WINDOW_T m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	com_ptr<ID3D11Device> m_pDevice { nullptr };
 	com_ptr<ID3D11DeviceContext> m_pDeviceContext { nullptr };
