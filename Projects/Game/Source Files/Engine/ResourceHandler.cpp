@@ -1,8 +1,9 @@
+#include <Game/pch.hpp>
+
 #include <Game/Engine/ResourceHandler.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
-#include <pch.h>
 
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 #define MAX_DELTA_TIME 1.0
@@ -227,10 +228,10 @@ void ResourceHandler::CreateSwapChain ()
 	desc.Flags = 0;
 #if _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_HWND
 	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice.get (), reinterpret_cast<HWND>(m_NativeWindow), &desc, nullptr, nullptr, m_pSwapChain.put ()));
+	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice.get (), m_NativeWindow, &desc, nullptr, nullptr, m_pSwapChain.put ()));
 #elif _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_COREWINDOW
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice.get (), reinterpret_cast<IUnknown*>(m_NativeWindow), &desc, nullptr, m_pSwapChain.put ()));
+	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice.get (), m_NativeWindow, &desc, nullptr, m_pSwapChain.put ()));
 #else
 #error Unknown native window type
 #endif

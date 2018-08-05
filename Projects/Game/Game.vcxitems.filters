@@ -81,6 +81,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\pch.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp">

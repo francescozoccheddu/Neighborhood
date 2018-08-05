@@ -18,8 +18,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>$(ProjectDir)pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>$(SolutionDir)Projects\Game\Header Files\pch.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link />
     <Link>

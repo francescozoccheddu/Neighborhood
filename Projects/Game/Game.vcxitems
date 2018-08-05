@@ -29,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Game.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\pch.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
