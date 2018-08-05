@@ -44,6 +44,8 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 	UNREFERENCED_PARAMETER (_hPrevInstance);
 	UNREFERENCED_PARAMETER (_lpCmdLine);
 
+	//init_apartment ();
+
 	if (!DirectX::XMVerifyCPUSupport ())
 	{
 		PostError ("Math not supported on this CPU");
@@ -56,8 +58,6 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 	{
 		PostLastError ("Unable to load window title from resources");
 	}
-
-	init_apartment ();
 
 	WNDCLASSEX mainClass;
 	mainClass.style = CS_VREDRAW | CS_HREDRAW;
@@ -110,7 +110,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 	delete pGame;
 	pGame = nullptr;
 
-	uninit_apartment ();
+	//uninit_apartment ();
 
 	return 0;
 }
