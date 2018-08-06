@@ -67,15 +67,17 @@ public:
 
 	void Tick ();
 
-	void Size (WindowSize size, bool bForce = false);
+	void Size (WindowSize size, DXGI_MODE_ROTATION rotation, bool bForce = false);
 
 	void Destroy ();
 
-	void SetWindow (GAME_NATIVE_WINDOW_T nativeWindow, WindowSize size);
+	void SetWindow (GAME_NATIVE_WINDOW_T nativeWindow, WindowSize size, DXGI_MODE_ROTATION rotation);
 
 	void Trim ();
 
 	void InvalidateTimer ();
+
+	void ValidateDevice ();
 
 	ID3D11Device * GetDevice ();
 
@@ -88,6 +90,8 @@ public:
 	WindowSize GetSize () const;
 
 	D3D_FEATURE_LEVEL GetSupportedFeatureLevel () const;
+
+	DXGI_MODE_ROTATION GetRotation () const;
 
 	Listener * pListener { nullptr };
 
@@ -105,6 +109,7 @@ private:
 	com_ptr<ID3D11RenderTargetView> m_pRenderTargetView { nullptr };
 	com_ptr<ID3D11DepthStencilView> m_pDepthStencilView { nullptr };
 	D3D_FEATURE_LEVEL m_SupportedFeatureLevel;
+	DXGI_MODE_ROTATION m_Rotation { DXGI_MODE_ROTATION_IDENTITY };
 
 	void CreateDeviceAndDeviceContext ();
 

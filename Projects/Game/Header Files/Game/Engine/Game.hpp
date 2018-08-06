@@ -11,13 +11,15 @@ public:
 
 	void Destroy ();
 
-	void SetWindow (GAME_NATIVE_WINDOW_T window, WindowSize size);
+	void SetWindow (GAME_NATIVE_WINDOW_T window, WindowSize size, DXGI_MODE_ROTATION rotation);
 
-	void Size (WindowSize size);
+	void Size (WindowSize size, DXGI_MODE_ROTATION rotation);
 
 	void Suspend ();
 
 	void Resume ();
+
+	void ValidateDevice ();
 
 protected:
 
