@@ -19,6 +19,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <PrecompiledHeaderFile>$(SolutionDir)Projects\Game\Header Files\pch.hpp</PrecompiledHeaderFile>
+      <PreprocessorDefinitions>SOLUTIONNAME="$(SolutionName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link />
     <Link>

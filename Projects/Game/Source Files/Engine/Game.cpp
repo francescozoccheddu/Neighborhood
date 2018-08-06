@@ -15,14 +15,14 @@ void Game::Destroy ()
 	m_ResourceHandler.Destroy ();
 }
 
-void Game::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size)
+void Game::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size, DXGI_MODE_ROTATION _rotation)
 {
-	m_ResourceHandler.SetWindow (_pWindow, _size);
+	m_ResourceHandler.SetWindow (_pWindow, _size, _rotation);
 }
 
-void Game::Size (WindowSize _size)
+void Game::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation)
 {
-	m_ResourceHandler.Size (_size);
+	m_ResourceHandler.Size (_size, _rotation);
 }
 
 void Game::Suspend ()
@@ -30,7 +30,15 @@ void Game::Suspend ()
 	m_ResourceHandler.Trim ();
 }
 
-void Game::Resume () {}
+void Game::Resume ()
+{
+	m_ResourceHandler.InvalidateTimer ();
+}
+
+void Game::ValidateDevice ()
+{
+	m_ResourceHandler.ValidateDevice ();
+}
 
 void Game::OnDeviceCreated () {}
 

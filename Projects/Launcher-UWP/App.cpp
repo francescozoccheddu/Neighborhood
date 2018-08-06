@@ -1,9 +1,16 @@
 ﻿#include <Game/pch.hpp>
 
+#include <Game/Engine/Game.hpp>
+#include <Game/Utils/Exceptions.hpp>
+#include <cmath>
+#include <ppltasks.h>
+#include <stdexcept>
+
 #include <winrt/Windows.ApplicationModel.Core.h>
 #include <winrt/Windows.UI.Core.h>
 #include <winrt/Windows.Storage.h>
 #include <winrt/Windows.Graphics.Display.h>
+#include <winrt/Windows.UI.Popups.h>
 
 using namespace winrt::Windows;
 using namespace winrt::Windows::ApplicationModel::Core;
@@ -13,14 +20,52 @@ using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::ApplicationModel::Activation;
 using namespace winrt::Windows::Foundation::Numerics;
+using namespace winrt::Windows::UI::ViewManagement;
+using namespace winrt::Windows::UI::Popups;
 
-#include <cmath>
-#include <ppltasks.h>
+#define GAME_TRY(x) { try { x; } catch(const GameException& ex) { PostError(ex.what()); } }
+
+#ifdef _DEBUG
+#define PGAME_DO(x) { if (pGame) GAME_TRY(pGame->x) }
+#else
+#define PGAME_DO(x) { if (pGame) pGame->x; }
+#endif
+
+void PostError (const char * _msg)
+{
+	if (IsDebuggerPresent ())
+	{
+		OutputDebugStringA (_msg);
+		OutputDebugStringA ("\n");
+		DebugBreak ();
+	}
+	else
+	{
+		CoreApplication::Exit ();
+	}
+}
+
+#define HANDLE_SIZING_WHEN_DRAG_RESIZING 0
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+#define _CAN_DETECT_DRAG_RESIZING 1
+#else
+#define _CAN_DETECT_DRAG_RESIZING 0
+#endif
 
 struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 {
-	bool m_visible;
-	bool m_windowClosed { false };
+	bool m_visible { true };
+	bool m_exit { false };
+#if _CAN_DETECT_DRAG_RESIZING && !HANDLE_SIZING_WHEN_DRAG_RESIZING
+	bool m_in_sizemove { false };
+#endif
+	float m_dpi { 96.0f };
+	float m_logicalWidth { 800.0f };
+	float m_logicalHeight { 600.0f };
+	DisplayOrientations m_nativeOrientation { DisplayOrientations::None };
+	DisplayOrientations m_currentOrientation { DisplayOrientations::None };
+	Game * pGame { nullptr };
+
 
 	IFrameworkView CreateView ()
 	{
@@ -32,22 +77,23 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		applicationView.Activated ({ this, &App::OnActivated });
 		CoreApplication::Suspending ({ this, &App::OnSuspending });
 		CoreApplication::Resuming ({ this, &App::OnResuming });
+
+		pGame = new Game ();
 	}
 
 	void SetWindow (CoreWindow const & window)
 	{
-		/*if (!m_pResourceHandler)
+#if _CAN_DETECT_DRAG_RESIZING && !HANDLE_SIZING_WHEN_DRAG_RESIZING
+		try
 		{
-			m_pResourceHandler = new ResourceHandler ();
-			m_pResourceHandler->pListener = new GameListener (*m_pResourceHandler);
+			window.ResizeStarted ({ this, &App::OnWindowResizeStarted });
+			window.ResizeCompleted ({ this, &App::OnWindowResizeCompleted });
 		}
-		m_pResourceHandler->SetWindow (winrt::get_unknown (window), ResourceHandler::Platform::UWP);
-		WindowSize size;
-		size.width = static_cast<int>(std::round (window.Bounds ().Width));
-		size.height = static_cast<int>(std::round (window.Bounds ().Height));
-		m_pResourceHandler->Size (size);*/
+		catch (...)
+		{
+		}
+#endif
 
-		window.Activated ({ this, &App::OnWindowActivationChanged });
 		window.SizeChanged ({ this, &App::OnWindowSizeChanged });
 		window.VisibilityChanged ({ this, &App::OnWindowVisibilityChanged });
 
@@ -56,10 +102,57 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		displayInfo.DpiChanged ({ this, &App::OnDpiChanged });
 		displayInfo.OrientationChanged ({ this, &App::OnOrientationChanged });
 		DisplayInformation::DisplayContentsInvalidated ({ this, &App::OnDisplayContentsInvalidated });
+
+		m_dpi = displayInfo.LogicalDpi ();
+		m_logicalWidth = window.Bounds ().Width;
+		m_logicalHeight = window.Bounds ().Height;
+		m_nativeOrientation = displayInfo.NativeOrientation ();
+		m_currentOrientation = displayInfo.CurrentOrientation ();
+
+		int outputWidth = ConvertDipsToPixels (m_logicalWidth);
+		int outputHeight = ConvertDipsToPixels (m_logicalHeight);
+
+		DXGI_MODE_ROTATION rotation = ComputeDisplayRotation ();
+
+		if (rotation == DXGI_MODE_ROTATION_ROTATE90 || rotation == DXGI_MODE_ROTATION_ROTATE270)
+		{
+			std::swap (outputWidth, outputHeight);
+		}
+
+		PGAME_DO (SetWindow (winrt::get_unknown (window), { outputWidth, outputHeight }, rotation));
+
 	}
 
-	void OnActivated (CoreApplicationView const & /* applicationView */, IActivatedEventArgs const & /* args */)
+	void Load (hstring /*entry*/)
+	{}
+
+	void Run ()
 	{
+		while (!m_exit)
+		{
+			if (m_visible)
+			{
+				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessAllIfPresent);
+				PGAME_DO (Tick ());
+			}
+			else
+			{
+				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessOneAndAllPending);
+			}
+		}
+	}
+
+	void Uninitialize ()
+	{
+		delete pGame;
+		pGame = nullptr;
+	}
+
+protected:
+
+	void OnActivated (CoreApplicationView const & /* applicationView */, IActivatedEventArgs const & args)
+	{
+		m_dpi = DisplayInformation::GetForCurrentView ().LogicalDpi ();
 		CoreWindow::GetForCurrentThread ().Activate ();
 	}
 
@@ -68,31 +161,40 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		SuspendingDeferral deferral = args.SuspendingOperation ().GetDeferral ();
 		concurrency::create_task ([this, deferral]
 		{
-			/*if (m_pResourceHandler)
-			{
-				m_pResourceHandler->Trim ();
-			}*/
+			PGAME_DO (Suspend ());
 			deferral.Complete ();
 		});
 	}
 
 	void OnResuming (IInspectable const & /*_sender*/, IInspectable const &)
 	{
-
+		PGAME_DO (Resume ());
 	}
 
-	void OnWindowActivationChanged (CoreWindow const & /*_sender*/, WindowActivatedEventArgs const &)
+	void OnWindowSizeChanged (CoreWindow const & window, WindowSizeChangedEventArgs const & args)
 	{
-
+		m_logicalWidth = window.Bounds ().Width;
+		m_logicalHeight = window.Bounds ().Height;
+#if !HANDLE_SIZING_WHEN_DRAG_RESIZING
+		if (!m_in_sizemove)
+#endif
+		{
+			HandleWindowSizeChanged ();
+		}
 	}
 
-	void OnWindowSizeChanged (CoreWindow const & /*window*/, WindowSizeChangedEventArgs const & args)
+#if _CAN_DETECT_DRAG_RESIZING && !HANDLE_SIZING_WHEN_DRAG_RESIZING
+	void OnWindowResizeStarted (CoreWindow const &, IInspectable const &)
 	{
-		/*WindowSize size;
-		size.width = static_cast<int>(std::round (args.Size ().Width));
-		size.height = static_cast<int>(std::round (args.Size ().Height));
-		m_pResourceHandler->Size (size);*/
+		m_in_sizemove = true;
 	}
+
+	void OnWindowResizeCompleted (CoreWindow const &, IInspectable const &)
+	{
+		m_in_sizemove = false;
+		HandleWindowSizeChanged ();
+	}
+#endif
 
 	void OnWindowVisibilityChanged (CoreWindow const & /* sender */, VisibilityChangedEventArgs const & args)
 	{
@@ -102,67 +204,118 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void OnWindowClosed (CoreWindow const &, CoreWindowEventArgs const &)
 	{
-		//m_pResourceHandler->Destroy ();
+		m_exit = true;
+		PGAME_DO (Destroy ());
 	}
 
-	void OnDpiChanged (DisplayInformation const &, IInspectable const &)
+	void OnDpiChanged (DisplayInformation const & sender, IInspectable const &)
 	{
-
+		m_dpi = sender.LogicalDpi ();
+		HandleWindowSizeChanged ();
 	}
 
-	void OnOrientationChanged (DisplayInformation const &, IInspectable const &)
+	void OnOrientationChanged (DisplayInformation const & sender, IInspectable const &)
 	{
+		CoreWindowResizeManager const & resizeManager = CoreWindowResizeManager::GetForCurrentView ();
+		resizeManager.ShouldWaitForLayoutCompletion (true);
 
+		m_currentOrientation = sender.CurrentOrientation ();
+
+		HandleWindowSizeChanged ();
+
+		resizeManager.NotifyLayoutCompleted ();
 	}
 
 	void OnDisplayContentsInvalidated (DisplayInformation const &, IInspectable const &)
 	{
-		/*if (m_pResourceHandler)
-		{
-			m_pResourceHandler->Tick ();
-		}*/
+		PGAME_DO (ValidateDevice ());
+		PGAME_DO (Tick ());
 	}
 
-	void Load (hstring /*entry*/)
-	{
-		/*if (!m_pResourceHandler)
-		{
-			m_pResourceHandler = new ResourceHandler ();
-			m_pResourceHandler->pListener = new GameListener (*m_pResourceHandler);
-		}*/
-	}
+private:
 
-	void Run ()
+	void HandleWindowSizeChanged ()
 	{
-		while (!m_windowClosed)
+		int outputWidth = ConvertDipsToPixels (m_logicalWidth);
+		int outputHeight = ConvertDipsToPixels (m_logicalHeight);
+
+		DXGI_MODE_ROTATION rotation = ComputeDisplayRotation ();
+
+		if (rotation == DXGI_MODE_ROTATION_ROTATE90 || rotation == DXGI_MODE_ROTATION_ROTATE270)
 		{
-			if (m_visible)
-			{
-				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessAllIfPresent);
-				//m_pResourceHandler->Tick ();
-			}
-			else
-			{
-				CoreWindow::GetForCurrentThread ().Dispatcher ().ProcessEvents (CoreProcessEventsOption::ProcessOneAndAllPending);
-			}
+			std::swap (outputWidth, outputHeight);
 		}
-		//m_pResourceHandler->Trim ();
+
+		PGAME_DO (Size ({ outputWidth, outputHeight }, rotation));
 	}
 
-	void Uninitialize ()
+	inline int ConvertDipsToPixels (float dips) const
 	{
-		/*if (m_pResourceHandler)
-		{
-			delete m_pResourceHandler->pListener;
-			delete m_pResourceHandler;
-			m_pResourceHandler = nullptr;
-		}*/
+		return int (dips * m_dpi / 96.f + 0.5f);
 	}
+
+	DXGI_MODE_ROTATION ComputeDisplayRotation () const
+	{
+		DXGI_MODE_ROTATION rotation = DXGI_MODE_ROTATION_UNSPECIFIED;
+
+		switch (m_nativeOrientation)
+		{
+			case DisplayOrientations::Landscape:
+				switch (m_currentOrientation)
+				{
+					case DisplayOrientations::Landscape:
+						rotation = DXGI_MODE_ROTATION_IDENTITY;
+						break;
+
+					case DisplayOrientations::Portrait:
+						rotation = DXGI_MODE_ROTATION_ROTATE270;
+						break;
+
+					case DisplayOrientations::LandscapeFlipped:
+						rotation = DXGI_MODE_ROTATION_ROTATE180;
+						break;
+
+					case DisplayOrientations::PortraitFlipped:
+						rotation = DXGI_MODE_ROTATION_ROTATE90;
+						break;
+				}
+				break;
+
+			case DisplayOrientations::Portrait:
+				switch (m_currentOrientation)
+				{
+					case DisplayOrientations::Landscape:
+						rotation = DXGI_MODE_ROTATION_ROTATE90;
+						break;
+
+					case DisplayOrientations::Portrait:
+						rotation = DXGI_MODE_ROTATION_IDENTITY;
+						break;
+
+					case DisplayOrientations::LandscapeFlipped:
+						rotation = DXGI_MODE_ROTATION_ROTATE270;
+						break;
+
+					case DisplayOrientations::PortraitFlipped:
+						rotation = DXGI_MODE_ROTATION_ROTATE180;
+						break;
+				}
+				break;
+		}
+
+		return rotation;
+	}
+
 
 };
 
 int WINAPI wWinMain (HINSTANCE, HINSTANCE, PWSTR, int)
 {
+	if (!DirectX::XMVerifyCPUSupport ())
+	{
+		throw std::runtime_error ("DirectX Math not supported on this CPU");
+	}
 	CoreApplication::Run (App ());
+	return 0;
 }
 

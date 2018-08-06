@@ -17,14 +17,12 @@
 
 #define HANDLE_SIZING_ON_DRAG_RESIZING 1
 
-//#define ALT_MOD_BIT (1 << 29)
-
 #define GAME_TRY(x) { try { x; } catch(const GameException& ex) { PostError(ex.what()); } }
 
 #ifdef _DEBUG
-#define GAME_DO(x) { if (pGame) GAME_TRY(pGame->x) }
+#define PGAME_DO(x) { if (pGame) GAME_TRY(pGame->x) }
 #else
-#define GAME_DO(x) { if (pGame) pGame->x; }
+#define PGAME_DO(x) { if (pGame) pGame->x; }
 #endif
 
 #if NEIGHBORHOOD_WIN32_REQUEST_HP_GPU
@@ -103,7 +101,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 		}
 		else
 		{
-			GAME_DO (Tick ());
+			PGAME_DO (Tick ());
 		}
 	}
 
@@ -123,8 +121,6 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 	static bool s_bSizing = false;
 	static bool s_bSuspended = false;
 	static bool s_bMinimized = false;
-	/*static bool s_bFullscreen = false;
-	static RECT s_lastWinRect;*/
 
 	switch (_msg)
 	{
@@ -132,86 +128,21 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 		{
 			RECT rc;
 			GetClientRect (_hWnd, &rc);
-			GAME_DO (SetWindow (_hWnd, { rc.right - rc.left, rc.bottom - rc.top }));
-#ifdef DXTK_AUDIO
-			if (!g_hNewAudio)
-			{
-				// Ask for notification of new audio devices
-				DEV_BROADCAST_DEVICEINTERFACE filter = {};
-				filter.dbcc_size = sizeof (filter);
-				filter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-				filter.dbcc_classguid = KSCATEGORY_AUDIO;
-
-				g_hNewAudio = RegisterDeviceNotification (hWnd, &filter, DEVICE_NOTIFY_WINDOW_HANDLE);
-			}
-#endif
+			PGAME_DO (SetWindow (_hWnd, { rc.right - rc.left, rc.bottom - rc.top }, DXGI_MODE_ROTATION_IDENTITY));
 		}
 		break;
 
 		case WM_CLOSE:
 		{
-
-#ifdef DXTK_AUDIO
-			if (g_hNewAudio)
-			{
-				UnregisterDeviceNotification (g_hNewAudio);
-				g_hNewAudio = nullptr;
-			}
-#endif
 			DestroyWindow (_hWnd);
 		}
 		break;
-
-#ifdef DXTK_AUDIO
-		case WM_DEVICECHANGE:
-		{
-			switch (wParam)
-			{
-				case DBT_DEVICEARRIVAL:
-				{
-					auto pDev = reinterpret_cast<PDEV_BROADCAST_HDR>(lParam);
-					if (pDev)
-					{
-						if (pDev->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-						{
-							auto pInter = reinterpret_cast<const PDEV_BROADCAST_DEVICEINTERFACE>(pDev);
-							if (pInter->dbcc_classguid == KSCATEGORY_AUDIO)
-							{
-								if (g_game)
-									g_game->NewAudioDevice ();
-							}
-						}
-					}
-				}
-			}
-			break;
-
-		case DBT_DEVICEREMOVECOMPLETE:
-		{
-			auto pDev = reinterpret_cast<PDEV_BROADCAST_HDR>(lParam);
-			if (pDev)
-			{
-				if (pDev->dbch_devicetype == DBT_DEVTYP_DEVICEINTERFACE)
-				{
-					auto pInter = reinterpret_cast<const PDEV_BROADCAST_DEVICEINTERFACE>(pDev);
-					if (pInter->dbcc_classguid == KSCATEGORY_AUDIO)
-					{
-						if (g_game)
-							g_game->NewAudioDevice ();
-					}
-				}
-			}
-		}
-		break;
-		}
-		return 0;
-#endif
 
 		case WM_PAINT:
 		{
 			if (s_bSizing && pGame)
 			{
-				GAME_DO (Tick ());
+				PGAME_DO (Tick ());
 			}
 			else
 			{
@@ -230,7 +161,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 					s_bMinimized = true;
 					if (!s_bSuspended && pGame)
 					{
-						GAME_DO (Suspend ());
+						PGAME_DO (Suspend ());
 					}
 					s_bSuspended = true;
 				}
@@ -240,7 +171,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				s_bMinimized = false;
 				if (s_bSuspended && pGame)
 				{
-					GAME_DO (Resume ());
+					PGAME_DO (Resume ());
 				}
 				s_bSuspended = false;
 			}
@@ -252,10 +183,10 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				if (!s_bSizing && pGame)
 #endif
 				{
-					GAME_DO (Size ({ LOWORD (_lParam), HIWORD (_lParam) }));
-				}
+					PGAME_DO (Size ({ LOWORD (_lParam), HIWORD (_lParam) }, DXGI_MODE_ROTATION_IDENTITY));
 			}
 		}
+	}
 		break;
 
 		case WM_ENTERSIZEMOVE:
@@ -293,7 +224,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				case PBT_APMQUERYSUSPEND:
 					if (!s_bSuspended && pGame)
 					{
-						GAME_DO (Suspend ());
+						PGAME_DO (Suspend ());
 					}
 					s_bSuspended = true;
 					return TRUE;
@@ -303,7 +234,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 					{
 						if (s_bSuspended && pGame)
 						{
-							GAME_DO (Resume ());
+							PGAME_DO (Resume ());
 						}
 						s_bSuspended = false;
 					}
@@ -315,7 +246,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 		case WM_DESTROY:
 		{
 
-			GAME_DO (Destroy ());
+			PGAME_DO (Destroy ());
 			PostQuitMessage (0);
 		}
 		break;
@@ -337,22 +268,6 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 		}
 		break;
 
-		/*case WM_CHAR:
-		{
-			if (_wParam == VK_ESCAPE)
-			{
-				if (s_bFullscreen)
-				{
-					SetWindowLongPtr (_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-					SetWindowLongPtr (_hWnd, GWL_EXSTYLE, 0);
-					ShowWindow (_hWnd, SW_SHOWNORMAL);
-					SetWindowPos (_hWnd, HWND_TOP, s_lastWinRect.left, s_lastWinRect.top, s_lastWinRect.right - s_lastWinRect.left, s_lastWinRect.bottom - s_lastWinRect.top, SWP_NOZORDER | SWP_FRAMECHANGED);
-					s_bFullscreen = false;
-				}
-			}
-		}
-		break;*/
-
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		case WM_SYSKEYUP:
@@ -363,25 +278,6 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 
 		case WM_SYSKEYDOWN:
 		{
-			/*if (_wParam == VK_RETURN && _lParam & ALT_MOD_BIT)
-			{
-				if (s_bFullscreen)
-				{
-					SetWindowLongPtr (_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-					SetWindowLongPtr (_hWnd, GWL_EXSTYLE, 0);
-					ShowWindow (_hWnd, SW_SHOWNORMAL);
-					SetWindowPos (_hWnd, HWND_TOP, s_lastWinRect.left, s_lastWinRect.top, s_lastWinRect.right - s_lastWinRect.left, s_lastWinRect.bottom - s_lastWinRect.top, SWP_NOZORDER | SWP_FRAMECHANGED);
-				}
-				else
-				{
-					GetWindowRect (_hWnd, &s_lastWinRect);
-					SetWindowLongPtr (_hWnd, GWL_STYLE, 0);
-					SetWindowLongPtr (_hWnd, GWL_EXSTYLE, WS_EX_TOPMOST);
-					SetWindowPos (_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-					ShowWindow (_hWnd, SW_SHOWMAXIMIZED);
-				}
-				s_bFullscreen = !s_bFullscreen;
-			}*/
 			DirectX::Keyboard::ProcessMessage (_msg, _wParam, _lParam);
 		}
 		break;
@@ -390,7 +286,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 		{
 			return MAKELRESULT (0, MNC_CLOSE);
 		}
-	}
+		}
 
 	return DefWindowProc (_hWnd, _msg, _wParam, _lParam);
 }

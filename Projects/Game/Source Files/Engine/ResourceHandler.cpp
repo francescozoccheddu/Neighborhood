@@ -85,13 +85,14 @@ void ResourceHandler::Tick ()
 	}
 }
 
-void ResourceHandler::Size (WindowSize _size, bool _bForce)
+void ResourceHandler::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _bForce)
 {
-	if (_bForce || _size != m_Size)
+	if (_bForce || _size != m_Size || _rotation != m_Rotation)
 	{
 		m_pRenderTargetView = nullptr;
 		m_pDepthStencilView = nullptr;
 		m_Size = _size;
+		m_Rotation = _rotation;
 		bool recreated { false };
 		if (m_pSwapChain)
 		{
@@ -110,6 +111,7 @@ void ResourceHandler::Size (WindowSize _size, bool _bForce)
 		{
 			CreateSwapChain ();
 		}
+		GAME_COMC (m_pSwapChain->SetRotation (m_Rotation));
 		if (!recreated)
 		{
 			CreateRenderTarget ();
@@ -126,7 +128,7 @@ void ResourceHandler::Destroy ()
 	FIRE_EVENT (OnDeviceDestroyed ());
 }
 
-void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize size)
+void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, DXGI_MODE_ROTATION _rotation)
 {
 	if (!m_pDevice)
 	{
@@ -139,18 +141,55 @@ void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize size)
 	m_pDepthStencilView = nullptr;
 	m_pDeviceContext->ClearState ();
 	m_pDeviceContext->Flush ();
-	Size (size, true);
+	Size (_size, _rotation, true);
 }
 
 void ResourceHandler::Trim ()
 {
 	if (m_pDevice)
 	{
+		m_pDeviceContext->ClearState ();
 		com_ptr<IDXGIDevice3> pDevice;
 		if (m_pDevice.try_as (pDevice))
 		{
 			pDevice->Trim ();
 		}
+	}
+}
+
+void ResourceHandler::ValidateDevice ()
+{
+	com_ptr<IDXGIFactory2> pFactory;
+	{
+		com_ptr<IDXGIDevice> pDevice;
+		com_ptr<IDXGIAdapter> pAdapter;
+		m_pDevice.as (pDevice);
+		pDevice->GetAdapter (pAdapter.put ());
+		pAdapter->GetParent (IID_PPV_ARGS (pFactory.put ()));
+	}
+	DXGI_ADAPTER_DESC previousDesc;
+	{
+		com_ptr<IDXGIAdapter1> previousDefaultAdapter;
+		GAME_COMC (pFactory->EnumAdapters1 (0, previousDefaultAdapter.put ()));
+		GAME_COMC (previousDefaultAdapter->GetDesc (&previousDesc));
+	}
+
+	DXGI_ADAPTER_DESC currentDesc;
+	{
+		com_ptr<IDXGIFactory2> currentFactory;
+		GAME_COMC (CreateDXGIFactory2 (0, IID_PPV_ARGS (currentFactory.put ())));
+
+		com_ptr<IDXGIAdapter1> currentDefaultAdapter;
+		GAME_COMC (currentFactory->EnumAdapters1 (0, currentDefaultAdapter.put ()));
+
+		GAME_COMC (currentDefaultAdapter->GetDesc (&currentDesc));
+	}
+
+	if (previousDesc.AdapterLuid.LowPart != currentDesc.AdapterLuid.LowPart
+		|| previousDesc.AdapterLuid.HighPart != currentDesc.AdapterLuid.HighPart
+		|| FAILED (m_pDevice->GetDeviceRemovedReason ()))
+	{
+		HandleDeviceLost ();
 	}
 }
 
@@ -187,6 +226,11 @@ WindowSize ResourceHandler::GetSize () const
 D3D_FEATURE_LEVEL ResourceHandler::GetSupportedFeatureLevel () const
 {
 	return m_SupportedFeatureLevel;
+}
+
+DXGI_MODE_ROTATION ResourceHandler::GetRotation () const
+{
+	return m_Rotation;
 }
 
 void ResourceHandler::CreateDeviceAndDeviceContext ()
