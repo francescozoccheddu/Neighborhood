@@ -15,8 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path" />
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Scene.c4d" />
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
@@ -55,5 +54,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
+      <ExcludedFromBuild>false</ExcludedFromBuild>
+      <DeploymentContent>true</DeploymentContent>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="$(MSBuildThisFileDirectory)Shaders\textciao.txt">
+      <DeploymentContent>true</DeploymentContent>
+      <ExcludedFromBuild>false</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
 </Project>

@@ -13,7 +13,6 @@
     <_PropertySheetDisplayName>Project</_PropertySheetDisplayName>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
-    <CustomBuildBeforeTargets>BuildCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -34,13 +33,9 @@
     <CustomBuild />
     <CustomBuild />
     <CustomBuild />
-    <CustomBuildStep>
-      <Command>copy "$(GameProjDir)Cinema 4D\meshes.json" "$(OutDir)"</Command>
-      <Message>Copying meshes file</Message>
-      <Outputs>$(OutDir)meshes.json</Outputs>
-      <Inputs>$(GameProjDir)Cinema 4D\meshes.json</Inputs>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
-    </CustomBuildStep>
+    <CustomBuildStep />
+    <FxCompile />
+    <ImageContentTask />
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BuildDir">
