@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Game/pch.hpp>
+#include <Game/Direct3D.hpp>
 
 #define _GAME_NATIVE_WINDOW_TYPE_COREWINDOW 7
 #define _GAME_NATIVE_WINDOW_TYPE_HWND 8

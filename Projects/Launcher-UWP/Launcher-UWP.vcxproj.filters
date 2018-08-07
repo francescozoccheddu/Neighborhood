@@ -37,6 +37,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Launcher-UWP_TemporaryKey.pfx" />
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

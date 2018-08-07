@@ -7,6 +7,6 @@
 namespace Scene
 {
 
-	std::map<std::string, Mesh> LoadFromJSON (const std::string& json);
+	std::map<std::string, Mesh*> LoadFromJSON (const std::string& json);
 
 }

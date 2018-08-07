@@ -1,8 +1,7 @@
 #pragma once
 
-#include <DirectXMath.h>
-#define NOMINMAX
-#include <Game/Utils/Direct3D11.hpp>
+#include <Game/Direct3D.hpp>
+#include <Game/DirectXMath.hpp>
 
 class Mesh
 {
@@ -41,3 +40,4 @@ private:
 	int m_cIndices;
 
 };
+

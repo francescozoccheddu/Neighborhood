@@ -1,12 +1,10 @@
 #pragma once
 
-#include <Game/pch.hpp>
+#include <Game/Windows.hpp>
 
 #include "Resource.h"
 #include "ErrorLogger.hpp"
-
 #include <Game/Engine/Game.hpp>
-#include <Game/Engine/ResourceHandler.hpp>
 #include <Game/Utils/Exceptions.hpp>
 
 #define INITIAL_WIDTH 640
@@ -25,14 +23,6 @@
 #define PGAME_DO(x) { if (pGame) pGame->x; }
 #endif
 
-#if NEIGHBORHOOD_WIN32_REQUEST_HP_GPU
-extern "C"
-{
-	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-}
-#endif
-
 LRESULT CALLBACK MainWinProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 Game * pGame { nullptr };
@@ -44,12 +34,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 
 	//init_apartment ();
 
-	if (!DirectX::XMVerifyCPUSupport ())
-	{
-		PostError ("Math not supported on this CPU");
-	}
-
-	GAME_TRY (ResourceHandler::InitializeTimer ());
+	GAME_TRY (Game::Initialize ());
 
 	LPCTSTR title;
 	if (LoadString (_hInstance, IDS_TITLE, (LPTSTR) &title, 0) <= 0)
@@ -184,9 +169,9 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 #endif
 				{
 					PGAME_DO (Size ({ LOWORD (_lParam), HIWORD (_lParam) }, DXGI_MODE_ROTATION_IDENTITY));
+				}
 			}
 		}
-	}
 		break;
 
 		case WM_ENTERSIZEMOVE:
@@ -250,43 +235,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 			PostQuitMessage (0);
 		}
 		break;
-
-		case WM_INPUT:
-		case WM_MOUSEMOVE:
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_MOUSEWHEEL:
-		case WM_XBUTTONDOWN:
-		case WM_XBUTTONUP:
-		case WM_MOUSEHOVER:
-		{
-			DirectX::Mouse::ProcessMessage (_msg, _wParam, _lParam);
-		}
-		break;
-
-		case WM_KEYDOWN:
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-		{
-			DirectX::Keyboard::ProcessMessage (_msg, _wParam, _lParam);
-		}
-		break;
-
-		case WM_SYSKEYDOWN:
-		{
-			DirectX::Keyboard::ProcessMessage (_msg, _wParam, _lParam);
-		}
-		break;
-
-		case WM_MENUCHAR:
-		{
-			return MAKELRESULT (0, MNC_CLOSE);
-		}
-		}
+	}
 
 	return DefWindowProc (_hWnd, _msg, _wParam, _lParam);
 }

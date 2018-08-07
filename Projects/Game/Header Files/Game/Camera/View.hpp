@@ -1,7 +1,6 @@
 #pragma once
 
-#include <DirectXMath.h>
-#include <Game/Input/Gamepad.hpp>
+#include <Game/DirectXMath.hpp>
 
 namespace Camera
 {
@@ -11,10 +10,10 @@ namespace Camera
 
 	public:
 
-		DirectX::XMVECTOR unrotatedUp { 0.0f, 1.0f, 0.0f, 0.0f };
-		DirectX::XMVECTOR position { 0.0f, 0.0f, 0.0f, 1.0f };
+		DirectX::XMFLOAT3 unrotatedUp { 0.0f, 1.0f, 0.0f };
+		DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
 
-		DirectX::CXMMATRIX Get () const;
+		DirectX::XMMATRIX Get () const;
 
 		virtual void Update () = 0;
 
@@ -22,7 +21,7 @@ namespace Camera
 
 	protected:
 
-		DirectX::XMMATRIX m_mTransform;
+		DirectX::XMFLOAT4X4 m_mTransform;
 
 	};
 
@@ -31,7 +30,7 @@ namespace Camera
 
 	public:
 
-		DirectX::XMVECTOR target { 0.0f, 0.0f, 1.0f, 1.0f };
+		DirectX::XMFLOAT3 target { 0.0f, 0.0f, 1.0f };
 
 		ViewWithTarget ();
 
@@ -44,7 +43,7 @@ namespace Camera
 
 	public:
 
-		DirectX::XMVECTOR unrotatedForward { 0.0f, 0.0f, 1.0f, 0.0f };
+		DirectX::XMFLOAT3 unrotatedForward { 0.0f, 0.0f, 1.0f };
 		float turn { 0.0f };
 		float lookUp { 0.0f };
 		float tilt { 0.0f };
@@ -54,21 +53,21 @@ namespace Camera
 
 		void Update () override;
 
-		DirectX::CXMVECTOR GetUp () const;
+		DirectX::XMVECTOR GetUp () const;
 
-		DirectX::CXMVECTOR GetForward () const;
+		DirectX::XMVECTOR GetForward () const;
 
-		DirectX::CXMVECTOR GetRight () const;
+		DirectX::XMVECTOR GetRight () const;
 
 		void Move (float right, float up, float forward, float speed = 1.0f);
 
-		void UpdateFlyingView (float deltaTime, const Gamepad& gamepad);
+		void ClampLookUp (float angle);
 
 	private:
 
-		DirectX::XMVECTOR m_Up { 0.0f, 1.0f, 0.0f, 0.0f };
-		DirectX::XMVECTOR m_Forward { 0.0f, 0.0f, 1.0f, 0.0f };
-		DirectX::XMVECTOR m_Right { 1.0f, 0.0f, 0.0f, 0.0f };
+		DirectX::XMFLOAT3 m_Up { 0.0f, 1.0f, 0.0f };
+		DirectX::XMFLOAT3 m_Forward { 0.0f, 0.0f, 1.0f };
+		DirectX::XMFLOAT3 m_Right { 1.0f, 0.0f, 0.0f };
 
 	};
 

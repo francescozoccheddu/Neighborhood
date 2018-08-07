@@ -1,26 +1,13 @@
 #include <Game/Camera/View.hpp>
 
-#include <DirectXMath.h>
-
 using namespace DirectX;
-
-#define FLYINGVIEW_BUTTON_RESET XINPUT_GAMEPAD_B
-#define FLYINGVIEW_BUTTON_TURBO XINPUT_GAMEPAD_A
-#define FLYINGVIEW_TRANSLATION_SPEED 1.0f
-#define FLYINGVIEW_TRANSLATION_TURBO_SPEED 2.0f
-#define FLYINGVIEW_ROTATION_SPEED 2.0f
-#define FLYINGVIEW_RESET_POSITION XMVectorSet(0.0f,0.0f,-2.0f,1.0f)
-#define FLYINGVIEW_RESET_UP XMVectorSet(0.0f,1.0f,0.0f,0.0f)
-#define FLYINGVIEW_RESET_FORWARD XMVectorSet(0.0f,0.0f,1.0f,0.0f)
-#define FLYINGVIEW_MAX_LOOKUP XMConvertToRadians(70.0f)
-#define FLYINGVIEW_MIN_LOOKUP -XMConvertToRadians(70.0f)
 
 namespace Camera
 {
 
-	CXMMATRIX AbstractView::Get () const
+	XMMATRIX AbstractView::Get () const
 	{
-		return m_mTransform;
+		return XMLoadFloat4x4 (&m_mTransform);
 	}
 
 	ViewWithTarget::ViewWithTarget ()
@@ -30,57 +17,39 @@ namespace Camera
 
 	void ViewWithTarget::Update ()
 	{
-		m_mTransform = XMMatrixTranspose (XMMatrixLookAtLH (position, target, unrotatedUp));
+		CXMMATRIX transform = XMMatrixTranspose (XMMatrixLookAtLH (XMLoadFloat3 (&position), XMLoadFloat3 (&target), XMLoadFloat3 (&unrotatedUp)));
+		XMStoreFloat4x4 (&m_mTransform, transform);
 	}
 
 	void View::Update ()
 	{
-		XMVECTOR quat { XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };
-		m_Up = XMVector3Rotate (unrotatedUp, quat);
-		m_Forward = XMVector3Rotate (unrotatedForward, quat);
-		m_Right = XMVector3Cross (m_Up, m_Forward);
-		m_mTransform = XMMatrixTranspose (XMMatrixLookToLH (position, m_Forward, m_Up));
+		CXMVECTOR quat { XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };
+		CXMVECTOR up { XMVector3Rotate (XMLoadFloat3 (&unrotatedUp), quat) };
+		CXMVECTOR forward { XMVector3Rotate (XMLoadFloat3 (&unrotatedForward), quat) };
+		CXMVECTOR right { XMVector3Cross (up, forward) };
+		CXMMATRIX transform = XMMatrixTranspose (XMMatrixLookToLH (XMLoadFloat3 (&position), forward, up));
+		XMStoreFloat3 (&m_Up, up);
+		XMStoreFloat3 (&m_Forward, forward);
+		XMStoreFloat3 (&m_Right, right);
+		XMStoreFloat4x4 (&m_mTransform, transform);
 	}
 
 	void View::Move (float _right, float _up, float _forward, float _speed)
 	{
-		position += (_right * m_Right + _up * m_Up + _forward * m_Forward) * _speed;
+		CXMVECTOR newPos = (_right * XMLoadFloat3 (&m_Right) + _up * XMLoadFloat3 (&m_Up) + _forward * XMLoadFloat3 (&m_Forward)) * _speed;
+		XMStoreFloat3 (&position, newPos);
 	}
 
-	void View::UpdateFlyingView (float _deltaTime, const Gamepad& _gamepad)
+	void View::ClampLookUp (float _angle)
 	{
-
-		if (_gamepad.AreButtonsPressed (FLYINGVIEW_BUTTON_RESET, false))
+		if (lookUp > _angle)
 		{
-			position = FLYINGVIEW_RESET_POSITION;
-			unrotatedUp = FLYINGVIEW_RESET_UP;
-			unrotatedForward = FLYINGVIEW_RESET_FORWARD;
-			tilt = lookUp = turn = 0.0f;
+			lookUp = _angle;
 		}
-		else
+		else if (lookUp < _angle)
 		{
-			const float currTranslSpeed = _gamepad.AreButtonsPressed (FLYINGVIEW_BUTTON_TURBO, false) ? FLYINGVIEW_TRANSLATION_TURBO_SPEED : FLYINGVIEW_TRANSLATION_SPEED;
-
-			const Gamepad::Thumb rThumb { _gamepad.GetThumb (Gamepad::Side::RIGHT, { 0.0f, 0.0f }) };
-			const Gamepad::Thumb lThumb { _gamepad.GetThumb (Gamepad::Side::LEFT, { 0.0f, 0.0f }) };
-			const float rTrig { _gamepad.GetTrigger (Gamepad::Side::RIGHT, 0.0f) };
-			const float lTrig { _gamepad.GetTrigger (Gamepad::Side::LEFT, 0.0f) };
-
-			Move (lThumb.x, lThumb.y, rTrig - lTrig, currTranslSpeed * _deltaTime);
-
-			turn += rThumb.x * FLYINGVIEW_ROTATION_SPEED * _deltaTime;
-			lookUp -= rThumb.y *  FLYINGVIEW_ROTATION_SPEED * _deltaTime;
-			if (lookUp > FLYINGVIEW_MAX_LOOKUP)
-			{
-				lookUp = FLYINGVIEW_MAX_LOOKUP;
-			}
-			else if (lookUp < FLYINGVIEW_MIN_LOOKUP)
-			{
-				lookUp = FLYINGVIEW_MIN_LOOKUP;
-			}
+			lookUp = _angle;
 		}
-
-		Update ();
 	}
 
 	View::View ()
@@ -88,19 +57,19 @@ namespace Camera
 		View::Update ();
 	}
 
-	CXMVECTOR View::GetUp () const
+	XMVECTOR View::GetUp () const
 	{
-		return m_Up;
+		return XMLoadFloat3 (&m_Up);
 	}
 
-	CXMVECTOR View::GetForward () const
+	XMVECTOR View::GetForward () const
 	{
-		return m_Forward;
+		return XMLoadFloat3 (&m_Forward);
 	}
 
-	CXMVECTOR View::GetRight () const
+	XMVECTOR View::GetRight () const
 	{
-		return m_Right;
+		return XMLoadFloat3 (&m_Right);
 	}
 
 }

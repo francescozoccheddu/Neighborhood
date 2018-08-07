@@ -1,7 +1,7 @@
 #include <Game/Scene/Mesh.hpp>
+
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include <Game/Utils/Direct3D11.hpp>
 
 void Mesh::SetIAVertexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer * _pBuffer)
 {

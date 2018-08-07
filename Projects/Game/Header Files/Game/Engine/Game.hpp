@@ -1,9 +1,12 @@
 #include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Direct3D.hpp>
 
-class Game : public ResourceHandler::Listener
+class Game
 {
 
 public:
+
+	static void Initialize ();
 
 	Game ();
 
@@ -21,15 +24,7 @@ public:
 
 	void ValidateDevice ();
 
-protected:
-
-	void OnDeviceCreated () override;
-
-	void OnDeviceDestroyed () override;
-
-	void OnRender (double deltaTime) override;
-
-	void OnSized (WindowSize size) override;
+	~Game ();
 
 private:
 

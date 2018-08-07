@@ -17,9 +17,9 @@
       <SDLCheck>false</SDLCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>$(SolutionDir)Projects\Game\Header Files\pch.hpp</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4453;28204;4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>SOLUTIONNAME="$(SolutionName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link />
     <Link>

@@ -1,8 +1,21 @@
 #include <Game/Engine/Game.hpp>
 
+#include <Game/Engine/GameListener.hpp>
+#include <Game/Utils/Exceptions.hpp>
+#include <Game/DirectXMath.hpp>
+
+void Game::Initialize ()
+{
+	if (!DirectX::XMVerifyCPUSupport ())
+	{
+		GAME_THROW_MSG ("DirectXMath not supported by this CPU");
+	}
+	ResourceHandler::InitializeTimer ();
+}
+
 Game::Game ()
 {
-	m_ResourceHandler.pListener = this;
+	m_ResourceHandler.pListener = new GameListener (m_ResourceHandler);
 }
 
 void Game::Tick ()
@@ -40,16 +53,9 @@ void Game::ValidateDevice ()
 	m_ResourceHandler.ValidateDevice ();
 }
 
-void Game::OnDeviceCreated () {}
-
-void Game::OnDeviceDestroyed () {}
-
-void Game::OnRender (double deltaTime)
+Game::~Game ()
 {
-	float color[4] { 1.0f, 0.0f, 0.0f, 1.0f };
-	m_ResourceHandler.GetDeviceContext ()->ClearRenderTargetView (m_ResourceHandler.GetRenderTargetView (), color);
+	delete m_ResourceHandler.pListener;
+	m_ResourceHandler.pListener = nullptr;
 }
-
-void Game::OnSized (WindowSize size)
-{}
 

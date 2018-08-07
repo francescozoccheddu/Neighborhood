@@ -1,9 +1,7 @@
 #pragma once
 
-#include <string>
+#include <Game/Direct3D.hpp>
 #include <Game/Engine/ResourceHandler.hpp>
-#include <Game/Camera/View.hpp>
-#include <Game/Camera/Projection.hpp>
 
 class GameListener : public ResourceHandler::Listener
 {
@@ -18,15 +16,15 @@ public:
 
 	virtual void OnDeviceCreated () override;
 
-	virtual void OnRender (float deltaTime) override;
+	virtual void OnRender (double deltaTime) override;
 
 	virtual void OnSized (WindowSize size) override;
 
 private:
 
 	ResourceHandler & m_ResourceHandler;
-	Camera::Projection m_CamProjection;
-	Camera::View m_CamView;
+	/*Camera::Projection m_CamProjection;
+	Camera::View m_CamView;*/
 	UINT m_cInds;
 	ID3D11Buffer * m_pVertexBuffer { nullptr };
 	ID3D11Buffer * m_pIndexBuffer { nullptr };

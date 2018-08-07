@@ -1,36 +1,36 @@
 #pragma once
 
-#include <DirectXMath.h>
+#include <Game/DirectXMath.hpp>
 
 namespace Camera
 {
 
-class Projection
-{
+	class Projection
+	{
 
-public:
+	public:
 
-	float vFov{ 1.5708f };
-	float nearZ{ 1.0f };
-	float farZ{ 100.0f };
-	float aspectRatio{ 1.0f };
+		float vFov { 1.5708f };
+		float nearZ { 1.0f };
+		float farZ { 100.0f };
+		float aspectRatio { 1.0f };
 
-	static float CalcAspectRatio (int width, int height);
+		static float CalcAspectRatio (int width, int height);
 
-	static float CalcVFov (float hFov, float aspectRatio);
+		static float CalcVFov (float hFov, float aspectRatio);
 
-	Projection ();
+		Projection ();
 
-	void Update ();
+		void Update ();
 
-	DirectX::CXMMATRIX Get () const;
+		DirectX::XMMATRIX Get () const;
 
-	virtual ~Projection () = default;
+		virtual ~Projection () = default;
 
-private:
+	private:
 
-	DirectX::XMMATRIX m_mTransform;
+		DirectX::XMFLOAT4X4 m_mTransform;
 
-};
+	};
 
 }
