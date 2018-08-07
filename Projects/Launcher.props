@@ -4,9 +4,7 @@
   <PropertyGroup Label="UserMacros">
     <OutResDir>$(OutDir)Resources\</OutResDir>
   </PropertyGroup>
-  <PropertyGroup>
-    <CustomBuildBeforeTargets>BuildCompile</CustomBuildBeforeTargets>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup>
     <ImageContentTask>
       <ContentOutput>$(OutResDir)Textures\%(Filename).dds</ContentOutput>
@@ -14,13 +12,11 @@
     <FxCompile>
       <ObjectFileOutput>$(OutResDir)Shaders\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
-    <CustomBuildStep>
-      <Command>copy "$(GameProjDir)Cinema 4D\meshes.json" "$(OutResDir)"</Command>
-      <Message>Copying meshes file</Message>
-      <Outputs>$(OutResDir)meshes.json</Outputs>
-      <Inputs>$(GameProjDir)Cinema 4D\meshes.json</Inputs>
-      <TreatOutputAsContent>true</TreatOutputAsContent>
-    </CustomBuildStep>
+    <CustomBuildStep />
+    <CopyResourceTask>
+      <DestinationFiles>$(OutResDir)%(Filename)%(Extension)</DestinationFiles>
+      <ContentOutput>$(OutResDir)%(Filename)%(Extension)</ContentOutput>
+    </CopyResourceTask>
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="OutResDir">

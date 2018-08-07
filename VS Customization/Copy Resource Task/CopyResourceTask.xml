@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="CopyResourceTask"
+        PageTemplate="tool"
+        DisplayName="Copy Resource Task"
+        SwitchPrefix=""
+        Order="300">
+
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="CopyResourceTask" Label="" HasConfigurationCondition="true" />
+    </Rule.DataSource>
+
+    <StringProperty Subtype="file"
+                    Name="ContentOutput"
+                    DisplayName="Destination Files"
+                    Description="The destination file."
+                    Category="General"
+                    Switch=""
+                    F1Keyword="VC.Project.CopyResourceTask.ContentOutput">
+    </StringProperty>
+
+  </Rule>
+
+  <ItemType
+   Name="CopyResourceTask"
+   DisplayName="Copy Resource Task" />
+  <ContentType
+    Name="CopyResourceTask"
+    DisplayName="Copy Resource Task"
+    ItemType="CopyResourceTask" />
+  
+</ProjectSchemaDefinitions>
