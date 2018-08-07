@@ -15,6 +15,28 @@ void Mesh::SetIAIndexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer 
 	_deviceContext.IASetIndexBuffer (_pBuffer, DXGI_FORMAT_R32_UINT, 0);
 }
 
+ID3D11InputLayout* Mesh::CreateInputLayout (ID3D11Device & _device, const void * _pShaderBytecode, SIZE_T _bytecodeLen)
+{
+	D3D11_INPUT_ELEMENT_DESC desc[2];
+	desc[0].SemanticName = "POSITION";
+	desc[0].SemanticIndex = 0;
+	desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	desc[0].InputSlot = 0;
+	desc[0].AlignedByteOffset = 0;
+	desc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	desc[0].InstanceDataStepRate = 0;
+	desc[1].SemanticName = "NORMAL";
+	desc[1].SemanticIndex = 0;
+	desc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	desc[1].InputSlot = 0;
+	desc[1].AlignedByteOffset = sizeof (DirectX::XMFLOAT3);
+	desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	desc[1].InstanceDataStepRate = 0;
+	ID3D11InputLayout * pInputLayout { nullptr };
+	GAME_COMC (_device.CreateInputLayout (desc, 2, _pShaderBytecode, _bytecodeLen, &pInputLayout));
+	return pInputLayout;
+}
+
 Mesh::Mesh () : m_pVertices { nullptr }, m_cVertices { 0 }, m_pIndices { nullptr }, m_cIndices { 0 } {}
 
 Mesh::Mesh (Vertex * _pVertices, int _cVertices, unsigned int * _pIndices, int _cIndices)
