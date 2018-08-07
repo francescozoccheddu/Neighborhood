@@ -1,6 +1,5 @@
-#include <Game/pch.hpp>
-
 #include <Game/Engine/ResourceHandler.hpp>
+
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 

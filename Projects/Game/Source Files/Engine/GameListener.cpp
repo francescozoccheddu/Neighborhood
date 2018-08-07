@@ -1,13 +1,8 @@
 #include <Game/Engine/GameListener.hpp>
-#include <Game/Engine/ResourceHandler.hpp>
+
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/Utils/Storage.hpp>
-#include <Game/Scene/Mesh.hpp>
-#include <Game/Scene/Loader.hpp>
-
-//TODO Cleanup
-#include <fstream>
 
 #define SHADER_PATH(x) x
 
@@ -15,7 +10,7 @@ GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandl
 
 void GameListener::OnDeviceDestroyed ()
 {
-	ReleaseCOM (m_pVertexBuffer);
+
 }
 
 struct cbPerFrameBuffer
@@ -38,7 +33,7 @@ void GameListener::OnDeviceCreated ()
 		context.VSSetShader (m_pVertexShader, nullptr, 0);
 		context.PSSetShader (m_pPixelShader, nullptr, 0);
 		// Input layout
-		D3D11_INPUT_ELEMENT_DESC desc[2];
+		/*D3D11_INPUT_ELEMENT_DESC desc[2];
 		desc[0].SemanticName = "POSITION";
 		desc[0].SemanticIndex = 0;
 		desc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -54,10 +49,10 @@ void GameListener::OnDeviceCreated ()
 		desc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 		desc[1].InstanceDataStepRate = 0;
 		GAME_COMC (device.CreateInputLayout (desc, ARRAYSIZE (desc), pVsData, vsLen, &m_pInputLayout));
-		context.IASetInputLayout (m_pInputLayout);
+		context.IASetInputLayout (m_pInputLayout);*/
 	}
 	{
-		// Buffer
+		/*// Buffer
 		auto map { Scene::LoadFromJSON (Storage::LoadTextFile ("meshes.json")) };
 		Mesh mesh { map["Figure"] };
 		m_pIndexBuffer = mesh.CreateD3DIndexBuffer (device);
@@ -80,14 +75,14 @@ void GameListener::OnDeviceCreated ()
 	}
 	{
 		// State
-		context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
 	}
 }
 
-void GameListener::OnRender (float _deltaTime)
+void GameListener::OnRender (double _deltaTime)
 {
 
-	m_Gamepad.Update ();
+	/*m_Gamepad.Update ();
 	if (!m_Gamepad.IsConnected ())
 	{
 		DWORD iUser;
@@ -103,24 +98,24 @@ void GameListener::OnRender (float _deltaTime)
 
 	cbPerFrameBuffer cb;
 	cb.mProjection = m_CamProjection.Get ();
-	cb.mView = m_CamView.Get ();
+	cb.mView = m_CamView.Get ();*/
 
 	ID3D11DeviceContext& deviceContext = *m_ResourceHandler.GetDeviceContext ();
+	/*
+		deviceContext.UpdateSubresource (m_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 
-	deviceContext.UpdateSubresource (m_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-	deviceContext.VSSetConstantBuffers (0, 1, &m_pConstantBuffer);
+		deviceContext.VSSetConstantBuffers (0, 1, &m_pConstantBuffer);*/
 
 	float color[] { 0.1f, 0.2f, 0.3f, 1.0f };
 	deviceContext.ClearDepthStencilView (m_ResourceHandler.GetDepthStencilView (), D3D11_CLEAR_DEPTH, 1, 0);
 	deviceContext.ClearRenderTargetView (m_ResourceHandler.GetRenderTargetView (), color);
-	deviceContext.DrawIndexed (m_cInds, 0, 0);
+	//deviceContext.DrawIndexed (m_cInds, 0, 0);
 }
 
 void GameListener::OnSized (WindowSize size)
 {
-	m_CamView.position = DirectX::XMVectorSet (0.0f, 0.0f, -2.0f, 1.0f);
+	/*m_CamView.position = DirectX::XMVectorSet (0.0f, 0.0f, -2.0f, 1.0f);
 	m_CamProjection.aspectRatio = Camera::Projection::CalcAspectRatio (size.width, size.height);
-	m_CamProjection.vFov = Camera::Projection::CalcVFov (1.2f, m_CamProjection.aspectRatio);
+	m_CamProjection.vFov = Camera::Projection::CalcVFov (1.2f, m_CamProjection.aspectRatio);*/
 }
 

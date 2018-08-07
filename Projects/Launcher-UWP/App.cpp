@@ -1,4 +1,4 @@
-﻿#include <Game/pch.hpp>
+﻿#include <Game/Windows.hpp>
 
 #include <Game/Engine/Game.hpp>
 #include <Game/Utils/Exceptions.hpp>
@@ -311,10 +311,7 @@ private:
 
 int WINAPI wWinMain (HINSTANCE, HINSTANCE, PWSTR, int)
 {
-	if (!DirectX::XMVerifyCPUSupport ())
-	{
-		throw std::runtime_error ("DirectX Math not supported on this CPU");
-	}
+	GAME_TRY (Game::Initialize ());
 	CoreApplication::Run (App ());
 	return 0;
 }

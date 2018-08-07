@@ -1,5 +1,5 @@
 #include <Game/Scene/Loader.hpp>
-#include <Game/Scene/Mesh.hpp>
+
 #include <Game/Utils/Exceptions.hpp>
 #include <map>
 #include <string>
@@ -69,17 +69,17 @@ namespace Scene
 		return Mesh { pVerts, cVerts, pInds, cInds };
 	}
 
-	std::map<std::string, Mesh> LoadFromJSON (const std::string& _json)
+	std::map<std::string, Mesh*> LoadFromJSON (const std::string& _json)
 	{
 		rapidjson::Document jDoc;
 		jDoc.Parse (_json.c_str ());
 		GAME_ASSERT_MSG (jDoc.IsObject (), "Not a JSON object");
-		std::map<std::string, Mesh> map;
+		std::map<std::string, Mesh*> map;
 		for (auto& jObj : jDoc.GetObject ())
 		{
 			std::string name { jObj.name.GetString () };
-			Mesh mesh { LoadFromJSONObject (jObj.value) };
-			map.emplace (name, mesh);
+			Mesh * pMesh { new Mesh (LoadFromJSONObject (jObj.value)) };
+			map.emplace (name, pMesh);
 		}
 		return map;
 	}
