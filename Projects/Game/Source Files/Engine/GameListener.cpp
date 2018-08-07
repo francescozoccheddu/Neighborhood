@@ -6,7 +6,10 @@
 #include <Game/Scene/Loader.hpp>
 #include <Game/Scene/Mesh.hpp>
 
-#define SHADER_PATH(x) x
+#define RESOURCES_PATH "Resources/"
+#define SHADER_PATH(x) RESOURCES_PATH "Shaders/" x
+#define MESH_PATH RESOURCES_PATH "meshes.json"
+#define TEXTURE_PATH(x) RESOURCES_PATH "Textures/" x
 
 GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler { _resourceHandler }
 {
@@ -39,8 +42,8 @@ void GameListener::OnDeviceCreated ()
 	}
 	{
 		// Buffer
-		auto map { Scene::LoadFromJSON (Storage::LoadTextFile ("meshes.json")) };
-		Mesh * mesh { map["Figure"] };
+		auto map { Scene::LoadFromJSON (Storage::LoadTextFile (MESH_PATH)) };
+		Mesh * mesh { map["Sammy"] };
 		m_pIndexBuffer = mesh->CreateD3DIndexBuffer (device);
 		m_pVertexBuffer = mesh->CreateD3DVertexBuffer (device);
 		m_cInds = mesh->GetIndicesCount ();

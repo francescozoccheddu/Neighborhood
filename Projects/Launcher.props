@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <OutResDir>$(OutDir)Resources\</OutResDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CustomBuildBeforeTargets>BuildCompile</CustomBuildBeforeTargets>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ImageContentTask>
+      <ContentOutput>$(OutResDir)Textures\%(Filename).dds</ContentOutput>
+    </ImageContentTask>
+    <FxCompile>
+      <ObjectFileOutput>$(OutResDir)Shaders\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <CustomBuildStep>
+      <Command>copy "$(GameProjDir)Cinema 4D\meshes.json" "$(OutResDir)"</Command>
+      <Message>Copying meshes file</Message>
+      <Outputs>$(OutResDir)meshes.json</Outputs>
+      <Inputs>$(GameProjDir)Cinema 4D\meshes.json</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="OutResDir">
+      <Value>$(OutResDir)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

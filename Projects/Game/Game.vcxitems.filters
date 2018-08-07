@@ -45,16 +45,19 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{d8396942-755d-4509-8724-eef8d56aa266}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Cinema 4D\Models">
+      <UniqueIdentifier>{1a9a4e45-e888-4ad7-8dd4-cb62af007c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cinema 4D\Textures">
+      <UniqueIdentifier>{54aac4ee-0fd8-45dd-aeb8-e3812939607e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
       <Filter>Cinema 4D</Filter>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_exporter_path">
-      <Filter>Cinema 4D</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Scene.c4d">
-      <Filter>Cinema 4D</Filter>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d">
+      <Filter>Cinema 4D\Models</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -146,5 +149,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
+      <Filter>Cinema 4D\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)Shaders\textciao.txt">
+      <Filter>Cinema 4D\Textures</Filter>
+    </Text>
   </ItemGroup>
 </Project>
