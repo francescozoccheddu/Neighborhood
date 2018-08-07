@@ -8,7 +8,10 @@
 
 #define SHADER_PATH(x) x
 
-GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler { _resourceHandler } {}
+GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandler { _resourceHandler }
+{
+	m_CamView.position = { 0.0, 0.0f, -2.0f };
+}
 
 void GameListener::OnDeviceDestroyed ()
 {
@@ -24,7 +27,6 @@ struct cbPerFrameBuffer
 void GameListener::OnDeviceCreated ()
 {
 	ID3D11Device & device { *m_ResourceHandler.GetDevice () };
-	ID3D11DeviceContext & context { *m_ResourceHandler.GetDeviceContext () };
 	{
 		// Shaders
 		int vsLen, psLen;
@@ -32,11 +34,8 @@ void GameListener::OnDeviceCreated ()
 		char * pPsData { Storage::LoadBinaryFile (SHADER_PATH ("PixelShader.cso"), psLen) };
 		GAME_COMC (device.CreateVertexShader (pVsData, vsLen, nullptr, &m_pVertexShader));
 		GAME_COMC (device.CreatePixelShader (pPsData, psLen, nullptr, &m_pPixelShader));
-		context.VSSetShader (m_pVertexShader, nullptr, 0);
-		context.PSSetShader (m_pPixelShader, nullptr, 0);
 		// Input layout
 		m_pInputLayout = Mesh::CreateInputLayout (device, pVsData, vsLen);
-		context.IASetInputLayout (m_pInputLayout);
 	}
 	{
 		// Buffer
@@ -45,8 +44,6 @@ void GameListener::OnDeviceCreated ()
 		m_pIndexBuffer = mesh->CreateD3DIndexBuffer (device);
 		m_pVertexBuffer = mesh->CreateD3DVertexBuffer (device);
 		m_cInds = mesh->GetIndicesCount ();
-		Mesh::SetIAIndexBuffer (context, m_pIndexBuffer);
-		Mesh::SetIAVertexBuffer (context, m_pVertexBuffer);
 		delete mesh;
 	}
 	{
@@ -59,10 +56,6 @@ void GameListener::OnDeviceCreated ()
 		desc.StructureByteStride = 0;
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		GAME_COMC (device.CreateBuffer (&desc, nullptr, &m_pConstantBuffer));
-	}
-	{
-		// State
-		context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
 }
 
@@ -81,7 +74,7 @@ void GameListener::OnRender (double _deltaTime)
 
 	if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_B, false))
 	{
-		m_CamView.position = {};
+		m_CamView.position = { 0.0f, 0.0f, -2.0f };
 		m_CamView.turn = m_CamView.lookUp = 0.0f;
 	}
 	else
@@ -90,12 +83,14 @@ void GameListener::OnRender (double _deltaTime)
 		Gamepad::Thumb rt { m_Gamepad.GetThumb (Gamepad::Side::RIGHT, {}) };
 		float fdt = static_cast<float>(_deltaTime);
 		float speed = m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_A, false) ? 2.f : 1.f;
-		m_CamView.Move (lt.x, lt.y, m_Gamepad.GetTrigger (Gamepad::Side::LEFT, 0.f) - m_Gamepad.GetTrigger (Gamepad::Side::RIGHT, 0.f), speed * fdt);
-		m_CamView.turn += rt.x * fdt * 2.f;
-		m_CamView.lookUp += rt.y * fdt * 2.f;
+		float angSpeed = DirectX::XMConvertToRadians (90);
+		m_CamView.Move (lt.x, lt.y, m_Gamepad.GetTrigger (Gamepad::Side::RIGHT, 0.f) - m_Gamepad.GetTrigger (Gamepad::Side::LEFT, 0.f), speed * fdt);
+		m_CamView.turn += rt.x * fdt * angSpeed;
+		m_CamView.lookUp += -rt.y * fdt * angSpeed;
 		m_CamView.ClampLookUp (DirectX::XMConvertToRadians (70.f));
 	}
 
+	m_CamView.Update ();
 	m_CamProjection.Update ();
 
 	cbPerFrameBuffer cb;
@@ -103,9 +98,13 @@ void GameListener::OnRender (double _deltaTime)
 	cb.mView = m_CamView.Get ();
 
 	ID3D11DeviceContext& deviceContext = *m_ResourceHandler.GetDeviceContext ();
-
+	Mesh::SetIAIndexBuffer (deviceContext, m_pIndexBuffer);
+	Mesh::SetIAVertexBuffer (deviceContext, m_pVertexBuffer);
 	deviceContext.UpdateSubresource (m_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
+	deviceContext.VSSetShader (m_pVertexShader, nullptr, 0);
+	deviceContext.PSSetShader (m_pPixelShader, nullptr, 0);
+	deviceContext.IASetInputLayout (m_pInputLayout);
+	deviceContext.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext.VSSetConstantBuffers (0, 1, &m_pConstantBuffer);
 
 	static double time = 0.0;

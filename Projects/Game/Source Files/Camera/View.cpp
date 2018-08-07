@@ -36,7 +36,7 @@ namespace Camera
 
 	void View::Move (float _right, float _up, float _forward, float _speed)
 	{
-		CXMVECTOR newPos = (_right * XMLoadFloat3 (&m_Right) + _up * XMLoadFloat3 (&m_Up) + _forward * XMLoadFloat3 (&m_Forward)) * _speed;
+		CXMVECTOR newPos = XMLoadFloat3 (&position) + (_right * XMLoadFloat3 (&m_Right) + _up * XMLoadFloat3 (&m_Up) + _forward * XMLoadFloat3 (&m_Forward)) * _speed;
 		XMStoreFloat3 (&position, newPos);
 	}
 
@@ -46,9 +46,9 @@ namespace Camera
 		{
 			lookUp = _angle;
 		}
-		else if (lookUp < _angle)
+		else if (lookUp < -_angle)
 		{
-			lookUp = _angle;
+			lookUp = -_angle;
 		}
 	}
 
