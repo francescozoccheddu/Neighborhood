@@ -4,20 +4,25 @@
   <PropertyGroup Label="UserMacros">
     <BuildDir>$(SolutionDir)Build\</BuildDir>
     <BuildConfSubdir>$(ProjectName)\$(Configuration)\$(Platform)\</BuildConfSubdir>
+    <ProjectsDir>$(SolutionDir)Projects\</ProjectsDir>
+    <GameProjDir>$(ProjectsDir)Game\</GameProjDir>
   </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(BuildDir)Output\$(BuildConfSubdir)</OutDir>
     <IntDir>$(BuildDir)Intermediate\$(BuildConfSubdir)</IntDir>
     <_PropertySheetDisplayName>Project</_PropertySheetDisplayName>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+    <CustomBuildBeforeTargets>BuildCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;$(ProjectDir);%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Projects\Game\Header Files\;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>false</SDLCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <DisableSpecificWarnings>4453;28204;4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4453;28204;4996;</DisableSpecificWarnings>
       <PreprocessorDefinitions>SOLUTIONNAME="$(SolutionName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -25,6 +30,17 @@
     <Link>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuild />
+    <CustomBuildStep>
+      <Command>copy "$(GameProjDir)Cinema 4D\meshes.json" "$(OutDir)"</Command>
+      <Message>Copying meshes file</Message>
+      <Outputs>$(OutDir)meshes.json</Outputs>
+      <Inputs>$(GameProjDir)Cinema 4D\meshes.json</Inputs>
+      <TreatOutputAsContent>true</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BuildDir">
@@ -32,6 +48,12 @@
     </BuildMacro>
     <BuildMacro Include="BuildConfSubdir">
       <Value>$(BuildConfSubdir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="ProjectsDir">
+      <Value>$(ProjectsDir)</Value>
+    </BuildMacro>
+    <BuildMacro Include="GameProjDir">
+      <Value>$(GameProjDir)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>

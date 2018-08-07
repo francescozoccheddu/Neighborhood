@@ -55,9 +55,9 @@ void ResourceHandler::Tick ()
 		}
 		m_LastTime = newTime;
 	}
+
 	SetOutputMergerViews ();
 	FIRE_EVENT (OnRender (static_cast<float>(deltaTime)));
-
 
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
@@ -117,7 +117,7 @@ void ResourceHandler::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool
 			CreateDepthStencilView ();
 			SetOutputMergerViewport ();
 		}
-		FIRE_EVENT (OnSized (_size));
+		FIRE_EVENT (OnSized (_size, _rotation));
 	}
 }
 

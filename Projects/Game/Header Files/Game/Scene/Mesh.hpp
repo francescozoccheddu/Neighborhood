@@ -18,6 +18,8 @@ public:
 
 	static void SetIAIndexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
 
+	static ID3D11InputLayout* CreateInputLayout (ID3D11Device & device, const void * pShaderBytecode, SIZE_T bytecodeLen);
+
 	Mesh ();
 
 	Mesh (Vertex * pVertices, int cVertices, unsigned int * pIndices, int cIndices);

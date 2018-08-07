@@ -55,7 +55,7 @@ public:
 
 		virtual void OnRender (double deltaTime) = 0;
 
-		virtual void OnSized (WindowSize size) = 0;
+		virtual void OnSized (WindowSize size, DXGI_MODE_ROTATION rotation) = 0;
 
 	};
 
