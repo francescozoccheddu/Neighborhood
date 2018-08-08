@@ -53,17 +53,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
-      <Filter>Cinema 4D</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d">
-      <Filter>Cinema 4D\Models</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
-      <Filter>Cinema 4D</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -152,5 +141,21 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d">
+      <Filter>Cinema 4D\Models</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
+      <Filter>Cinema 4D</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
+      <Filter>Cinema 4D</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
+      <Filter>Cinema 4D\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
