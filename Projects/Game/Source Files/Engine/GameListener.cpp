@@ -5,6 +5,7 @@
 #include <Game/Utils/Storage.hpp>
 #include <Game/Scene/Loader.hpp>
 #include <Game/Scene/Mesh.hpp>
+#include <Game/DDSLoader.hpp>
 
 #define RESOURCES_PATH "Resources/"
 #define SHADER_PATH(x) RESOURCES_PATH "Shaders/" x

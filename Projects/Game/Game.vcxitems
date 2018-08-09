@@ -14,25 +14,23 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
-      <ShaderType>Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\VertexShader.hlsl">
-      <ShaderType>Vertex</ShaderType>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\Projection.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Game.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Loader.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Mesh.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
@@ -46,22 +44,52 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Loader.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ResourceHolder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py" />
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
       <DeploymentContent>true</DeploymentContent>
       <FileType>Document</FileType>
+      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
       <DeploymentContent>true</DeploymentContent>
     </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+      <DeploymentContent>true</DeploymentContent>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_vertex.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
+    </CopyResourceTask>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
   </ItemGroup>
 </Project>
