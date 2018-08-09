@@ -56,7 +56,7 @@ void MeshResource::DoLoad ()
 	jDoc.Parse (Storage::LoadTextFile (GetFileName ()).c_str ());
 	GAME_ASSERT_MSG (jDoc.IsObject (), "Not a JSON object");
 	{
-		const rapidjson::Value& jVerts { jDoc["vertices"] };
+		const rapidjson::Value& jVerts { jDoc["verts"] };
 		GAME_ASSERT_MSG (jVerts.IsArray (), "Not a JSON array");
 		const rapidjson::SizeType cArr { jVerts.Size () };
 		m_cVertices = static_cast<int>(cArr);
@@ -77,7 +77,7 @@ void MeshResource::DoLoad ()
 		}
 	}
 	{
-		const rapidjson::Value& jInds { jDoc["indices"] };
+		const rapidjson::Value& jInds { jDoc["inds"] };
 		GAME_ASSERT_MSG (jInds.IsArray (), "Not a JSON array");
 		const rapidjson::SizeType cArr { jInds.Size () };
 		m_cIndices = static_cast<int>(cArr);
@@ -108,10 +108,10 @@ void MeshResource::DoCreate (ID3D11Device & _device)
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.ByteWidth = m_cIndices * sizeof (unsigned int);
+		desc.ByteWidth = m_cIndices * sizeof (ind_t);
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (unsigned int);
+		desc.StructureByteStride = sizeof (ind_t);
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
 		data.pSysMem = m_pIndices;

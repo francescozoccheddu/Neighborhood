@@ -28,6 +28,7 @@ bool Resource::IsCreated () const
 
 void Resource::Create (ID3D11Device & _device)
 {
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	DoCreate (_device);
 	m_bCreated = true;

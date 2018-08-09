@@ -27,7 +27,7 @@ protected:
 
 	virtual void DoUnload () = 0;
 
-	virtual void DoCreate (ID3D11Device & device);
+	virtual void DoCreate (ID3D11Device & device) = 0;
 
 	virtual void DoDestroy () = 0;
 

@@ -14,11 +14,6 @@ public:
 
 	using FileResource::FileResource;
 
-	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXTCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
 	static void SetIAVertexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
 
 	static void SetIAIndexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
@@ -45,12 +40,7 @@ protected:
 
 private:
 
-
-#if GAME_MESHRESOURCE_HALF_INDEX
-	using ind_t = uint16_t;
-#else
-	using ind_t = uint32_t;
-#endif
+	friend class ShaderResource;
 
 	struct Vertex
 	{
@@ -58,6 +48,12 @@ private:
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT2 textureCoord;
 	};
+
+#if GAME_MESHRESOURCE_HALF_INDEX
+	using ind_t = uint16_t;
+#else
+	using ind_t = uint32_t;
+#endif
 
 	Vertex * m_pVertices;
 	int m_cVertices;
@@ -67,5 +63,10 @@ private:
 
 	ID3D11Buffer * m_pVertexBuffer;
 	ID3D11Buffer * m_pIndexBuffer;
+
+	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, offsetof (Vertex, position), 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (Vertex, normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (Vertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
 };
