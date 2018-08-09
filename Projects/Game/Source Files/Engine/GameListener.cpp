@@ -12,6 +12,7 @@ GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandl
 {
 	m_CamView.position = { 0.0, 0.0f, -2.0f };
 	m_ResourceHolder.AddMesh ("Sammy");
+	m_ResourceHolder.AddTexture ("Sammy");
 	m_ResourceHolder.AddShader ("default_vertex", ShaderResource::ShaderType::VERTEX);
 	m_ResourceHolder.AddShader ("default_pixel", ShaderResource::ShaderType::PIXEL);
 	m_ResourceHolder.Load ();
@@ -20,6 +21,8 @@ GameListener::GameListener (ResourceHandler& _resourceHandler) : m_ResourceHandl
 void GameListener::OnDeviceDestroyed ()
 {
 	m_ResourceHolder.Destroy ();
+	m_pSampler->Release ();
+	m_pConstantBuffer->Release ();
 }
 
 struct cbPerFrameBuffer
@@ -42,6 +45,17 @@ void GameListener::OnDeviceCreated ()
 		desc.StructureByteStride = 0;
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		GAME_COMC (device.CreateBuffer (&desc, nullptr, &m_pConstantBuffer));
+	}
+	{
+		D3D11_SAMPLER_DESC desc {};
+		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+		GAME_COMC (device.CreateSamplerState (&desc, &m_pSampler));
 	}
 }
 
@@ -90,10 +104,12 @@ void GameListener::OnRender (double _deltaTime)
 	mesh.SetBuffers (deviceContext);
 	m_ResourceHolder.GetShader ("default_vertex").SetShaderAndInputLayout (deviceContext);
 	m_ResourceHolder.GetShader ("default_pixel").SetShaderAndInputLayout (deviceContext);
+	m_ResourceHolder.GetTexture ("Sammy").SetShaderResource (deviceContext, 0);
 
 	deviceContext.UpdateSubresource (m_pConstantBuffer, 0, nullptr, &cb, 0, 0);
 	deviceContext.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	deviceContext.VSSetConstantBuffers (0, 1, &m_pConstantBuffer);
+	deviceContext.PSSetSamplers (0, 1, &m_pSampler);
 
 	static double time = 0.0;
 	time += _deltaTime;

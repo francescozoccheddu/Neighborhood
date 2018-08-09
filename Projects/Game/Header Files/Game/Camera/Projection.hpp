@@ -11,7 +11,7 @@ namespace Camera
 	public:
 
 		float vFov { 1.5708f };
-		float nearZ { 1.0f };
+		float nearZ { 0.01f };
 		float farZ { 100.0f };
 		float aspectRatio { 1.0f };
 

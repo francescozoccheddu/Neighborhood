@@ -3,6 +3,12 @@
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/DDSLoader.hpp>
 
+void TextureResource::SetShaderResource (ID3D11DeviceContext & _deviceContext, UINT _slot) const
+{
+	AssertCreated ();
+	GAME_COMC (_deviceContext.PSSetShaderResources (_slot, 1, &m_pResourceView));
+}
+
 const ID3D11Resource * TextureResource::GetResource () const
 {
 	AssertCreated ();
