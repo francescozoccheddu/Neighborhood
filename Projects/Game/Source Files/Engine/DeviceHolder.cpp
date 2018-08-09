@@ -27,7 +27,6 @@ void DeviceHolder::Present ()
 	if (pDeviceContext1)
 	{
 		pDeviceContext1->DiscardView1 (m_pRenderTargetView.get (), nullptr, 0);
-		pDeviceContext1->DiscardView1 (m_pDepthStencilView.get (), nullptr, 0);
 	}
 
 	if (hResPresent == DXGI_ERROR_DEVICE_REMOVED || hResPresent == DXGI_ERROR_DEVICE_RESET)
@@ -45,7 +44,6 @@ void DeviceHolder::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _b
 	if (_bForce || _size != m_Size || _rotation != m_Rotation)
 	{
 		m_pRenderTargetView = nullptr;
-		m_pDepthStencilView = nullptr;
 		m_Size = _size;
 		m_Rotation = _rotation;
 		bool recreated { false };
@@ -70,8 +68,6 @@ void DeviceHolder::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _b
 		if (!recreated)
 		{
 			CreateRenderTarget ();
-			CreateDepthStencilView ();
-			SetOutputMergerViewport ();
 		}
 		FIRE_EVENT (OnSized (_size, _rotation));
 	}
@@ -93,7 +89,6 @@ void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, DX
 	m_NativeWindow = _window;
 	m_pSwapChain = nullptr;
 	m_pRenderTargetView = nullptr;
-	m_pDepthStencilView = nullptr;
 	m_pDeviceContext->ClearState ();
 	m_pDeviceContext->Flush ();
 	Size (_size, _rotation, true);
@@ -148,7 +143,7 @@ void DeviceHolder::ValidateDevice ()
 	}
 }
 
-ID3D11Device * DeviceHolder::GetDevice ()
+ID3D11Device * DeviceHolder::GetDevice () const
 {
 	return m_pDevice.get ();
 }
@@ -161,11 +156,6 @@ ID3D11DeviceContext * DeviceHolder::GetDeviceContext () const
 ID3D11RenderTargetView * DeviceHolder::GetRenderTargetView () const
 {
 	return m_pRenderTargetView.get ();
-}
-
-ID3D11DepthStencilView * DeviceHolder::GetDepthStencilView ()
-{
-	return m_pDepthStencilView.get ();
 }
 
 WindowSize DeviceHolder::GetSize () const
@@ -240,44 +230,6 @@ void DeviceHolder::CreateRenderTarget ()
 	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture.get (), nullptr, m_pRenderTargetView.put ()));
 }
 
-void DeviceHolder::CreateDepthStencilView ()
-{
-	m_pDepthStencilView = nullptr;
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = m_Size.width;
-	desc.Height = m_Size.height;
-	desc.ArraySize = 1;
-	desc.MipLevels = 1;
-	desc.Format = DXGI_FORMAT_D16_UNORM;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	desc.CPUAccessFlags = 0;
-	desc.MiscFlags = 0;
-	com_ptr<ID3D11Texture2D> pTexture;
-	GAME_COMC (m_pDevice->CreateTexture2D (&desc, nullptr, pTexture.put ()));
-	GAME_COMC (m_pDevice->CreateDepthStencilView (pTexture.get (), nullptr, m_pDepthStencilView.put ()));
-}
-
-void DeviceHolder::SetOutputMergerViews ()
-{
-	ID3D11RenderTargetView *aTargetViews[] { m_pRenderTargetView.get () };
-	m_pDeviceContext->OMSetRenderTargets (1, aTargetViews, m_pDepthStencilView.get ());
-}
-
-void DeviceHolder::SetOutputMergerViewport ()
-{
-	D3D11_VIEWPORT viewport;
-	viewport.Width = static_cast<FLOAT>(m_Size.width);
-	viewport.Height = static_cast<FLOAT>(m_Size.height);
-	viewport.MaxDepth = 1.0f;
-	viewport.MinDepth = 0.0f;
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
-	m_pDeviceContext->RSSetViewports (1, &viewport);
-}
-
 void DeviceHolder::HandleDeviceLost ()
 {
 	ReleaseAll ();
@@ -286,14 +238,11 @@ void DeviceHolder::HandleDeviceLost ()
 	FIRE_EVENT (OnDeviceCreated ());
 	CreateSwapChain ();
 	CreateRenderTarget ();
-	CreateDepthStencilView ();
-	SetOutputMergerViewport ();
 }
 
 void DeviceHolder::ReleaseAll ()
 {
 	m_pRenderTargetView = nullptr;
-	m_pDepthStencilView = nullptr;
 	m_pSwapChain = nullptr;
 	m_pDevice = nullptr;
 	if (m_pDeviceContext)

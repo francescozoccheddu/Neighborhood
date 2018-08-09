@@ -140,17 +140,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Engine\DeviceHolder.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Engine\Dispatcher.hpp">
-      <Filter>Header Files\Engine</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -199,17 +199,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Source Files\Engine\DeviceHolder.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Source Files\Engine\Dispatcher.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

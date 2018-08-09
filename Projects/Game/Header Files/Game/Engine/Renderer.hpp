@@ -3,6 +3,8 @@
 #include <Game/Engine/DeviceHolder.hpp>
 #include <Game/Scene/Scene.hpp>
 
+#define _GAME_RENDERER_TARGET_VIEWS_COUNT 3
+
 class Renderer : public DeviceHolder::Listener
 {
 
@@ -23,5 +25,8 @@ protected:
 private:
 
 	const DeviceHolder & m_DeviceHolder;
+	com_ptr<ID3D11DepthStencilView> m_DepthStencilView;
+	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[_GAME_RENDERER_TARGET_VIEWS_COUNT];
+	D3D11_VIEWPORT m_Viewport;
 
 };
