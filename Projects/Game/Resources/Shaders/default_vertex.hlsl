@@ -4,17 +4,19 @@ cbuffer cbPerFrame
     float4x4 mView;
 };
 
-struct VOut
+struct VSOut
 {
     float4 Pos : SV_POSITION;
-    float4 Norm : NORMAL;
+    float3 Norm : NORMAL;
+    float2 TexCoord : TEXCOORD;
 };
 
-VOut main(in float3 inPos : POSITION, in float3 inNorm : NORMAL, in float2 inTexCoord : TEXCOORD)
+VSOut main(in float3 inPos : POSITION, in float3 inNorm : NORMAL, in float2 inTexCoord : TEXCOORD)
 {
-    VOut v;
+    VSOut v;
     v.Pos = mul(mul(float4(inPos, 1.0), mView), mProjection);
-    v.Norm = float4(inNorm, 1.0);
+    v.Norm = inNorm;
+    v.TexCoord = inTexCoord;
     return
 v;
 }

@@ -10,6 +10,8 @@ public:
 
 	using BinaryFileResource::BinaryFileResource;
 
+	void SetShaderResource (ID3D11DeviceContext & deviceContext, UINT slot) const;
+
 	const ID3D11Resource * GetResource () const;
 
 	const ID3D11ShaderResourceView * GetShaderResourceView () const;

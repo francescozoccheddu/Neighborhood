@@ -1,10 +1,14 @@
 struct PSIn
 {
-	float4 Pos : SV_POSITION;
-	float4 Norm : NORMAL;
+    float4 Pos : SV_POSITION;
+    float3 Norm : NORMAL;
+    float2 TexCoord : TEXCOORD;
 };
 
-float4 main (in PSIn v) : SV_TARGET
+Texture2D gColorMap;
+SamplerState gSamplerState;
+
+float4 main(in PSIn v) : SV_TARGET
 {
-	return v.Norm;
+    return gColorMap.Sample(gSamplerState, v.TexCoord);
 }

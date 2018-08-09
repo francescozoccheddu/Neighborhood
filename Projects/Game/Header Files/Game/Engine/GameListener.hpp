@@ -32,6 +32,7 @@ private:
 	Gamepad m_Gamepad;
 	ResourceHolder m_ResourceHolder;
 	ID3D11Buffer * m_pConstantBuffer { nullptr };
+	ID3D11SamplerState * m_pSampler;
 
 };
 
