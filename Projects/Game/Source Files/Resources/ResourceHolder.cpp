@@ -6,14 +6,17 @@
 #define _TEXTURES_DIR _RESOURCES_DIR "Textures/"
 #define _SHADERS_DIR _RESOURCES_DIR "Shaders/"
 #define _SCENES_DIR _RESOURCES_DIR "Scenes/"
+#define _MESH_EXT ".json"
+#define _SHADER_EXT ".cso"
+#define _TEXTURE_EXT ".dds"
 
 #define _INSERT(_map,_key,_val) { auto val{_val}; GAME_ASSERT_MSG(_map.emplace(_key,val).second,"Already added"); OnInsert(val); }
 
-void ResourceHolder::AddMesh (const std::string& _name) _INSERT (m_Meshes, _name, MeshResource (_MESHES_DIR + _name));
+void ResourceHolder::AddMesh (const std::string& _name) _INSERT (m_Meshes, _name, MeshResource (_MESHES_DIR + _name + _MESH_EXT));
 
-void ResourceHolder::AddTexture (const std::string& _name) _INSERT (m_Textures, _name, TextureResource (_TEXTURES_DIR + _name));
+void ResourceHolder::AddTexture (const std::string& _name) _INSERT (m_Textures, _name, TextureResource (_TEXTURES_DIR + _name + _TEXTURE_EXT));
 
-void ResourceHolder::AddShader (const std::string& _name, ShaderResource::ShaderType _eType) _INSERT (m_Shaders, _name, ShaderResource (_SHADERS_DIR + _name, _eType));
+void ResourceHolder::AddShader (const std::string& _name, ShaderResource::ShaderType _eType) _INSERT (m_Shaders, _name, ShaderResource (_SHADERS_DIR + _name + _SHADER_EXT, _eType));
 
 #define _REMOVE(_map,_key) { auto it {_map.find(_key)}; GAME_ASSERT_MSG(it != _map.end(),"Already removed"); OnRemove(it->second); _map.erase(it); }
 

@@ -5,6 +5,7 @@
 #include <Game/Camera/Projection.hpp>
 #include <Game/Camera/View.hpp>
 #include <Game/Input/Gamepad.hpp>
+#include <Game/Resources/ResourceHolder.hpp>
 
 class GameListener : public ResourceHandler::Listener
 {
@@ -29,13 +30,8 @@ private:
 	Camera::Projection m_CamProjection;
 	Camera::View m_CamView;
 	Gamepad m_Gamepad;
-	UINT m_cInds;
-	ID3D11Buffer * m_pIndexBuffer { nullptr };
-	ID3D11Buffer * m_pVertexBuffer { nullptr };
+	ResourceHolder m_ResourceHolder;
 	ID3D11Buffer * m_pConstantBuffer { nullptr };
-	ID3D11VertexShader * m_pVertexShader { nullptr };
-	ID3D11PixelShader * m_pPixelShader { nullptr };
-	ID3D11InputLayout * m_pInputLayout { nullptr };
 
 };
 

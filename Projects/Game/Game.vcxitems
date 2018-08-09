@@ -55,18 +55,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
-      <DeploymentContent>true</DeploymentContent>
-      <FileType>Document</FileType>
-      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
-    </CopyResourceTask>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
-      <DeploymentContent>true</DeploymentContent>
-    </ImageContentTask>
-  </ItemGroup>
-  <ItemGroup>
     <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <DeploymentContent>true</DeploymentContent>
     </ImageContentTask>
@@ -85,9 +73,6 @@
       <FileType>Document</FileType>
       <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
