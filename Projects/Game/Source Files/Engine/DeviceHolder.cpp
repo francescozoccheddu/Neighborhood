@@ -1,64 +1,20 @@
-#include <Game/Engine/ResourceHandler.hpp>
+#include <Game/Engine/DeviceHolder.hpp>
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
-
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
-#define MAX_DELTA_TIME 1.0
 #define FIRE_EVENT(x) { if (pListener) pListener -> x ; }
 
-double ResourceHandler::s_TimerFreq = 0.0;
+DeviceHolder::DeviceHolder () {}
 
-void ResourceHandler::InitializeTimer ()
-{
-	LARGE_INTEGER timerFreq;
-	if (!QueryPerformanceFrequency (&timerFreq))
-	{
-		GAME_THROW_MSG ("Timer frequency query failed");
-	}
-	s_TimerFreq = static_cast<double>(timerFreq.QuadPart);
-}
-
-ResourceHandler::ResourceHandler () {}
-
-ResourceHandler::~ResourceHandler ()
+DeviceHolder::~DeviceHolder ()
 {
 	ReleaseAll ();
 }
 
-void ResourceHandler::Tick ()
+void DeviceHolder::Present ()
 {
-	double deltaTime = 0.0;
-	{
-		LARGE_INTEGER newTime;
-		if (!QueryPerformanceCounter (&newTime))
-		{
-			GAME_THROW_MSG ("Timer query failed");
-		}
-		if (!m_LastTimeValid)
-		{
-			m_LastTimeValid = true;
-			deltaTime = 0.0;
-		}
-		else
-		{
-			deltaTime = static_cast<double>(newTime.QuadPart - m_LastTime.QuadPart) / s_TimerFreq;
-			if (deltaTime < 0.0)
-			{
-				deltaTime = 0.0;
-			}
-			else if (deltaTime > MAX_DELTA_TIME)
-			{
-				deltaTime = MAX_DELTA_TIME;
-			}
-		}
-		m_LastTime = newTime;
-	}
-
-	SetOutputMergerViews ();
-	FIRE_EVENT (OnRender (static_cast<float>(deltaTime)));
-
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
 	pars.pDirtyRects = nullptr;
@@ -84,7 +40,7 @@ void ResourceHandler::Tick ()
 	}
 }
 
-void ResourceHandler::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _bForce)
+void DeviceHolder::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _bForce)
 {
 	if (_bForce || _size != m_Size || _rotation != m_Rotation)
 	{
@@ -121,13 +77,13 @@ void ResourceHandler::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool
 	}
 }
 
-void ResourceHandler::Destroy ()
+void DeviceHolder::Destroy ()
 {
 	ReleaseAll ();
 	FIRE_EVENT (OnDeviceDestroyed ());
 }
 
-void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, DXGI_MODE_ROTATION _rotation)
+void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, DXGI_MODE_ROTATION _rotation)
 {
 	if (!m_pDevice)
 	{
@@ -143,7 +99,7 @@ void ResourceHandler::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size,
 	Size (_size, _rotation, true);
 }
 
-void ResourceHandler::Trim ()
+void DeviceHolder::Trim ()
 {
 	if (m_pDevice)
 	{
@@ -156,7 +112,7 @@ void ResourceHandler::Trim ()
 	}
 }
 
-void ResourceHandler::ValidateDevice ()
+void DeviceHolder::ValidateDevice ()
 {
 	com_ptr<IDXGIFactory2> pFactory;
 	{
@@ -192,47 +148,42 @@ void ResourceHandler::ValidateDevice ()
 	}
 }
 
-void ResourceHandler::InvalidateTimer ()
-{
-	m_LastTimeValid = false;
-}
-
-ID3D11Device * ResourceHandler::GetDevice ()
+ID3D11Device * DeviceHolder::GetDevice ()
 {
 	return m_pDevice.get ();
 }
 
-ID3D11DeviceContext * ResourceHandler::GetDeviceContext ()
+ID3D11DeviceContext * DeviceHolder::GetDeviceContext () const
 {
 	return m_pDeviceContext.get ();
 }
 
-ID3D11RenderTargetView * ResourceHandler::GetRenderTargetView ()
+ID3D11RenderTargetView * DeviceHolder::GetRenderTargetView () const
 {
 	return m_pRenderTargetView.get ();
 }
 
-ID3D11DepthStencilView * ResourceHandler::GetDepthStencilView ()
+ID3D11DepthStencilView * DeviceHolder::GetDepthStencilView ()
 {
 	return m_pDepthStencilView.get ();
 }
 
-WindowSize ResourceHandler::GetSize () const
+WindowSize DeviceHolder::GetSize () const
 {
 	return m_Size;
 }
 
-D3D_FEATURE_LEVEL ResourceHandler::GetSupportedFeatureLevel () const
+D3D_FEATURE_LEVEL DeviceHolder::GetSupportedFeatureLevel () const
 {
 	return m_SupportedFeatureLevel;
 }
 
-DXGI_MODE_ROTATION ResourceHandler::GetRotation () const
+DXGI_MODE_ROTATION DeviceHolder::GetRotation () const
 {
 	return m_Rotation;
 }
 
-void ResourceHandler::CreateDeviceAndDeviceContext ()
+void DeviceHolder::CreateDeviceAndDeviceContext ()
 {
 	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1 };
 	UINT flags { D3D11_CREATE_DEVICE_SINGLETHREADED };
@@ -246,7 +197,7 @@ void ResourceHandler::CreateDeviceAndDeviceContext ()
 	}
 }
 
-void ResourceHandler::CreateSwapChain ()
+void DeviceHolder::CreateSwapChain ()
 {
 	m_pSwapChain = nullptr;
 	com_ptr<IDXGIFactory2> pFactory;
@@ -281,7 +232,7 @@ void ResourceHandler::CreateSwapChain ()
 #endif
 }
 
-void ResourceHandler::CreateRenderTarget ()
+void DeviceHolder::CreateRenderTarget ()
 {
 	m_pRenderTargetView = nullptr;
 	com_ptr<ID3D11Texture2D> pTexture;
@@ -289,7 +240,7 @@ void ResourceHandler::CreateRenderTarget ()
 	GAME_COMC (m_pDevice->CreateRenderTargetView (pTexture.get (), nullptr, m_pRenderTargetView.put ()));
 }
 
-void ResourceHandler::CreateDepthStencilView ()
+void DeviceHolder::CreateDepthStencilView ()
 {
 	m_pDepthStencilView = nullptr;
 	D3D11_TEXTURE2D_DESC desc;
@@ -309,13 +260,13 @@ void ResourceHandler::CreateDepthStencilView ()
 	GAME_COMC (m_pDevice->CreateDepthStencilView (pTexture.get (), nullptr, m_pDepthStencilView.put ()));
 }
 
-void ResourceHandler::SetOutputMergerViews ()
+void DeviceHolder::SetOutputMergerViews ()
 {
 	ID3D11RenderTargetView *aTargetViews[] { m_pRenderTargetView.get () };
 	m_pDeviceContext->OMSetRenderTargets (1, aTargetViews, m_pDepthStencilView.get ());
 }
 
-void ResourceHandler::SetOutputMergerViewport ()
+void DeviceHolder::SetOutputMergerViewport ()
 {
 	D3D11_VIEWPORT viewport;
 	viewport.Width = static_cast<FLOAT>(m_Size.width);
@@ -327,7 +278,7 @@ void ResourceHandler::SetOutputMergerViewport ()
 	m_pDeviceContext->RSSetViewports (1, &viewport);
 }
 
-void ResourceHandler::HandleDeviceLost ()
+void DeviceHolder::HandleDeviceLost ()
 {
 	ReleaseAll ();
 	FIRE_EVENT (OnDeviceDestroyed ());
@@ -339,7 +290,7 @@ void ResourceHandler::HandleDeviceLost ()
 	SetOutputMergerViewport ();
 }
 
-void ResourceHandler::ReleaseAll ()
+void DeviceHolder::ReleaseAll ()
 {
 	m_pRenderTargetView = nullptr;
 	m_pDepthStencilView = nullptr;

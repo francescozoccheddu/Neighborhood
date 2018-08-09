@@ -1,6 +1,6 @@
 ﻿#include <Game/Windows.hpp>
 
-#include <Game/Engine/Game.hpp>
+#include <Game/Engine/Dispatcher.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <cmath>
 #include <ppltasks.h>
@@ -26,9 +26,9 @@ using namespace winrt::Windows::UI::Popups;
 #define GAME_TRY(x) { try { x; } catch(const GameException& ex) { PostError(ex.what()); } }
 
 #ifdef _DEBUG
-#define PGAME_DO(x) { if (pGame) GAME_TRY(pGame->x) }
+#define PGAME_DO(x) { if (pDispatcher) GAME_TRY(pDispatcher->x) }
 #else
-#define PGAME_DO(x) { if (pGame) pGame->x; }
+#define PGAME_DO(x) { if (pDispatcher) pDispatcher->x; }
 #endif
 
 void PostError (const char * _msg)
@@ -64,7 +64,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 	float m_logicalHeight { 600.0f };
 	DisplayOrientations m_nativeOrientation { DisplayOrientations::None };
 	DisplayOrientations m_currentOrientation { DisplayOrientations::None };
-	Game * pGame { nullptr };
+	Dispatcher * pDispatcher { nullptr };
 
 
 	IFrameworkView CreateView ()
@@ -78,7 +78,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		CoreApplication::Suspending ({ this, &App::OnSuspending });
 		CoreApplication::Resuming ({ this, &App::OnResuming });
 
-		pGame = new Game ();
+		pDispatcher = new Dispatcher ();
 	}
 
 	void SetWindow (CoreWindow const & window)
@@ -144,8 +144,8 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 
 	void Uninitialize ()
 	{
-		delete pGame;
-		pGame = nullptr;
+		delete pDispatcher;
+		pDispatcher = nullptr;
 	}
 
 protected:
@@ -311,7 +311,7 @@ private:
 
 int WINAPI wWinMain (HINSTANCE, HINSTANCE, PWSTR, int)
 {
-	GAME_TRY (Game::Initialize ());
+	GAME_TRY (Dispatcher::Initialize ());
 	CoreApplication::Run (App ());
 	return 0;
 }

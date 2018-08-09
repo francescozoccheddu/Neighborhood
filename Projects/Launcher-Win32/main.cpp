@@ -4,7 +4,7 @@
 
 #include "Resource.h"
 #include "ErrorLogger.hpp"
-#include <Game/Engine/Game.hpp>
+#include <Game/Engine/Dispatcher.hpp>
 #include <Game/Utils/Exceptions.hpp>
 
 #define INITIAL_WIDTH 640
@@ -18,14 +18,14 @@
 #define GAME_TRY(x) { try { x; } catch(const GameException& ex) { PostError(ex.what()); } }
 
 #ifdef _DEBUG
-#define PGAME_DO(x) { if (pGame) GAME_TRY(pGame->x) }
+#define PGAME_DO(x) { if (pDispatcher) GAME_TRY(pDispatcher->x) }
 #else
 #define PGAME_DO(x) { if (pGame) pGame->x; }
 #endif
 
 LRESULT CALLBACK MainWinProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-Game * pGame { nullptr };
+Dispatcher * pDispatcher { nullptr };
 
 int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInstance, _In_ LPWSTR _lpCmdLine, _In_ int _nCmdShow)
 {
@@ -34,7 +34,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 
 	//init_apartment ();
 
-	GAME_TRY (Game::Initialize ());
+	GAME_TRY (Dispatcher::Initialize ());
 
 	LPCTSTR title;
 	if (LoadString (_hInstance, IDS_TITLE, (LPTSTR) &title, 0) <= 0)
@@ -62,7 +62,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 		PostLastError ("Unable to register window class");
 	}
 
-	pGame = new Game ();
+	pDispatcher = new Dispatcher ();
 
 	DWORD style { WS_OVERLAPPEDWINDOW | WS_VISIBLE };
 	HWND hWnd = CreateWindow (MAKEINTATOM (classAtom), title, style, CW_USEDEFAULT, CW_USEDEFAULT, INITIAL_WIDTH, INITIAL_HEIGHT, NULL, NULL, _hInstance, NULL);
@@ -90,8 +90,8 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 		}
 	}
 
-	delete pGame;
-	pGame = nullptr;
+	delete pDispatcher;
+	pDispatcher = nullptr;
 
 	//uninit_apartment ();
 
@@ -125,7 +125,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 
 		case WM_PAINT:
 		{
-			if (s_bSizing && pGame)
+			if (s_bSizing && pDispatcher)
 			{
 				PGAME_DO (Tick ());
 			}
@@ -144,7 +144,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				if (!s_bMinimized)
 				{
 					s_bMinimized = true;
-					if (!s_bSuspended && pGame)
+					if (!s_bSuspended && pDispatcher)
 					{
 						PGAME_DO (Suspend ());
 					}
@@ -154,7 +154,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 			else if (s_bMinimized)
 			{
 				s_bMinimized = false;
-				if (s_bSuspended && pGame)
+				if (s_bSuspended && pDispatcher)
 				{
 					PGAME_DO (Resume ());
 				}
@@ -163,7 +163,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 			else
 			{
 #if HANDLE_SIZING_ON_DRAG_RESIZING
-				if (pGame)
+				if (pDispatcher)
 #else
 				if (!s_bSizing && pGame)
 #endif
@@ -207,7 +207,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 			switch (_wParam)
 			{
 				case PBT_APMQUERYSUSPEND:
-					if (!s_bSuspended && pGame)
+					if (!s_bSuspended && pDispatcher)
 					{
 						PGAME_DO (Suspend ());
 					}
@@ -217,7 +217,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				case PBT_APMRESUMESUSPEND:
 					if (!s_bMinimized)
 					{
-						if (s_bSuspended && pGame)
+						if (s_bSuspended && pDispatcher)
 						{
 							PGAME_DO (Resume ());
 						}

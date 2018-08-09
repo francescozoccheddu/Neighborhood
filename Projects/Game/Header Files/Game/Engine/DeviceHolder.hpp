@@ -32,7 +32,7 @@ struct WindowSize
 
 };
 
-class ResourceHandler
+class DeviceHolder
 {
 
 public:
@@ -45,7 +45,7 @@ public:
 
 	protected:
 
-		friend class ResourceHandler;
+		friend class DeviceHolder;
 
 		Listener () = default;
 
@@ -53,19 +53,15 @@ public:
 
 		virtual void OnDeviceCreated () = 0;
 
-		virtual void OnRender (double deltaTime) = 0;
-
 		virtual void OnSized (WindowSize size, DXGI_MODE_ROTATION rotation) = 0;
 
 	};
 
-	static void InitializeTimer ();
+	DeviceHolder ();
 
-	ResourceHandler ();
+	virtual ~DeviceHolder ();
 
-	virtual ~ResourceHandler ();
-
-	void Tick ();
+	void Present ();
 
 	void Size (WindowSize size, DXGI_MODE_ROTATION rotation, bool bForce = false);
 
@@ -75,15 +71,13 @@ public:
 
 	void Trim ();
 
-	void InvalidateTimer ();
-
 	void ValidateDevice ();
 
 	ID3D11Device * GetDevice ();
 
-	ID3D11DeviceContext * GetDeviceContext ();
+	ID3D11DeviceContext * GetDeviceContext () const;
 
-	ID3D11RenderTargetView * GetRenderTargetView ();
+	ID3D11RenderTargetView * GetRenderTargetView () const;
 
 	ID3D11DepthStencilView * GetDepthStencilView ();
 
@@ -99,8 +93,7 @@ private:
 
 	static double s_TimerFreq;
 
-	bool m_LastTimeValid { false };
-	LARGE_INTEGER m_LastTime;
+
 	GAME_NATIVE_WINDOW_T m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	com_ptr<ID3D11Device> m_pDevice { nullptr };
@@ -126,8 +119,6 @@ private:
 	void HandleDeviceLost ();
 
 	void ReleaseAll ();
-
-	void ReleaseSizeDependentResources ();
 
 };
 
