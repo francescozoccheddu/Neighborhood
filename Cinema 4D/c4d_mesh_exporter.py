@@ -6,8 +6,8 @@ from c4d import gui
 from c4d import documents
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
-output_filename = os.path.join(script_directory, "meshes.json")
-texture_directory = os.path.join(script_directory, "Textures/")
+output_directory = os.path.join(script_directory, "../Projects/Game/Resources/Meshes/")
+output_ext = ".json"
 output_scale = 1.0 / 100.0
 
 class CompareResult:
@@ -42,12 +42,8 @@ def compareList(a,b):
             return CompareResult.GREATER 
     return CompareResult.EQUAL
 
-def vectorToDict(vec):
-    return {
-            "x" : vec.x,
-            "y" : vec.y,
-            "z" : vec.z
-        }
+def vectorToList(vec):
+    return [vec.x,vec.y,vec.z]
 
 class Vertex:
 
@@ -62,22 +58,14 @@ class Vertex:
     def __eq__(self, other):
         return self._position == other._position and self._normal == other._normal and self._textcoord == other._textcoord
 
-    def toDict(self):
-        return {
-            "position" : vectorToDict(self._position),
-            "normal" : vectorToDict(self._normal),
-            "textcoord" : {
-                    "x" : self._textcoord[0],
-                    "y" : self._textcoord[1]
-                } if self._textcoord is not None else None
-        }
+    def toList(self):
+        return vectorToList(self._position) + vectorToList(self._normal) + self._textcoord
 
 class MeshBuilder:
 
     def __init__(self):
         self._vertices = []
         self._indices = []
-        self._colorTextureName = None
 
     def _buildVertices(self):
         return self._vertices
@@ -93,14 +81,10 @@ class MeshBuilder:
         self._indices.append(len(self._vertices))
         self._vertices.append(vert)
 
-    def setColorTextureName(self, name):
-        self._colorTextureName = name
-
     def toDict(self):
         return {
-            "vertices" : list(map(lambda v: v.toDict(), self._buildVertices())),
-            "indices" : self._buildIndices(),
-            "color_texture_name" : self._colorTextureName
+            "verts" : list(map(lambda v: v.toList(), self._buildVertices())),
+            "inds" : self._buildIndices()
             }
 
 class BisectMeshBuilder(MeshBuilder):
@@ -140,29 +124,12 @@ def getTextCoordFromVector(vec):
         raise RuntimeError("Unexpected UVW mapping")
     return [vec.x, vec.y]
 
-def getColorTextureName(obj):
-    ttag = None
-    for tag in obj.GetTags():
-        if tag.GetType() == c4d.Ttexture:
-            if ttag is not None:
-                raise RuntimeError("Object has multiple texture tag")
-            ttag = tag
-    mat = ttag.GetMaterial()
-    if mat.GetType() != c4d.Mmaterial:
-        raise RuntimeError("Object has unsupported material type")
-    col = mat[c4d.MATERIAL_COLOR_SHADER]
-    name = col[c4d.BITMAPSHADER_FILENAME]
-    if os.path.normpath(os.path.dirname(name)) != os.path.normpath(texture_directory):
-        raise RuntimeError("Object has textures stored outside the texture directory")
-    return os.path.splitext(os.path.basename(name))[0]
-
 def makeMeshForObject(obj, scale=1.0, useBisect=True):
     if obj.GetType() == c4d.Opolygon:
         points = obj.GetAllPoints()
         phong_norms = obj.CreatePhongNormals()
         uvw_tag = obj.GetTag(c4d.Tuvw)
         mesh = BisectMeshBuilder() if useBisect else MeshBuilder()
-        mesh.setColorTextureName(getColorTextureName(obj))
         for poly_ind, poly in enumerate(obj.GetAllPolygons()):
             if not poly.IsTriangle():
                 raise RuntimeError("Polygon object is not triangulated")
@@ -175,10 +142,9 @@ def makeMeshForObject(obj, scale=1.0, useBisect=True):
                 uvw = uvw_tag.GetSlow(poly_ind)
                 poly_uvs = [getTextCoordFromVector(uvw[key]) for key in ["a","b","c"]]
             else:
-                poly_uvs = [None] * 3
+                poly_uvs = [0] * 3
             for vert_ind in range(3):
                 mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_uvs[vert_ind]))
-        #print("Verts %d Inds %d" % (len(mesh._vertices),len(mesh._indices)))
         return mesh
     else:
         raise RuntimeError("Object is not a polygon object")
@@ -190,26 +156,26 @@ def main():
     doc = documents.GetActiveDocument()
     objs = doc.GetActiveObjects(c4d.GETACTIVEOBJECTFLAGS_0)
     scale = 1.0 / 100.0
-    jobjmap = {}
     
-    print("-- C4D Export to JSON for Neighborhood project --")
+    print("-- C4D JSON mesh exporter for Neighborhood project --")
     
+    jobjs = {}
+
     for obj in objs:
             try:
                 jobj = objToDict(obj, output_scale)
-                if obj.GetName() in jobjmap:
-                    print("Object name '%s' appears multiple times, only one object with this name will be exported" % obj.GetName())
-                jobjmap[obj.GetName()] = jobj
+                jobjs[obj.GetName()] = jobj
             except RuntimeError as ex:
                 print("Error while exporting object '%s'" % obj.GetName())
                 print(ex)
                 return
     
-    with open(output_filename, "w") as out:
-        out.write(json.dumps(jobjmap, separators=(',', ':'), indent=None))
+    for name, jobj in jobjs.iteritems():
+        filename = os.path.join(output_directory, name + output_ext)
+        with open(filename, "w") as out:
+            out.write(json.dumps(jobj, separators=(',', ':'), indent=None))
+        print("Successfully written mesh '%s'" % name)
 
-    print("Successfully written to file '%s'" % output_filename)
-        
     gui.MessageDialog("Exporting done successfully", c4d.GEMB_OK)
 
 if __name__ == '__main__':

@@ -9,12 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{8f476d3a-d070-41cd-940d-914b785af222}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cinema 4D">
-      <UniqueIdentifier>{fe61bc82-3fcf-4d6f-9214-a0cd1f7b6acc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{811740c8-d7c3-420f-a164-33fb23486b53}</UniqueIdentifier>
     </Filter>
@@ -45,20 +39,27 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{d8396942-755d-4509-8724-eef8d56aa266}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cinema 4D\Models">
-      <UniqueIdentifier>{1a9a4e45-e888-4ad7-8dd4-cb62af007c6f}</UniqueIdentifier>
+    <Filter Include="Header Files\Resources">
+      <UniqueIdentifier>{1112deb4-7595-4d2d-aedb-7b3717013aed}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Cinema 4D\Textures">
-      <UniqueIdentifier>{54aac4ee-0fd8-45dd-aeb8-e3812939607e}</UniqueIdentifier>
+    <Filter Include="Source Files\Resources">
+      <UniqueIdentifier>{0c290c93-606d-409d-8238-15a076864e1c}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\PixelShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\VertexShader.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{edb948e3-6054-4655-80f7-e6ba44de4a84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Meshes">
+      <UniqueIdentifier>{f6608751-f373-4dbd-b5f5-b0556fa74884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{e7566e94-7bbe-4a25-a925-c9c04453e829}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{df1aa185-fc23-4bde-b231-8ca138053e90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Scenes">
+      <UniqueIdentifier>{705b1c3d-d53d-430a-8383-bd0b4f861b66}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp">
@@ -91,12 +92,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Loader.hpp">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Mesh.hpp">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -107,6 +102,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -135,27 +154,44 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Loader.cpp">
-      <Filter>Source Files\Scene</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Mesh.cpp">
-      <Filter>Source Files\Scene</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ResourceHolder.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Models\Sammy.c4d">
-      <Filter>Cinema 4D\Models</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\C4D_Exporter.py">
-      <Filter>Cinema 4D</Filter>
-    </None>
-    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\meshes.json">
-      <Filter>Cinema 4D</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_pixel.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_vertex.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <Filter>Resources\Meshes</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="$(MSBuildThisFileDirectory)Cinema 4D\Textures\Sammy.tif">
-      <Filter>Cinema 4D\Textures</Filter>
+    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>
