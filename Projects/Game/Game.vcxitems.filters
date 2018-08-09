@@ -60,14 +60,14 @@
     <Filter Include="Resources\Scenes">
       <UniqueIdentifier>{705b1c3d-d53d-430a-8383-bd0b4f861b66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Logic">
+      <UniqueIdentifier>{ea4af168-f1d0-4979-b709-49ecb60978d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Logic">
+      <UniqueIdentifier>{668f97a6-7283-4163-9c16-8556fda6f2d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Game.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -140,14 +140,20 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Engine\DeviceHolder.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
+      <Filter>Header Files\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Engine\Dispatcher.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Game.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -192,6 +198,18 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Source Files\Engine\DeviceHolder.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp">
+      <Filter>Source Files\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Source Files\Engine\Dispatcher.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

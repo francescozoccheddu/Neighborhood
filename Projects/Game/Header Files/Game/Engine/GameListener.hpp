@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include <Game/Direct3D.hpp>
 #include <Game/Engine/ResourceHandler.hpp>
 #include <Game/Camera/Projection.hpp>
@@ -34,5 +35,5 @@ private:
 	ID3D11Buffer * m_pConstantBuffer { nullptr };
 	ID3D11SamplerState * m_pSampler;
 
-};
+}; */
 

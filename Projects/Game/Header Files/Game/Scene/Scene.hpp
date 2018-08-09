@@ -22,4 +22,5 @@ struct Scene
 	std::vector<DirectionalLight> directionalLights;
 	std::vector<ConeLight> coneLight;
 
+
 };

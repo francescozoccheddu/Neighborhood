@@ -19,10 +19,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Game.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\ResourceHandler.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
@@ -44,10 +46,12 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Game.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\ResourceHandler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />

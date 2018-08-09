@@ -1,5 +1,6 @@
 #include <Game/Engine/GameListener.hpp>
 
+/*
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
@@ -131,3 +132,4 @@ void GameListener::OnSized (WindowSize _size, DXGI_MODE_ROTATION _rotation)
 	m_CamProjection.vFov = Camera::Projection::CalcVFov (1.2f, m_CamProjection.aspectRatio);
 }
 
+*/
