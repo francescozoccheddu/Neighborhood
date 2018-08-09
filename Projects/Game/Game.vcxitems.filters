@@ -125,8 +125,20 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Material.hpp">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp">
+      <Filter>Header Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -172,8 +184,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Transform.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,13 +203,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <Filter>Resources\Meshes</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <Filter>Resources\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <Filter>Resources\Meshes</Filter>
+    </None>
   </ItemGroup>
 </Project>
