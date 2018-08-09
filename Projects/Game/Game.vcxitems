@@ -30,6 +30,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Material.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
@@ -51,6 +55,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ResourceHolder.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
   </ItemGroup>
@@ -76,5 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json" />
   </ItemGroup>
 </Project>
