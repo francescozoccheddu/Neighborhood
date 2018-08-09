@@ -73,13 +73,11 @@ public:
 
 	void ValidateDevice ();
 
-	ID3D11Device * GetDevice ();
+	ID3D11Device * GetDevice () const;
 
 	ID3D11DeviceContext * GetDeviceContext () const;
 
 	ID3D11RenderTargetView * GetRenderTargetView () const;
-
-	ID3D11DepthStencilView * GetDepthStencilView ();
 
 	WindowSize GetSize () const;
 
@@ -92,15 +90,12 @@ public:
 private:
 
 	static double s_TimerFreq;
-
-
 	GAME_NATIVE_WINDOW_T m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	com_ptr<ID3D11Device> m_pDevice { nullptr };
 	com_ptr<ID3D11DeviceContext> m_pDeviceContext { nullptr };
 	com_ptr<IDXGISwapChain1> m_pSwapChain { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_pRenderTargetView { nullptr };
-	com_ptr<ID3D11DepthStencilView> m_pDepthStencilView { nullptr };
 	D3D_FEATURE_LEVEL m_SupportedFeatureLevel;
 	DXGI_MODE_ROTATION m_Rotation { DXGI_MODE_ROTATION_IDENTITY };
 
@@ -109,12 +104,6 @@ private:
 	void CreateSwapChain ();
 
 	void CreateRenderTarget ();
-
-	void CreateDepthStencilView ();
-
-	void SetOutputMergerViews ();
-
-	void SetOutputMergerViewport ();
 
 	void HandleDeviceLost ();
 
