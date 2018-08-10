@@ -9,12 +9,6 @@ public:
 
 	virtual ~Resource () = default;
 
-	bool IsLoaded () const;
-
-	void Load ();
-
-	void Unload ();
-
 	bool IsCreated () const;
 
 	void Create (ID3D11Device & device);
@@ -22,10 +16,6 @@ public:
 	void Destroy ();
 
 protected:
-
-	virtual void DoLoad () = 0;
-
-	virtual void DoUnload () = 0;
 
 	virtual void DoCreate (ID3D11Device & device) = 0;
 
@@ -35,7 +25,6 @@ protected:
 
 private:
 
-	bool m_bLoaded { false };
 	bool m_bCreated { false };
 
 };

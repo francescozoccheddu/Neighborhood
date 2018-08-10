@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
@@ -48,6 +49,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp" />

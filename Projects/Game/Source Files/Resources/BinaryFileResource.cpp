@@ -13,7 +13,7 @@ void BinaryFileResource::DoUnload ()
 	delete m_pData;
 }
 
-void BinaryFileResource::DoCreate (ID3D11Device & _device)
+void BinaryFileResource::DoCreateFromFile (ID3D11Device & _device)
 {
 	DoCreateFromBinary (_device, m_pData, m_cData);
 }

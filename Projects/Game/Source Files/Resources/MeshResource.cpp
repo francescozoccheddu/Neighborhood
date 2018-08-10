@@ -89,7 +89,7 @@ void MeshResource::DoLoad ()
 	}
 }
 
-void MeshResource::DoCreate (ID3D11Device & _device)
+void MeshResource::DoCreateFromFile (ID3D11Device & _device)
 {
 	{
 		D3D11_BUFFER_DESC desc;
