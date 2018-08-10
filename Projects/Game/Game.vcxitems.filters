@@ -15,9 +15,6 @@
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{6e3996e5-5dac-4b35-b51c-250a32ac9bb7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Camera">
-      <UniqueIdentifier>{7d3142bc-8524-47d2-b0cf-14dd1617b796}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{ad892d61-eade-4b35-8843-6b99d120e14f}</UniqueIdentifier>
     </Filter>
@@ -32,9 +29,6 @@
     </Filter>
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{647eaaf0-18ba-4d3f-b5ae-4ffa4a4889b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Camera">
-      <UniqueIdentifier>{1a71c46b-60e6-499b-a68c-3ee634dac790}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{d8396942-755d-4509-8724-eef8d56aa266}</UniqueIdentifier>
@@ -83,12 +77,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\Projection.hpp">
-      <Filter>Header Files\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp">
-      <Filter>Header Files\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
@@ -119,26 +107,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp">
       <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Material.hpp">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp">
-      <Filter>Header Files\Scene</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp">
       <Filter>Header Files\Engine</Filter>
@@ -146,11 +122,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,12 +141,6 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp">
       <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp">
-      <Filter>Source Files\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp">
-      <Filter>Source Files\Camera</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp">
       <Filter>Source Files\Input</Filter>
@@ -184,16 +157,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ResourceHolder.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp">
-      <Filter>Source Files\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Transform.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp">
@@ -205,11 +172,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp">
+      <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

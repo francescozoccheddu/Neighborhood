@@ -70,7 +70,7 @@ Dispatcher::~Dispatcher ()
 
 void Dispatcher::Render ()
 {
-	m_Renderer.Render ({});
+	m_Renderer.Render (Scene {});
 	m_DeviceHolder.Present ();
 }
 
