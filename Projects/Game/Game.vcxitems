@@ -14,8 +14,6 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\Projection.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Camera\View.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp" />
@@ -32,10 +30,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Light.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Material.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
@@ -44,8 +39,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\Projection.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera\View.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp" />
@@ -56,11 +49,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ResourceHolder.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Transform.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
   </ItemGroup>
