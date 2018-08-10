@@ -34,7 +34,7 @@ protected:
 
 	void DoUnload () override;
 
-	void DoCreate (ID3D11Device & device) override;
+	void DoCreateFromFile (ID3D11Device & device) override;
 
 	void DoDestroy () override;
 

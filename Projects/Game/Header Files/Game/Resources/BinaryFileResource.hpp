@@ -13,7 +13,7 @@ protected:
 
 	void DoUnload () override final;
 
-	void DoCreate (ID3D11Device & device) override final;
+	void DoCreateFromFile (ID3D11Device & device) override final;
 
 	virtual void DoCreateFromBinary (ID3D11Device & device, const void * pData, int cData) = 0;
 

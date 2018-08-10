@@ -20,7 +20,7 @@
 #ifdef _DEBUG
 #define PGAME_DO(x) { if (pDispatcher) GAME_TRY(pDispatcher->x) }
 #else
-#define PGAME_DO(x) { if (pGame) pGame->x; }
+#define PGAME_DO(x) { if (pDispatcher) pDispatcher->x; }
 #endif
 
 LRESULT CALLBACK MainWinProc (HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
