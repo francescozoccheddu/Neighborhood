@@ -5,6 +5,11 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
+MeshResource::~MeshResource ()
+{
+	MeshResource::DoDestroy ();
+}
+
 void MeshResource::SetIAVertexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer * _pBuffer)
 {
 	UINT stride { sizeof (Vertex) };
@@ -129,6 +134,12 @@ void MeshResource::DoUnload ()
 
 void MeshResource::DoDestroy ()
 {
-	m_pVertexBuffer->Release ();
-	m_pIndexBuffer->Release ();
+	if (m_pVertexBuffer)
+	{
+		m_pVertexBuffer->Release ();
+	}
+	if (m_pIndexBuffer)
+	{
+		m_pIndexBuffer->Release ();
+	}
 }

@@ -23,12 +23,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\BinaryFileResource.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\FileResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ResourceHolder.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
@@ -46,8 +43,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\BinaryFileResource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\FileResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />
@@ -76,11 +71,5 @@
       <FileType>Document</FileType>
       <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json" />
   </ItemGroup>
 </Project>

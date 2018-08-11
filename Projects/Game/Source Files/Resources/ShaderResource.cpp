@@ -6,6 +6,11 @@
 
 ShaderResource::ShaderResource (const std::string& _fileName, ShaderType _eType) : BinaryFileResource { _fileName }, m_eType { _eType } {}
 
+ShaderResource::~ShaderResource ()
+{
+	ShaderResource::DoDestroy ();
+}
+
 void ShaderResource::SetShaderAndInputLayout (ID3D11DeviceContext & _deviceContext) const
 {
 	AssertCreated ();
@@ -62,9 +67,51 @@ void ShaderResource::DoCreateFromBinary (ID3D11Device & _device, const void * _p
 
 void ShaderResource::DoDestroy ()
 {
-	reinterpret_cast<IUnknown*>(m_pShader)->Release ();
-	if (m_eType == ShaderType::VERTEX)
+	if (m_pShader)
+	{
+		m_pShader->Release ();
+	}
+	if (m_pInputLayout)
 	{
 		m_pInputLayout->Release ();
 	}
 }
+
+/*
+
+#define _DO(_what) { for(ShaderResource& s : m_Shaders) { s. _what ; } }
+
+ShaderPass::ShaderPass (const std::vector<ShaderDef> & _shaders)
+{
+	for (int iS { 0 }; iS < _shaders.size (); iS++)
+	{
+		const ShaderDef &def { _shaders[iS] };
+		m_Shaders.push_back (ShaderResource (def.name, def.eType));
+	}
+}
+
+void ShaderPass::SetShaderAndInputLayout (ID3D11DeviceContext & _deviceContext) const
+{
+	for (const ShaderResource& s : m_Shaders) { s.SetShaderAndInputLayout (_deviceContext); }
+}
+
+void ShaderPass::DoCreateAfterLoad (ID3D11Device & _device)
+{
+	_DO (Create (_device));
+}
+
+void ShaderPass::DoDestroy ()
+{
+	_DO (Destroy ());
+}
+
+void ShaderPass::DoLoad ()
+{
+	_DO (Load ());
+}
+
+void ShaderPass::DoUnload ()
+{
+	_DO (Unload ());
+}
+*/

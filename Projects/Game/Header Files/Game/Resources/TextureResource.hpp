@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Game/Resources/BinaryFileResource.hpp>
+#include <Game/Resources/Resource.hpp>
 #include <Game/Direct3D.hpp>
 
 class TextureResource : public BinaryFileResource
@@ -9,6 +9,8 @@ class TextureResource : public BinaryFileResource
 public:
 
 	using BinaryFileResource::BinaryFileResource;
+
+	~TextureResource ();
 
 	void SetShaderResource (ID3D11DeviceContext & deviceContext, UINT slot) const;
 

@@ -3,6 +3,11 @@
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/DDSLoader.hpp>
 
+TextureResource::~TextureResource ()
+{
+	TextureResource::DoDestroy ();
+}
+
 void TextureResource::SetShaderResource (ID3D11DeviceContext & _deviceContext, UINT _slot) const
 {
 	AssertCreated ();
@@ -28,6 +33,12 @@ void TextureResource::DoCreateFromBinary (ID3D11Device & _device, const void * _
 
 void TextureResource::DoDestroy ()
 {
-	m_pResource->Release ();
-	m_pResourceView->Release ();
+	if (m_pResource)
+	{
+		m_pResource->Release ();
+	}
+	if (m_pResourceView)
+	{
+		m_pResourceView->Release ();
+	}
 }

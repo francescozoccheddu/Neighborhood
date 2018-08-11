@@ -41,28 +41,28 @@ private:
 			auto iterator { m_Map.find (_name) };
 			if (iterator == m_Map.end ())
 			{
-				iterator = m_Map.emplace (_name, Entry { T (_name), 0 }).first;
+				iterator = m_Map.emplace (_name, Entry { new T { _name }, 0 }).first;
 			}
 			Entry & entry { iterator->second };
 			entry.lastMoment = _moment;
-			if (!entry.resource.IsLoaded ())
+			if (!entry.resource->IsLoaded ())
 			{
-				entry.resource.Load ();
+				entry.resource->Load ();
 			}
-			if (!entry.resource.IsCreated ())
+			if (!entry.resource->IsCreated ())
 			{
-				entry.resource.Create (_pDevice);
+				entry.resource->Create (_pDevice);
 			}
-			return entry.resource;
+			return *entry.resource;
 		}
 
 		void DestroyOlder (moment_t _moment)
 		{
 			for (auto &[key, entry] : m_Map)
 			{
-				if (entry.lastMoment < _moment && entry.resource.IsCreated ())
+				if (entry.lastMoment < _moment && entry.resource->IsCreated ())
 				{
-					entry.resource.Destroy ();
+					entry.resource->Destroy ();
 				}
 			}
 		}
@@ -71,7 +71,7 @@ private:
 		{
 			for (auto &[key, entry] : m_Map)
 			{
-				entry.resource.Create (_device);
+				entry.resource->Create (_device);
 			}
 		}
 
@@ -79,10 +79,18 @@ private:
 		{
 			for (auto &[key, entry] : m_Map)
 			{
-				if (entry.resource.IsCreated ())
+				if (entry.resource->IsCreated ())
 				{
-					entry.resource.Destroy ();
+					entry.resource->Destroy ();
 				}
+			}
+		}
+
+		~MeteredResourceMap ()
+		{
+			for (auto &[key, entry] : m_Map)
+			{
+				delete entry.resource;
 			}
 		}
 
@@ -90,7 +98,7 @@ private:
 
 		struct Entry
 		{
-			T resource;
+			T* resource;
 			moment_t lastMoment;
 		};
 

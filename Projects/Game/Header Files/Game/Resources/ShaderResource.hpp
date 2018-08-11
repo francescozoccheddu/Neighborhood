@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Game/Resources/BinaryFileResource.hpp>
+#include <Game/Resources/Resource.hpp>
 #include <Game/Direct3D.hpp>
 
 class ShaderResource : public BinaryFileResource
@@ -8,12 +8,15 @@ class ShaderResource : public BinaryFileResource
 
 public:
 
+
 	enum class ShaderType
 	{
 		VERTEX, PIXEL
 	};
 
 	ShaderResource (const std::string& fileName, ShaderType eType);
+
+	~ShaderResource ();
 
 	void SetShaderAndInputLayout (ID3D11DeviceContext & deviceContext) const;
 
@@ -32,7 +35,39 @@ protected:
 private:
 
 	const ShaderType m_eType;
-	void * m_pShader;
-	ID3D11InputLayout * m_pInputLayout;
+	IUnknown * m_pShader { nullptr };
+	ID3D11InputLayout * m_pInputLayout { nullptr };
 
 };
+
+/*
+class ShaderPass : public LoadableResource
+{
+
+public:
+
+	struct ShaderDef
+	{
+		const std::string & name;
+		const ShaderResource::ShaderType eType;
+	};
+
+	ShaderPass (const std::vector<ShaderDef> & shaders);
+
+	void SetShaderAndInputLayout (ID3D11DeviceContext & deviceContext) const;
+
+protected:
+
+	void DoCreateAfterLoad (ID3D11Device & device);
+
+	void DoDestroy ();
+
+	void DoLoad ();
+
+	void DoUnload ();
+
+private:
+
+	std::vector<ShaderResource> m_Shaders;
+
+};*/
