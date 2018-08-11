@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Game/Resources/FileResource.hpp>
+#include <Game/Resources/Resource.hpp>
 #include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
 #include <cstdint>
@@ -13,6 +13,8 @@ class MeshResource : public FileResource
 public:
 
 	using FileResource::FileResource;
+
+	~MeshResource ();
 
 	static void SetIAVertexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
 
@@ -61,8 +63,8 @@ private:
 	ind_t * m_pIndices;
 	int m_cIndices;
 
-	ID3D11Buffer * m_pVertexBuffer;
-	ID3D11Buffer * m_pIndexBuffer;
+	ID3D11Buffer * m_pVertexBuffer { nullptr };
+	ID3D11Buffer * m_pIndexBuffer { nullptr };
 
 	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, offsetof (Vertex, position), 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },

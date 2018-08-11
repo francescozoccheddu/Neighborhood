@@ -6,6 +6,7 @@ m_MapTextureResource. _what ;
 
 void SceneResources::DoCreate (ID3D11Device & _device)
 {
+	m_pDevice = &_device;
 	_DO (CreateAll (_device));
 }
 
