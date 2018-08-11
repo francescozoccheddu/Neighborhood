@@ -30,7 +30,7 @@ private:
 	com_ptr<ID3D11DepthStencilView> m_DepthStencilView;
 	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[_GAME_RENDERER_TARGET_VIEWS_COUNT];
 	D3D11_VIEWPORT m_Viewport;
-	//SceneResources m_SceneResources;
-	//ShaderPass m_GeometryShaderPass;
+	SceneResources m_SceneResources;
+	ShaderPassResource m_GeometryShaderPass;
 
 };

@@ -5,40 +5,34 @@
 
 TextureResource::~TextureResource ()
 {
-	TextureResource::DoDestroy ();
+	if (TextureResource::IsCreated ())
+	{
+		TextureResource::Destroy ();
+	}
 }
 
-void TextureResource::SetShaderResource (ID3D11DeviceContext & _deviceContext, UINT _slot) const
+void TextureResource::SetShaderResourceView (ID3D11DeviceContext & _deviceContext, UINT _slot) const
 {
-	AssertCreated ();
+	GAME_ASSERT_MSG (TextureResource::IsCreated (), "Not created");
 	GAME_COMC (_deviceContext.PSSetShaderResources (_slot, 1, &m_pResourceView));
 }
 
-const ID3D11Resource * TextureResource::GetResource () const
+void TextureResource::Create (ID3D11Device & _device)
 {
-	AssertCreated ();
-	return m_pResource;
+	GAME_ASSERT_MSG (IsLoaded (), "Not created");
+	ID3D11Resource * pResource;
+	GAME_COMC (DirectX::CreateDDSTextureFromMemory (&_device, reinterpret_cast<const uint8_t*> (GetData ()), static_cast<size_t>(GetSize ()), &pResource, &m_pResourceView));
+	pResource->Release ();
 }
 
-const ID3D11ShaderResourceView * TextureResource::GetShaderResourceView () const
+void TextureResource::Destroy ()
 {
-	AssertCreated ();
-	return m_pResourceView;
+	GAME_ASSERT_MSG (TextureResource::IsCreated (), "Not created");
+	delete m_pResourceView;
+	m_pResourceView = nullptr;
 }
 
-void TextureResource::DoCreateFromBinary (ID3D11Device & _device, const void * _pData, int _cData)
+bool TextureResource::IsCreated () const
 {
-	GAME_COMC (DirectX::CreateDDSTextureFromMemory (&_device, reinterpret_cast<const uint8_t*>(_pData), static_cast<size_t>(_cData), &m_pResource, &m_pResourceView));
-}
-
-void TextureResource::DoDestroy ()
-{
-	if (m_pResource)
-	{
-		m_pResource->Release ();
-	}
-	if (m_pResourceView)
-	{
-		m_pResourceView->Release ();
-	}
+	return m_pResourceView != nullptr;
 }

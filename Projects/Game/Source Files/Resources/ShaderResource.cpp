@@ -4,114 +4,114 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
-ShaderResource::ShaderResource (const std::string& _fileName, ShaderType _eType) : BinaryFileResource { _fileName }, m_eType { _eType } {}
-
-ShaderResource::~ShaderResource ()
+VertexShaderResource::~VertexShaderResource ()
 {
-	ShaderResource::DoDestroy ();
-}
-
-void ShaderResource::SetShaderAndInputLayout (ID3D11DeviceContext & _deviceContext) const
-{
-	AssertCreated ();
-	switch (m_eType)
+	if (VertexShaderResource::IsCreated ())
 	{
-		case ShaderType::PIXEL:
-			GAME_COMC (_deviceContext.PSSetShader (reinterpret_cast<ID3D11PixelShader*>(m_pShader), nullptr, 0));
-			break;
-		case ShaderType::VERTEX:
-			GAME_COMC (_deviceContext.VSSetShader (reinterpret_cast<ID3D11VertexShader*>(m_pShader), nullptr, 0));
-			GAME_COMC (_deviceContext.IASetInputLayout (m_pInputLayout));
-			break;
-		default:
-			GAME_THROW_MSG ("Unknown shader type");
+		VertexShaderResource::Destroy ();
 	}
 }
 
-const ID3D11InputLayout * ShaderResource::GetInputLayout () const
+void VertexShaderResource::SetShaderAndInputLayout (ID3D11DeviceContext & _deviceContext) const
 {
-	AssertCreated ();
-	GAME_ASSERT_MSG (m_eType == ShaderType::VERTEX, "Not a vertex shader");
-	return m_pInputLayout;
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	GAME_COMC (_deviceContext.VSSetShader (m_pShader, nullptr, 0));
+	GAME_COMC (_deviceContext.IASetInputLayout (m_pInputLayout));
 }
 
-const ID3D11PixelShader * ShaderResource::GetPixelShader () const
+void VertexShaderResource::Create (ID3D11Device & _device)
 {
-	AssertCreated ();
-	GAME_ASSERT_MSG (m_eType == ShaderType::PIXEL, "Not a pixel shader");
-	return reinterpret_cast<ID3D11PixelShader*>(m_pShader);
+	GAME_ASSERT_MSG (!IsCreated (), "Already created");
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
+	GAME_COMC (_device.CreateVertexShader (GetData (), static_cast<SIZE_T>(GetSize ()), nullptr, &m_pShader));
+	GAME_COMC (_device.CreateInputLayout (MeshResource::s_aInputElementDesc, ARRAYSIZE (MeshResource::s_aInputElementDesc), GetData (), static_cast<SIZE_T>(GetSize ()), &m_pInputLayout));
 }
 
-const ID3D11VertexShader * ShaderResource::GetVertexShader () const
+void VertexShaderResource::Destroy ()
 {
-	AssertCreated ();
-	GAME_ASSERT_MSG (m_eType == ShaderType::VERTEX, "Not a vertex shader");
-	return reinterpret_cast<ID3D11VertexShader*>(m_pShader);
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	m_pShader->Release ();
+	m_pInputLayout->Release ();
+	m_pShader = nullptr;
+	m_pInputLayout = nullptr;
 }
 
-void ShaderResource::DoCreateFromBinary (ID3D11Device & _device, const void * _pData, int _cData)
+bool VertexShaderResource::IsCreated () const
 {
-	switch (m_eType)
+	return m_pShader != nullptr;
+}
+
+PixelShaderResource::~PixelShaderResource ()
+{
+	if (PixelShaderResource::IsCreated ())
 	{
-		case ShaderType::PIXEL:
-			GAME_COMC (_device.CreatePixelShader (_pData, static_cast<SIZE_T>(_cData), nullptr, reinterpret_cast<ID3D11PixelShader**>(&m_pShader)));
-			break;
-		case ShaderType::VERTEX:
-			GAME_COMC (_device.CreateVertexShader (_pData, static_cast<SIZE_T>(_cData), nullptr, reinterpret_cast<ID3D11VertexShader**>(&m_pShader)));
-			GAME_COMC (_device.CreateInputLayout (MeshResource::s_aInputElementDesc, ARRAYSIZE (MeshResource::s_aInputElementDesc), _pData, static_cast<SIZE_T>(_cData), &m_pInputLayout));
-			break;
-		default:
-			GAME_THROW_MSG ("Unknown shader type");
+		PixelShaderResource::Destroy ();
 	}
 }
 
-void ShaderResource::DoDestroy ()
+void PixelShaderResource::SetShader (ID3D11DeviceContext & _deviceContext) const
 {
-	if (m_pShader)
-	{
-		m_pShader->Release ();
-	}
-	if (m_pInputLayout)
-	{
-		m_pInputLayout->Release ();
-	}
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	GAME_COMC (_deviceContext.PSSetShader (m_pShader, nullptr, 0));
 }
 
-/*
-
-#define _DO(_what) { for(ShaderResource& s : m_Shaders) { s. _what ; } }
-
-ShaderPass::ShaderPass (const std::vector<ShaderDef> & _shaders)
+void PixelShaderResource::Create (ID3D11Device & _device)
 {
-	for (int iS { 0 }; iS < _shaders.size (); iS++)
-	{
-		const ShaderDef &def { _shaders[iS] };
-		m_Shaders.push_back (ShaderResource (def.name, def.eType));
-	}
+	GAME_ASSERT_MSG (!IsCreated (), "Already created");
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
+	GAME_COMC (_device.CreatePixelShader (GetData (), static_cast<SIZE_T>(GetSize ()), nullptr, &m_pShader));
 }
 
-void ShaderPass::SetShaderAndInputLayout (ID3D11DeviceContext & _deviceContext) const
+void PixelShaderResource::Destroy ()
 {
-	for (const ShaderResource& s : m_Shaders) { s.SetShaderAndInputLayout (_deviceContext); }
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	m_pShader->Release ();
+	m_pShader = nullptr;
 }
 
-void ShaderPass::DoCreateAfterLoad (ID3D11Device & _device)
+bool PixelShaderResource::IsCreated () const
 {
-	_DO (Create (_device));
+	return m_pShader != nullptr;
 }
 
-void ShaderPass::DoDestroy ()
+ShaderPassResource::ShaderPassResource (const std::string& _vertexFn, const std::string& _pixelFn) : m_VertexShader { _vertexFn }, m_PixelShader { _pixelFn } {}
+
+void ShaderPassResource::Load ()
 {
-	_DO (Destroy ());
+	m_VertexShader.Load ();
+	m_PixelShader.Load ();
 }
 
-void ShaderPass::DoLoad ()
+void ShaderPassResource::Unload ()
 {
-	_DO (Load ());
+	m_VertexShader.Unload ();
+	m_PixelShader.Unload ();
 }
 
-void ShaderPass::DoUnload ()
+bool ShaderPassResource::IsLoaded () const
 {
-	_DO (Unload ());
+	return m_VertexShader.IsLoaded ();
 }
-*/
+
+void ShaderPassResource::Create (ID3D11Device & _device)
+{
+	m_VertexShader.Create (_device);
+	m_PixelShader.Create (_device);
+}
+
+void ShaderPassResource::Destroy ()
+{
+	m_VertexShader.Destroy ();
+	m_PixelShader.Destroy ();
+}
+
+bool ShaderPassResource::IsCreated () const
+{
+	return m_VertexShader.IsCreated ();
+}
+
+void ShaderPassResource::Set (ID3D11DeviceContext & _deviceContext) const
+{
+	m_VertexShader.SetShaderAndInputLayout (_deviceContext);
+	m_PixelShader.SetShader (_deviceContext);
+}

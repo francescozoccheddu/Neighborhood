@@ -1,13 +1,12 @@
 #pragma once
 
 #include <Game/Resources/Resource.hpp>
-#include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
 #include <cstdint>
 
 #define GAME_MESHRESOURCE_HALF_INDEX 1
 
-class MeshResource : public FileResource
+class MeshResource final : public FileResource
 {
 
 public:
@@ -16,33 +15,27 @@ public:
 
 	~MeshResource ();
 
-	static void SetIAVertexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
-
-	static void SetIAIndexBuffer (ID3D11DeviceContext & deviceContext, ID3D11Buffer * pBuffer);
-
 	void SetBuffers (ID3D11DeviceContext & deviceContext) const;
-
-	ID3D11Buffer * GetVertexBuffer () const;
-
-	ID3D11Buffer * GetIndexBuffer () const;
 
 	int GetVerticesCount () const;
 
 	int GetIndicesCount () const;
 
-protected:
+	void Load () override final;
 
-	void DoLoad () override;
+	void Unload () override final;
 
-	void DoUnload () override;
+	bool IsLoaded () const override final;
 
-	void DoCreateFromFile (ID3D11Device & device) override;
+	void Create (ID3D11Device & device) override final;
 
-	void DoDestroy () override;
+	void Destroy () override final;
+
+	bool IsCreated () const override final;
 
 private:
 
-	friend class ShaderResource;
+	friend class VertexShaderResource;
 
 	struct Vertex
 	{
@@ -57,11 +50,11 @@ private:
 	using ind_t = uint32_t;
 #endif
 
-	Vertex * m_pVertices;
-	int m_cVertices;
+	Vertex * m_pVertices { nullptr };
+	int m_cVertices { 0 };
 
-	ind_t * m_pIndices;
-	int m_cIndices;
+	ind_t * m_pIndices { nullptr };
+	int m_cIndices { 0 };
 
 	ID3D11Buffer * m_pVertexBuffer { nullptr };
 	ID3D11Buffer * m_pIndexBuffer { nullptr };

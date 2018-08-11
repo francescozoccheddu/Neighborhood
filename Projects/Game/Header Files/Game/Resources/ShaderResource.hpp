@@ -1,73 +1,78 @@
 #pragma once
 
 #include <Game/Resources/Resource.hpp>
-#include <Game/Direct3D.hpp>
 
-class ShaderResource : public BinaryFileResource
+class VertexShaderResource final : public BinaryFileResource
 {
 
 public:
 
+	using BinaryFileResource::BinaryFileResource;
 
-	enum class ShaderType
-	{
-		VERTEX, PIXEL
-	};
-
-	ShaderResource (const std::string& fileName, ShaderType eType);
-
-	~ShaderResource ();
+	~VertexShaderResource ();
 
 	void SetShaderAndInputLayout (ID3D11DeviceContext & deviceContext) const;
 
-	const ID3D11InputLayout * GetInputLayout () const;
+	void Create (ID3D11Device & device) override final;
 
-	const ID3D11PixelShader * GetPixelShader () const;
+	void Destroy () override final;
 
-	const ID3D11VertexShader * GetVertexShader () const;
-
-protected:
-
-	void DoCreateFromBinary (ID3D11Device & device, const void * pData, int cData);
-
-	void DoDestroy ();
+	bool IsCreated () const override final;
 
 private:
 
-	const ShaderType m_eType;
-	IUnknown * m_pShader { nullptr };
+	ID3D11VertexShader * m_pShader { nullptr };
 	ID3D11InputLayout * m_pInputLayout { nullptr };
 
 };
 
-/*
-class ShaderPass : public LoadableResource
+class PixelShaderResource final : public BinaryFileResource
 {
 
 public:
 
-	struct ShaderDef
-	{
-		const std::string & name;
-		const ShaderResource::ShaderType eType;
-	};
+	using BinaryFileResource::BinaryFileResource;
 
-	ShaderPass (const std::vector<ShaderDef> & shaders);
+	~PixelShaderResource ();
 
-	void SetShaderAndInputLayout (ID3D11DeviceContext & deviceContext) const;
+	void SetShader (ID3D11DeviceContext & deviceContext) const;
 
-protected:
+	void Create (ID3D11Device & device) override final;
 
-	void DoCreateAfterLoad (ID3D11Device & device);
+	void Destroy () override final;
 
-	void DoDestroy ();
-
-	void DoLoad ();
-
-	void DoUnload ();
+	bool IsCreated () const override final;
 
 private:
 
-	std::vector<ShaderResource> m_Shaders;
+	ID3D11PixelShader * m_pShader { nullptr };
 
-};*/
+};
+
+class ShaderPassResource final : public LoadableResource
+{
+
+public:
+
+	ShaderPassResource (const std::string& vertexFileName, const std::string& pixelFileName);
+
+	void Load () override final;
+
+	void Unload () override final;
+
+	bool IsLoaded () const override final;
+
+	void Create (ID3D11Device & device) override final;
+
+	void Destroy () override final;
+
+	bool IsCreated () const override final;
+
+	void Set (ID3D11DeviceContext & deviceContext) const;
+
+private:
+
+	VertexShaderResource m_VertexShader;
+	PixelShaderResource m_PixelShader;
+
+};

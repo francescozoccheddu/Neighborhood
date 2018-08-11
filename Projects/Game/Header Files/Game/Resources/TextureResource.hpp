@@ -3,7 +3,7 @@
 #include <Game/Resources/Resource.hpp>
 #include <Game/Direct3D.hpp>
 
-class TextureResource : public BinaryFileResource
+class TextureResource final : public BinaryFileResource
 {
 
 public:
@@ -12,21 +12,16 @@ public:
 
 	~TextureResource ();
 
-	void SetShaderResource (ID3D11DeviceContext & deviceContext, UINT slot) const;
+	void SetShaderResourceView (ID3D11DeviceContext & deviceContext, UINT slot) const;
 
-	const ID3D11Resource * GetResource () const;
+	void Create (ID3D11Device & device) override final;
 
-	const ID3D11ShaderResourceView * GetShaderResourceView () const;
+	void Destroy () override final;
 
-protected:
-
-	void DoCreateFromBinary (ID3D11Device & device, const void * pData, int cData);
-
-	void DoDestroy ();
+	bool IsCreated () const override final;
 
 private:
 
-	ID3D11Resource * m_pResource;
-	ID3D11ShaderResourceView * m_pResourceView;
+	ID3D11ShaderResourceView * m_pResourceView { nullptr };
 
 };

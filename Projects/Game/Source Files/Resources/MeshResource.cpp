@@ -7,56 +7,40 @@
 
 MeshResource::~MeshResource ()
 {
-	MeshResource::DoDestroy ();
-}
-
-void MeshResource::SetIAVertexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer * _pBuffer)
-{
-	UINT stride { sizeof (Vertex) };
-	UINT offset { 0 };
-	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &_pBuffer, &stride, &offset));
-}
-
-void MeshResource::SetIAIndexBuffer (ID3D11DeviceContext & _deviceContext, ID3D11Buffer * _pBuffer)
-{
-#if GAME_MESHRESOURCE_HALF_INDEX
-	GAME_COMC (_deviceContext.IASetIndexBuffer (_pBuffer, DXGI_FORMAT_R16_UINT, 0));
-#else
-	GAME_COMC (_deviceContext.IASetIndexBuffer (_pBuffer, DXGI_FORMAT_R32_UINT, 0));
-#endif
+	if (MeshResource::IsCreated ())
+	{
+		MeshResource::Destroy ();
+	}
 }
 
 void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
 {
-	AssertCreated ();
-	SetIAIndexBuffer (_deviceContext, m_pIndexBuffer);
-	SetIAVertexBuffer (_deviceContext, m_pVertexBuffer);
-}
-
-ID3D11Buffer * MeshResource::GetVertexBuffer () const
-{
-	AssertCreated ();
-	return m_pVertexBuffer;
-}
-
-ID3D11Buffer * MeshResource::GetIndexBuffer () const
-{
-	AssertCreated ();
-	return m_pIndexBuffer;
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+#if GAME_MESHRESOURCE_HALF_INDEX
+	GAME_COMC (_deviceContext.IASetIndexBuffer (m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0));
+#else
+	GAME_COMC (_deviceContext.IASetIndexBuffer (m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0));
+#endif
+	UINT stride { sizeof (Vertex) };
+	UINT offset { 0 };
+	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pVertexBuffer, &stride, &offset));
 }
 
 int MeshResource::GetVerticesCount () const
 {
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	return m_cVertices;
 }
 
 int MeshResource::GetIndicesCount () const
 {
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	return m_cIndices;
 }
 
-void MeshResource::DoLoad ()
+void MeshResource::Load ()
 {
+	GAME_ASSERT_MSG (!IsLoaded (), "Already loaded");
 	rapidjson::Document jDoc;
 	jDoc.Parse (Storage::LoadTextFile (GetFileName ()).c_str ());
 	GAME_ASSERT_MSG (jDoc.IsObject (), "Not a JSON object");
@@ -94,8 +78,23 @@ void MeshResource::DoLoad ()
 	}
 }
 
-void MeshResource::DoCreateFromFile (ID3D11Device & _device)
+void MeshResource::Unload ()
 {
+	GAME_ASSERT_MSG (MeshResource::IsLoaded (), "Not loaded");
+	delete m_pVertices;
+	delete m_pIndices;
+	m_pVertices = nullptr;
+	m_pIndices = nullptr;
+}
+
+bool MeshResource::IsLoaded () const
+{
+	return m_pVertices != nullptr;
+}
+
+void MeshResource::Create (ID3D11Device & _device)
+{
+	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -126,20 +125,16 @@ void MeshResource::DoCreateFromFile (ID3D11Device & _device)
 	}
 }
 
-void MeshResource::DoUnload ()
+void MeshResource::Destroy ()
 {
-	delete m_pVertices;
-	delete m_pIndices;
+	GAME_ASSERT_MSG (MeshResource::IsCreated (), "Not created");
+	m_pVertexBuffer->Release ();
+	m_pIndexBuffer->Release ();
+	m_pVertexBuffer = nullptr;
+	m_pIndexBuffer = nullptr;
 }
 
-void MeshResource::DoDestroy ()
+bool MeshResource::IsCreated () const
 {
-	if (m_pVertexBuffer)
-	{
-		m_pVertexBuffer->Release ();
-	}
-	if (m_pIndexBuffer)
-	{
-		m_pIndexBuffer->Release ();
-	}
+	return m_pVertexBuffer;
 }
