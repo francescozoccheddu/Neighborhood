@@ -113,7 +113,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 		{
 			RECT rc;
 			GetClientRect (_hWnd, &rc);
-			PGAME_DO (SetWindow (_hWnd, { rc.right - rc.left, rc.bottom - rc.top }, DXGI_MODE_ROTATION_IDENTITY));
+			PGAME_DO (SetWindow (_hWnd, { rc.right - rc.left, rc.bottom - rc.top }, WindowRotation::IDENTITY));
 		}
 		break;
 
@@ -168,7 +168,7 @@ LRESULT CALLBACK MainWinProc (HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lPa
 				if (!s_bSizing && pGame)
 #endif
 				{
-					PGAME_DO (Size ({ LOWORD (_lParam), HIWORD (_lParam) }, DXGI_MODE_ROTATION_IDENTITY));
+					PGAME_DO (Size ({ LOWORD (_lParam), HIWORD (_lParam) }, WindowRotation::IDENTITY));
 				}
 			}
 		}

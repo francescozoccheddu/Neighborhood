@@ -112,9 +112,9 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		int outputWidth = ConvertDipsToPixels (m_logicalWidth);
 		int outputHeight = ConvertDipsToPixels (m_logicalHeight);
 
-		DXGI_MODE_ROTATION rotation = ComputeDisplayRotation ();
+		WindowRotation rotation = ComputeDisplayRotation ();
 
-		if (rotation == DXGI_MODE_ROTATION_ROTATE90 || rotation == DXGI_MODE_ROTATION_ROTATE270)
+		if (rotation == WindowRotation::ROTATE_90 || rotation == WindowRotation::ROTATE_270)
 		{
 			std::swap (outputWidth, outputHeight);
 		}
@@ -239,9 +239,9 @@ private:
 		int outputWidth = ConvertDipsToPixels (m_logicalWidth);
 		int outputHeight = ConvertDipsToPixels (m_logicalHeight);
 
-		DXGI_MODE_ROTATION rotation = ComputeDisplayRotation ();
+		WindowRotation rotation = ComputeDisplayRotation ();
 
-		if (rotation == DXGI_MODE_ROTATION_ROTATE90 || rotation == DXGI_MODE_ROTATION_ROTATE270)
+		if (rotation == WindowRotation::ROTATE_90 || rotation == WindowRotation::ROTATE_270)
 		{
 			std::swap (outputWidth, outputHeight);
 		}
@@ -254,9 +254,9 @@ private:
 		return int (dips * m_dpi / 96.f + 0.5f);
 	}
 
-	DXGI_MODE_ROTATION ComputeDisplayRotation () const
+	WindowRotation ComputeDisplayRotation () const
 	{
-		DXGI_MODE_ROTATION rotation = DXGI_MODE_ROTATION_UNSPECIFIED;
+		WindowRotation rotation;
 
 		switch (m_nativeOrientation)
 		{
@@ -264,19 +264,19 @@ private:
 				switch (m_currentOrientation)
 				{
 					case DisplayOrientations::Landscape:
-						rotation = DXGI_MODE_ROTATION_IDENTITY;
+						rotation = WindowRotation::IDENTITY;
 						break;
 
 					case DisplayOrientations::Portrait:
-						rotation = DXGI_MODE_ROTATION_ROTATE270;
+						rotation = WindowRotation::ROTATE_270;
 						break;
 
 					case DisplayOrientations::LandscapeFlipped:
-						rotation = DXGI_MODE_ROTATION_ROTATE180;
+						rotation = WindowRotation::ROTATE_180;
 						break;
 
 					case DisplayOrientations::PortraitFlipped:
-						rotation = DXGI_MODE_ROTATION_ROTATE90;
+						rotation = WindowRotation::ROTATE_90;
 						break;
 				}
 				break;
@@ -285,19 +285,19 @@ private:
 				switch (m_currentOrientation)
 				{
 					case DisplayOrientations::Landscape:
-						rotation = DXGI_MODE_ROTATION_ROTATE90;
+						rotation = WindowRotation::ROTATE_90;
 						break;
 
 					case DisplayOrientations::Portrait:
-						rotation = DXGI_MODE_ROTATION_IDENTITY;
+						rotation = WindowRotation::IDENTITY;
 						break;
 
 					case DisplayOrientations::LandscapeFlipped:
-						rotation = DXGI_MODE_ROTATION_ROTATE270;
+						rotation = WindowRotation::ROTATE_270;
 						break;
 
 					case DisplayOrientations::PortraitFlipped:
-						rotation = DXGI_MODE_ROTATION_ROTATE180;
+						rotation = WindowRotation::ROTATE_180;
 						break;
 				}
 				break;

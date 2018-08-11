@@ -40,14 +40,15 @@ void Dispatcher::Destroy ()
 	m_DeviceHolder.Destroy ();
 }
 
-void Dispatcher::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size, DXGI_MODE_ROTATION _rotation)
+void Dispatcher::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size, WindowRotation _rotation)
 {
 	m_DeviceHolder.SetWindow (_pWindow, _size, _rotation);
 }
 
-void Dispatcher::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation)
+void Dispatcher::Size (WindowSize _size, WindowRotation _rotation)
 {
 	m_DeviceHolder.Size (_size, _rotation);
+	m_Logic.Size (_size, _rotation);
 }
 
 void Dispatcher::Suspend ()
@@ -70,7 +71,7 @@ Dispatcher::~Dispatcher ()
 
 void Dispatcher::Render ()
 {
-	m_Renderer.Render (Scene {});
+	m_Renderer.Render (m_Logic.GetScene ());
 	m_DeviceHolder.Present ();
 }
 
@@ -102,4 +103,5 @@ void Dispatcher::Update ()
 		}
 		m_LastTime = newTime;
 	}
+	m_Logic.Update (deltaTime);
 }

@@ -5,10 +5,27 @@
 #include <string>
 
 #define RES_DIR "Resources/"
-#define RES_SHADER(_name) RES_DIR "Shaders/" _name ".cso"
-#define RES_MESH(_name) RES_DIR "Meshes/" _name ".json"
-#define RES_TEXTURE(_name) RES_DIR "Textures/" _name ".dds"
+#define RES_SHADERS_DIR RES_DIR "Shaders/"
+#define RES_TEXTURES_DIR RES_DIR "Textures/"
+#define RES_MESHES_DIR RES_DIR "Meshes/"
+#define RES_SHADERS_EXT ".cso"
+#define RES_TEXTURES_EXT ".dds"
+#define RES_MESHES_EXT ".json"
 
+inline std::string GetShaderFileName (const std::string& _name)
+{
+	return RES_SHADERS_DIR + _name + RES_SHADERS_EXT;
+}
+
+inline std::string GetMeshFileName (const std::string& _name)
+{
+	return RES_MESHES_DIR + _name + RES_MESHES_EXT;
+}
+
+inline std::string GetTextureFileName (const std::string& _name)
+{
+	return RES_TEXTURES_DIR + _name + RES_TEXTURES_EXT;
+}
 
 class Resource : private NonCopyable
 {

@@ -64,12 +64,12 @@ public:
 
 	struct Material
 	{
-		const std::string name;
+		std::string name;
 	};
 
 	struct Drawable
 	{
-		const std::string mesh;
+		std::string mesh;
 		Transform transform;
 		Material material;
 	};
@@ -172,7 +172,7 @@ public:
 	std::vector<PointLight> pointLights {};
 	std::vector<DirectionalLight> directionalLights {};
 	std::vector<ConeLight> coneLight {};
-	AbstractView * view { nullptr };
+	AbstractView * pView { nullptr };
 	Projection projection {};
 
 };
