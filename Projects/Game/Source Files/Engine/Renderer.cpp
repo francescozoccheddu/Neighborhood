@@ -97,7 +97,6 @@ void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 			desc.BindFlags = D3D11_BIND_RENDER_TARGET;
 			desc.CPUAccessFlags = 0;
 			desc.MiscFlags = 0;
-			m_DepthStencilView = nullptr;
 			com_ptr<ID3D11Texture2D> texture;
 			GAME_COMC (pDevice->CreateTexture2D (&desc, nullptr, texture.put ()));
 			GAME_COMC (pDevice->CreateRenderTargetView (texture.get (), nullptr, m_RenderTargetViews[iView].put ()));
@@ -119,18 +118,18 @@ void Renderer::Render (const Scene & _scene)
 
 	ID3D11DeviceContext & context { *m_DeviceHolder.GetDeviceContext () };
 
-	context.RSSetViewports (1, &m_Viewport);
-
 	m_GeometryShaderPass.Set (context);
 
 	ID3D11RenderTargetView * pRenderTarget { m_DeviceHolder.GetRenderTargetView () };
 
 	context.OMSetRenderTargets (1, &pRenderTarget, m_DepthStencilView.get ());
 
+	context.RSSetViewports (1, &m_Viewport);
 	context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	float color[4] { 0.2f, 0.2f, 0.2f, 1.0f };
-	m_DeviceHolder.GetDeviceContext ()->ClearRenderTargetView (m_DeviceHolder.GetRenderTargetView (), color);
+	context.ClearRenderTargetView (m_DeviceHolder.GetRenderTargetView (), color);
+	context.ClearDepthStencilView (m_DepthStencilView.get (), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	CbPerFrame cbPerFrame;
 	cbPerFrame.projection = _scene.projection.Get ();
