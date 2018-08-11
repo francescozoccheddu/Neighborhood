@@ -128,7 +128,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Utils\WindowRect.hpp">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>

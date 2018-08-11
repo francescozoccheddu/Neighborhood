@@ -43,6 +43,7 @@ void Dispatcher::Destroy ()
 void Dispatcher::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size, WindowRotation _rotation)
 {
 	m_DeviceHolder.SetWindow (_pWindow, _size, _rotation);
+	m_Logic.Size (_size, _rotation);
 }
 
 void Dispatcher::Size (WindowSize _size, WindowRotation _rotation)
