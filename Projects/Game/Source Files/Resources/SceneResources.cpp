@@ -1,27 +1,90 @@
 #include <Game/Resources/SceneResources.hpp>
 
-#define _DO(_what) \
-m_MapMeshResource. _what ; \
-m_MapTextureResource. _what ;
-
-void SceneResources::DoCreate (ID3D11Device & _device)
+SceneResources::~SceneResources ()
 {
-	m_pDevice = &_device;
-	_DO (CreateAll (_device));
-}
-
-void SceneResources::DoDestroy ()
-{
-	_DO (DestroyAll ());
-}
-
-void SceneResources::DestroyUnusedResources (moment_t _maxRestMoments)
-{
-	moment_t moment { m_Moment - _maxRestMoments };
-	_DO (DestroyOlder (moment));
+	if (SceneResources::IsCreated ())
+	{
+		SceneResources::Destroy ();
+	}
 }
 
 void SceneResources::Tick ()
 {
 	m_Moment++;
+}
+
+void SceneResources::DestroyUnusedResources (moment_t _maxRestMoments)
+{
+	moment_t minMoment { m_Moment - _maxRestMoments };
+	DestroyUnusedResources (m_Meshes, minMoment);
+	DestroyUnusedResources (m_Textures, minMoment);
+}
+
+void SceneResources::UnloadUnusedResources (moment_t _maxRestMoments)
+{
+	moment_t minMoment { m_Moment - _maxRestMoments };
+	UnloadUnusedResources (m_Meshes, minMoment);
+	UnloadUnusedResources (m_Textures, minMoment);
+}
+
+void SceneResources::Create (ID3D11Device & _device)
+{
+	GAME_ASSERT_MSG (!SceneResources::IsCreated (), "Already created");
+	m_pDevice = &_device;
+}
+
+void SceneResources::Destroy ()
+{
+	GAME_ASSERT_MSG (SceneResources::IsCreated (), "Not created");
+	m_pDevice = nullptr;
+	Destroy (m_Meshes);
+	Destroy (m_Textures);
+}
+
+bool SceneResources::IsCreated () const
+{
+	return m_pDevice != nullptr;
+}
+
+const MeshResource & SceneResources::GetMesh (const std::string & _name)
+{
+	return Get<MeshResource> (m_Meshes, _name);
+}
+
+const TextureResource & SceneResources::GetTexture (const std::string & _name)
+{
+	return Get<TextureResource> (m_Textures, _name);
+}
+
+void SceneResources::DestroyUnusedResources (map_t& _map, moment_t _minMoment)
+{
+	for (auto&[key, entry] : _map)
+	{
+		if (entry.lastUsageMoment < _minMoment && entry.pResource->IsCreated ())
+		{
+			entry.pResource->Destroy ();
+		}
+	}
+}
+
+void SceneResources::UnloadUnusedResources (map_t& _map, moment_t _minMoment)
+{
+	for (auto&[key, entry] : _map)
+	{
+		if (entry.lastUsageMoment < _minMoment && entry.pResource->IsLoaded ())
+		{
+			entry.pResource->Unload ();
+		}
+	}
+}
+
+void SceneResources::Destroy (map_t& _map)
+{
+	for (auto&[key, entry] : _map)
+	{
+		if (entry.pResource->IsCreated ())
+		{
+			entry.pResource->Destroy ();
+		}
+	}
 }

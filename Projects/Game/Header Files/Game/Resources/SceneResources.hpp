@@ -3,113 +3,78 @@
 #include <Game/Resources/Resource.hpp>
 #include <Game/Resources/MeshResource.hpp>
 #include <Game/Resources/TextureResource.hpp>
-#include <string>
-#include <unordered_map>
 #include <Game/Utils/Exceptions.hpp>
-
-#define _SCENERESOURCES_DECL(_type,_typename) \
-public: inline const _type & Get##_typename(const std::string& _name) { AssertCreated(); return m_Map##_type.Get(_name,m_Moment,*m_pDevice); }; \
-private: MeteredResourceMap<_type> m_Map##_type;
+#include <unordered_map>
 
 class SceneResources : public Resource
 {
 
 public:
 
+	using moment_t = int;
+
+	~SceneResources ();
+
 	void Tick ();
 
-	void DestroyUnusedResources (int maxRestMoments);
+	void DestroyUnusedResources (moment_t maxRestMoments);
 
-protected:
+	void UnloadUnusedResources (moment_t maxRestMoments);
 
-	void DoCreate (ID3D11Device & device) override;
+	void Create (ID3D11Device & device) override final;
 
-	void DoDestroy () override;
+	void Destroy () override final;
+
+	bool IsCreated () const override final;
+
+	const MeshResource& GetMesh (const std::string& name);
+
+	const TextureResource& GetTexture (const std::string& name);
 
 private:
 
-	using moment_t = int;
-
-	template<typename T>
-	class MeteredResourceMap
+	struct Entry
 	{
-
-	public:
-
-		T & Get (const std::string& _name, moment_t _moment, ID3D11Device &_pDevice)
-		{
-			auto iterator { m_Map.find (_name) };
-			if (iterator == m_Map.end ())
-			{
-				iterator = m_Map.emplace (_name, Entry { new T { _name }, 0 }).first;
-			}
-			Entry & entry { iterator->second };
-			entry.lastMoment = _moment;
-			if (!entry.resource->IsLoaded ())
-			{
-				entry.resource->Load ();
-			}
-			if (!entry.resource->IsCreated ())
-			{
-				entry.resource->Create (_pDevice);
-			}
-			return *entry.resource;
-		}
-
-		void DestroyOlder (moment_t _moment)
-		{
-			for (auto &[key, entry] : m_Map)
-			{
-				if (entry.lastMoment < _moment && entry.resource->IsCreated ())
-				{
-					entry.resource->Destroy ();
-				}
-			}
-		}
-
-		void CreateAll (ID3D11Device & _device)
-		{
-			for (auto &[key, entry] : m_Map)
-			{
-				entry.resource->Create (_device);
-			}
-		}
-
-		void DestroyAll ()
-		{
-			for (auto &[key, entry] : m_Map)
-			{
-				if (entry.resource->IsCreated ())
-				{
-					entry.resource->Destroy ();
-				}
-			}
-		}
-
-		~MeteredResourceMap ()
-		{
-			for (auto &[key, entry] : m_Map)
-			{
-				delete entry.resource;
-			}
-		}
-
-	private:
-
-		struct Entry
-		{
-			T* resource;
-			moment_t lastMoment;
-		};
-
-		std::unordered_map<std::string, Entry> m_Map;
-
+		LoadableResource * const pResource;
+		moment_t lastUsageMoment;
 	};
 
-	moment_t m_Moment { 0 };
-	ID3D11Device * m_pDevice;
+	using map_t = std::unordered_map<std::string, Entry>;
 
-	_SCENERESOURCES_DECL (MeshResource, Mesh);
-	_SCENERESOURCES_DECL (TextureResource, Texture);
+	moment_t m_Moment { 0 };
+	ID3D11Device * m_pDevice { nullptr };
+
+	map_t m_Meshes;
+	map_t m_Textures;
+
+	static void DestroyUnusedResources (map_t& map, moment_t minMoment);
+
+	static void UnloadUnusedResources (map_t& map, moment_t minMoment);
+
+	void Destroy (map_t& map);
+
+	template<typename T>
+	const T& Get (map_t& _map, const std::string& _name)
+	{
+		GAME_ASSERT_MSG (IsCreated (), "Not created");
+		auto it { _map.find (_name) };
+		if (it == _map.end ())
+		{
+			T * pRes { new T (_name) };
+			it = _map.emplace (_name, Entry { pRes, 0 }).first;
+		}
+		Entry & entry { it->second };
+		entry.lastUsageMoment = m_Moment;
+		T& res { *reinterpret_cast<T*>(entry.pResource) };
+		if (!res.IsLoaded ())
+		{
+			res.Load ();
+		}
+		if (!res.IsCreated ())
+		{
+			res.Create (*m_pDevice);
+		}
+		return res;
+	}
 
 };

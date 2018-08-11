@@ -125,6 +125,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp">
       <Filter>Header Files\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp">

@@ -29,6 +29,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />

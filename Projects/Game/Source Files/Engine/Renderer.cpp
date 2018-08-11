@@ -3,21 +3,24 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
-Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }
-//m_GeometryShaderPass ({ { "default_vertex", ShaderResource::ShaderType::VERTEX }, { "default_pixel", ShaderResource::ShaderType::PIXEL } })
+#define GEOMETRY_SHADER_PASS {RES_SHADER ("default_vertex"), RES_SHADER ("default_pixel")}
+
+Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }, m_GeometryShaderPass GEOMETRY_SHADER_PASS
 {
-	//m_GeometryShaderPass.Load ();
+	m_GeometryShaderPass.Load ();
 }
 
 void Renderer::OnDeviceCreated ()
 {
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
-	//m_GeometryShaderPass.Create (device);
+	m_GeometryShaderPass.Create (device);
+	m_SceneResources.Create (device);
 }
 
 void Renderer::OnDeviceDestroyed ()
 {
-	//m_GeometryShaderPass.Destroy ();
+	m_SceneResources.Destroy ();
+	m_GeometryShaderPass.Destroy ();
 	m_DepthStencilView = nullptr;
 	for (int iView { 0 }; iView < _GAME_RENDERER_TARGET_VIEWS_COUNT; iView++)
 	{
