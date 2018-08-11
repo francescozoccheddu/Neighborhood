@@ -28,7 +28,7 @@ void TextureResource::Create (ID3D11Device & _device)
 void TextureResource::Destroy ()
 {
 	GAME_ASSERT_MSG (TextureResource::IsCreated (), "Not created");
-	delete m_pResourceView;
+	m_pResourceView->Release ();
 	m_pResourceView = nullptr;
 }
 

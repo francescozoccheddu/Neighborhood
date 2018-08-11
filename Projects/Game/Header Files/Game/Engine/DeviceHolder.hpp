@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Game/Direct3D.hpp>
+#include <Game/Utils/WindowRect.hpp>
 
 #define _GAME_NATIVE_WINDOW_TYPE_COREWINDOW 7
 #define _GAME_NATIVE_WINDOW_TYPE_HWND 8
@@ -14,23 +15,6 @@
 #else
 #error Unknown windows API family
 #endif
-
-struct WindowSize
-{
-	int width;
-	int height;
-
-	inline bool operator == (const WindowSize& other) const
-	{
-		return width == other.width && height == other.height;
-	}
-
-	inline bool operator != (const WindowSize& other) const
-	{
-		return width != other.width || height != other.height;
-	}
-
-};
 
 class DeviceHolder
 {
@@ -53,7 +37,7 @@ public:
 
 		virtual void OnDeviceCreated () = 0;
 
-		virtual void OnSized (WindowSize size, DXGI_MODE_ROTATION rotation) = 0;
+		virtual void OnSized (WindowSize size, WindowRotation rotation) = 0;
 
 	};
 
@@ -63,11 +47,11 @@ public:
 
 	void Present ();
 
-	void Size (WindowSize size, DXGI_MODE_ROTATION rotation, bool bForce = false);
+	void Size (WindowSize size, WindowRotation rotation, bool bForce = false);
 
 	void Destroy ();
 
-	void SetWindow (GAME_NATIVE_WINDOW_T nativeWindow, WindowSize size, DXGI_MODE_ROTATION rotation);
+	void SetWindow (GAME_NATIVE_WINDOW_T nativeWindow, WindowSize size, WindowRotation rotation);
 
 	void Trim ();
 
@@ -83,7 +67,7 @@ public:
 
 	D3D_FEATURE_LEVEL GetSupportedFeatureLevel () const;
 
-	DXGI_MODE_ROTATION GetRotation () const;
+	WindowRotation GetRotation () const;
 
 	Listener * pListener { nullptr };
 
@@ -97,7 +81,7 @@ private:
 	com_ptr<IDXGISwapChain1> m_pSwapChain { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_pRenderTargetView { nullptr };
 	D3D_FEATURE_LEVEL m_SupportedFeatureLevel;
-	DXGI_MODE_ROTATION m_Rotation { DXGI_MODE_ROTATION_IDENTITY };
+	WindowRotation m_Rotation { WindowRotation::IDENTITY };
 
 	void CreateDeviceAndDeviceContext ();
 

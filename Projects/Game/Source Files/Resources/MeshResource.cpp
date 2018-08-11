@@ -11,6 +11,10 @@ MeshResource::~MeshResource ()
 	{
 		MeshResource::Destroy ();
 	}
+	if (MeshResource::IsLoaded ())
+	{
+		MeshResource::Unload ();
+	}
 }
 
 void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const

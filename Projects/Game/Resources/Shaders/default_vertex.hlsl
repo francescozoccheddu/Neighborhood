@@ -6,17 +6,16 @@ cbuffer cbPerFrame
 
 struct VSOut
 {
-    float4 Pos : SV_POSITION;
-    float3 Norm : NORMAL;
+    float4 Position : SV_POSITION;
+    float3 Normal : NORMAL;
     float2 TexCoord : TEXCOORD;
 };
 
-VSOut main(in float3 inPos : POSITION, in float3 inNorm : NORMAL, in float2 inTexCoord : TEXCOORD)
+VSOut main(in float3 inPosition : POSITION, in float3 inNormal : NORMAL, in float2 inTexCoord : TEXCOORD)
 {
     VSOut v;
-    v.Pos = mul(mul(float4(inPos, 1.0), mView), mProjection);
-    v.Norm = inNorm;
+    v.Position = mul(mul(float4(inPosition, 1.0), mView), mProjection);
+    v.Normal = inNormal;
     v.TexCoord = inTexCoord;
-    return
-v;
+    return v;
 }

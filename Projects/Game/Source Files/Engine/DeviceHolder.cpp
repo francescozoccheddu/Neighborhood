@@ -39,7 +39,7 @@ void DeviceHolder::Present ()
 	}
 }
 
-void DeviceHolder::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _bForce)
+void DeviceHolder::Size (WindowSize _size, WindowRotation _rotation, bool _bForce)
 {
 	if (_bForce || _size != m_Size || _rotation != m_Rotation)
 	{
@@ -64,7 +64,26 @@ void DeviceHolder::Size (WindowSize _size, DXGI_MODE_ROTATION _rotation, bool _b
 		{
 			CreateSwapChain ();
 		}
-		GAME_COMC (m_pSwapChain->SetRotation (m_Rotation));
+		DXGI_MODE_ROTATION dxgiRotation;
+		switch (m_Rotation)
+		{
+			case WindowRotation::IDENTITY:
+				dxgiRotation = DXGI_MODE_ROTATION_IDENTITY;
+				break;
+			case WindowRotation::ROTATE_90:
+				dxgiRotation = DXGI_MODE_ROTATION_ROTATE90;
+				break;
+			case WindowRotation::ROTATE_180:
+				dxgiRotation = DXGI_MODE_ROTATION_ROTATE180;
+				break;
+			case WindowRotation::ROTATE_270:
+				dxgiRotation = DXGI_MODE_ROTATION_ROTATE270;
+				break;
+			default:
+				GAME_THROW_MSG ("Unknown rotation");
+				break;
+		}
+		GAME_COMC (m_pSwapChain->SetRotation (dxgiRotation));
 		if (!recreated)
 		{
 			CreateRenderTarget ();
@@ -79,7 +98,7 @@ void DeviceHolder::Destroy ()
 	FIRE_EVENT (OnDeviceDestroyed ());
 }
 
-void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, DXGI_MODE_ROTATION _rotation)
+void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, WindowRotation _rotation)
 {
 	if (!m_pDevice)
 	{
@@ -168,7 +187,7 @@ D3D_FEATURE_LEVEL DeviceHolder::GetSupportedFeatureLevel () const
 	return m_SupportedFeatureLevel;
 }
 
-DXGI_MODE_ROTATION DeviceHolder::GetRotation () const
+WindowRotation DeviceHolder::GetRotation () const
 {
 	return m_Rotation;
 }

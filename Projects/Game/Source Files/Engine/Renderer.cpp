@@ -2,8 +2,15 @@
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include <Game/DirectXMath.hpp>
 
-#define GEOMETRY_SHADER_PASS {RES_SHADER ("default_vertex"), RES_SHADER ("default_pixel")}
+#define GEOMETRY_SHADER_PASS {GetShaderFileName ("default_vertex"), GetShaderFileName ("default_pixel")}
+
+struct CbPerFrame
+{
+	DirectX::XMMATRIX projection;
+	DirectX::XMMATRIX view;
+};
 
 Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }, m_GeometryShaderPass GEOMETRY_SHADER_PASS
 {
@@ -15,10 +22,33 @@ void Renderer::OnDeviceCreated ()
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
 	m_GeometryShaderPass.Create (device);
 	m_SceneResources.Create (device);
+	{
+		D3D11_SAMPLER_DESC desc {};
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+		GAME_COMC (device.CreateSamplerState (&desc, m_SamplerState.put ()));
+	}
+	{
+		D3D11_BUFFER_DESC desc;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.ByteWidth = sizeof (CbPerFrame);
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+		desc.StructureByteStride = 0;
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		GAME_COMC (device.CreateBuffer (&desc, nullptr, m_ConstantBufferPerFrame.put ()));
+	}
 }
 
 void Renderer::OnDeviceDestroyed ()
 {
+	m_SamplerState = nullptr;
+	m_ConstantBufferPerFrame = nullptr;
 	m_SceneResources.Destroy ();
 	m_GeometryShaderPass.Destroy ();
 	m_DepthStencilView = nullptr;
@@ -28,7 +58,7 @@ void Renderer::OnDeviceDestroyed ()
 	}
 }
 
-void Renderer::OnSized (WindowSize _size, DXGI_MODE_ROTATION _rotation)
+void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 {
 	ID3D11Device * pDevice { m_DeviceHolder.GetDevice () };
 	{
@@ -86,6 +116,47 @@ void Renderer::OnSized (WindowSize _size, DXGI_MODE_ROTATION _rotation)
 
 void Renderer::Render (const Scene & _scene)
 {
-	float color[4] { 0.0f, 1.0f, 0.0f, 1.0f };
+
+	ID3D11DeviceContext & context { *m_DeviceHolder.GetDeviceContext () };
+
+	context.RSSetViewports (1, &m_Viewport);
+
+	m_GeometryShaderPass.Set (context);
+
+	ID3D11RenderTargetView * pRenderTarget { m_DeviceHolder.GetRenderTargetView () };
+
+	context.OMSetRenderTargets (1, &pRenderTarget, m_DepthStencilView.get ());
+
+	context.IASetPrimitiveTopology (D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	float color[4] { 0.2f, 0.2f, 0.2f, 1.0f };
 	m_DeviceHolder.GetDeviceContext ()->ClearRenderTargetView (m_DeviceHolder.GetRenderTargetView (), color);
+
+	CbPerFrame cbPerFrame;
+	cbPerFrame.projection = _scene.projection.Get ();
+	cbPerFrame.view = _scene.pView->Get ();
+
+	context.UpdateSubresource (m_ConstantBufferPerFrame.get (), 0, nullptr, &cbPerFrame, 0, 0);
+	ID3D11Buffer *buffers[] { m_ConstantBufferPerFrame.get () };
+	context.VSSetConstantBuffers (0, 1, buffers);
+
+	ID3D11SamplerState *states[] { m_SamplerState.get () };
+	context.PSSetSamplers (0, 1, states);
+
+	for (const Scene::Drawable& drawable : _scene.drawables)
+	{
+
+		const MeshResource & mesh { m_SceneResources.GetMesh (GetMeshFileName (drawable.mesh)) };
+
+		mesh.SetBuffers (context);
+
+		const TextureResource & texture { m_SceneResources.GetTexture (GetTextureFileName (drawable.material.name)) };
+
+		texture.SetShaderResourceView (context, 0);
+
+
+		context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);
+
+	}
+
 }

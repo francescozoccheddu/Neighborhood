@@ -1,5 +1,7 @@
 #include <Game/Engine/DeviceHolder.hpp>
 #include <Game/Engine/Renderer.hpp>
+#include <Game/Utils/WindowRect.hpp>
+#include <Game/Logic/Logic.hpp>
 
 class Dispatcher
 {
@@ -14,9 +16,9 @@ public:
 
 	void Destroy ();
 
-	void SetWindow (GAME_NATIVE_WINDOW_T window, WindowSize size, DXGI_MODE_ROTATION rotation);
+	void SetWindow (GAME_NATIVE_WINDOW_T window, WindowSize size, WindowRotation rotation);
 
-	void Size (WindowSize size, DXGI_MODE_ROTATION rotation);
+	void Size (WindowSize size, WindowRotation rotation);
 
 	void Suspend ();
 
@@ -33,6 +35,7 @@ private:
 	LARGE_INTEGER m_LastTime;
 	DeviceHolder m_DeviceHolder;
 	Renderer m_Renderer { m_DeviceHolder };
+	Logic m_Logic;
 
 	void Render ();
 
