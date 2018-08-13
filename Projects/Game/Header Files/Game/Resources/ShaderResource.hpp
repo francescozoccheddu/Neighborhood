@@ -7,7 +7,7 @@ class VertexShaderResource final : public BinaryFileResource
 
 public:
 
-	using BinaryFileResource::BinaryFileResource;
+	VertexShaderResource (const std::string & fileName, const D3D11_INPUT_ELEMENT_DESC * pDescriptions, int cDescriptions);
 
 	~VertexShaderResource ();
 
@@ -23,6 +23,8 @@ private:
 
 	ID3D11VertexShader * m_pShader { nullptr };
 	ID3D11InputLayout * m_pInputLayout { nullptr };
+	const D3D11_INPUT_ELEMENT_DESC * m_pDescriptions;
+	const int m_cDescriptions;
 
 };
 
@@ -54,7 +56,7 @@ class ShaderPassResource final : public LoadableResource
 
 public:
 
-	ShaderPassResource (const std::string& vertexFileName, const std::string& pixelFileName);
+	ShaderPassResource (const std::string& vertexFileName, const std::string& pixelFileName, const D3D11_INPUT_ELEMENT_DESC * pDescriptions, int cDescriptions);
 
 	void Load () override final;
 

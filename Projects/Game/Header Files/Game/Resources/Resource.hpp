@@ -11,6 +11,9 @@
 #define RES_SHADERS_EXT ".cso"
 #define RES_TEXTURES_EXT ".dds"
 #define RES_MESHES_EXT ".json"
+#define RES_SHADER_FILENAME(_name) (RES_SHADERS_DIR _name RES_SHADERS_EXT)
+#define RES_TEXTURES_FILENAME(_name) (RES_TEXTURES_DIR _name RES_TEXTURES_EXT)
+#define RES_MESHES_FILENAME(_name) (RES_MESHES_DIR _name RES_MESHES_EXT)
 
 inline std::string GetShaderFileName (const std::string& _name)
 {

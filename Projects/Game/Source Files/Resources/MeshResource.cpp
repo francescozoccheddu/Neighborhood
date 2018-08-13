@@ -5,19 +5,19 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
-MeshResource::~MeshResource ()
+SceneMeshResource::~SceneMeshResource ()
 {
-	if (MeshResource::IsCreated ())
+	if (SceneMeshResource::IsCreated ())
 	{
-		MeshResource::Destroy ();
+		SceneMeshResource::Destroy ();
 	}
-	if (MeshResource::IsLoaded ())
+	if (SceneMeshResource::IsLoaded ())
 	{
-		MeshResource::Unload ();
+		SceneMeshResource::Unload ();
 	}
 }
 
-void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
+void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
 #if GAME_MESHRESOURCE_HALF_INDEX
@@ -30,19 +30,19 @@ void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
 	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pVertexBuffer, &stride, &offset));
 }
 
-int MeshResource::GetVerticesCount () const
+int SceneMeshResource::GetVerticesCount () const
 {
 	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	return m_cVertices;
 }
 
-int MeshResource::GetIndicesCount () const
+int SceneMeshResource::GetIndicesCount () const
 {
 	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	return m_cIndices;
 }
 
-void MeshResource::Load ()
+void SceneMeshResource::Load ()
 {
 	GAME_ASSERT_MSG (!IsLoaded (), "Already loaded");
 	rapidjson::Document jDoc;
@@ -82,21 +82,21 @@ void MeshResource::Load ()
 	}
 }
 
-void MeshResource::Unload ()
+void SceneMeshResource::Unload ()
 {
-	GAME_ASSERT_MSG (MeshResource::IsLoaded (), "Not loaded");
+	GAME_ASSERT_MSG (SceneMeshResource::IsLoaded (), "Not loaded");
 	delete m_pVertices;
 	delete m_pIndices;
 	m_pVertices = nullptr;
 	m_pIndices = nullptr;
 }
 
-bool MeshResource::IsLoaded () const
+bool SceneMeshResource::IsLoaded () const
 {
 	return m_pVertices != nullptr;
 }
 
-void MeshResource::Create (ID3D11Device & _device)
+void SceneMeshResource::Create (ID3D11Device & _device)
 {
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	{
@@ -129,16 +129,65 @@ void MeshResource::Create (ID3D11Device & _device)
 	}
 }
 
-void MeshResource::Destroy ()
+void SceneMeshResource::Destroy ()
 {
-	GAME_ASSERT_MSG (MeshResource::IsCreated (), "Not created");
+	GAME_ASSERT_MSG (SceneMeshResource::IsCreated (), "Not created");
 	m_pVertexBuffer->Release ();
 	m_pIndexBuffer->Release ();
 	m_pVertexBuffer = nullptr;
 	m_pIndexBuffer = nullptr;
 }
 
-bool MeshResource::IsCreated () const
+bool SceneMeshResource::IsCreated () const
 {
 	return m_pVertexBuffer;
+}
+
+ScreenMeshResource::~ScreenMeshResource ()
+{
+	if (ScreenMeshResource::IsCreated ())
+	{
+		ScreenMeshResource::Destroy ();
+	}
+}
+
+void ScreenMeshResource::SetBuffer (ID3D11DeviceContext & _deviceContext) const
+{
+	UINT stride { sizeof (Vertex) };
+	UINT offset { 0 };
+	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pVertexBuffer, &stride, &offset));
+}
+
+int ScreenMeshResource::GetVerticesCount () const
+{
+	return ARRAYSIZE (s_pVertices);
+}
+
+void ScreenMeshResource::Create (ID3D11Device & _device)
+{
+	GAME_ASSERT_MSG (!IsCreated (), "Already created");
+	D3D11_BUFFER_DESC desc;
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.ByteWidth = ARRAYSIZE (s_pVertices) * sizeof (Vertex);
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.StructureByteStride = sizeof (Vertex);
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = s_pVertices;
+	data.SysMemPitch = 0;
+	data.SysMemSlicePitch = 0;
+	GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pVertexBuffer));
+}
+
+void ScreenMeshResource::Destroy ()
+{
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	m_pVertexBuffer->Release ();
+	m_pVertexBuffer = nullptr;
+}
+
+bool ScreenMeshResource::IsCreated () const
+{
+	return m_pVertexBuffer != nullptr;
 }

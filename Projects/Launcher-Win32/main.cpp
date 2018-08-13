@@ -62,7 +62,7 @@ int APIENTRY wWinMain (_In_ HINSTANCE _hInstance, _In_opt_ HINSTANCE _hPrevInsta
 		PostLastError ("Unable to register window class");
 	}
 
-	pDispatcher = new Dispatcher ();
+	GAME_TRY (pDispatcher = new Dispatcher ());
 
 	DWORD style { WS_OVERLAPPEDWINDOW | WS_VISIBLE };
 	HWND hWnd = CreateWindow (MAKEINTATOM (classAtom), title, style, CW_USEDEFAULT, CW_USEDEFAULT, INITIAL_WIDTH, INITIAL_HEIGHT, NULL, NULL, _hInstance, NULL);
