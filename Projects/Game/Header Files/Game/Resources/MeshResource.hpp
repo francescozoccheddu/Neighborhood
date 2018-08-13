@@ -93,8 +93,8 @@ private:
 	};
 
 	inline static constexpr Vertex s_pVertices[] {
-		{ { 0.0f, 0.0f } }, { { 0.0f, 1.0f } }, { { 1.0f, 1.0f } },
-	{ { 1.0f, 1.0f } }, { { 1.0f, 0.0f } }, { { 0.0f, 0.0f } }
+		{ { 0.0f, 1.0f } }, { { 0.0f, 0.0f } }, { { 1.0f, 0.0f } },
+	{ { 1.0f, 0.0f } }, { { 1.0f, 1.0f } }, { { 0.0f, 1.0f } }
 	};
 
 	ID3D11Buffer * m_pVertexBuffer { nullptr };

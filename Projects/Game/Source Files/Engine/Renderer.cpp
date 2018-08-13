@@ -61,6 +61,7 @@ void Renderer::OnDeviceDestroyed ()
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
 	{
 		m_RenderTargetViews[iView] = nullptr;
+		m_ShaderResourceViews[iView] = nullptr;
 	}
 }
 
@@ -91,6 +92,7 @@ void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 		for (int iView { 0 }; iView < s_cRenderTargets; iView++)
 		{
 			m_RenderTargetViews[iView] = nullptr;
+			m_ShaderResourceViews[iView] = nullptr;
 			D3D11_TEXTURE2D_DESC desc;
 			desc.Width = _size.width;
 			desc.Height = _size.height;
@@ -100,12 +102,13 @@ void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 			desc.SampleDesc.Count = 1;
 			desc.SampleDesc.Quality = 0;
 			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = D3D11_BIND_RENDER_TARGET;
+			desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 			desc.CPUAccessFlags = 0;
 			desc.MiscFlags = 0;
 			com_ptr<ID3D11Texture2D> texture;
 			GAME_COMC (pDevice->CreateTexture2D (&desc, nullptr, texture.put ()));
 			GAME_COMC (pDevice->CreateRenderTargetView (texture.get (), nullptr, m_RenderTargetViews[iView].put ()));
+			GAME_COMC (pDevice->CreateShaderResourceView (texture.get (), nullptr, m_ShaderResourceViews[iView].put ()));
 		}
 	}
 	{
@@ -187,6 +190,15 @@ void Renderer::Render (const Scene & _scene)
 		ID3D11RenderTargetView * const pRenderTargetView { m_DeviceHolder.GetRenderTargetView () };
 		context.ClearRenderTargetView (pRenderTargetView, color);
 		context.OMSetRenderTargets (1, &pRenderTargetView, nullptr);
+	}
+
+	{
+		ID3D11ShaderResourceView * views[s_cRenderTargets];
+		for (int iView { 0 }; iView < s_cRenderTargets; iView++)
+		{
+			views[iView] = m_ShaderResourceViews[iView].get ();
+		}
+		context.PSSetShaderResources (0, s_cRenderTargets, views);
 	}
 
 	m_ScreenMesh.SetBuffer (context);

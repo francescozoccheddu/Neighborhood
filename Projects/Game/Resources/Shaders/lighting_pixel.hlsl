@@ -4,7 +4,12 @@ struct PSIn
     float2 TexCoord : TEXCOORD;
 };
 
+
+Texture2D gColorMap;
+Texture2D gNormalMap;
+SamplerState gSamplerState;
+
 float4 main(in PSIn _sIn) : SV_TARGET
 {
-    return float4(0.0f, 1.0f, 1.0f, 1.0f);
+    return gColorMap.Sample(gSamplerState, _sIn.TexCoord);
 }
