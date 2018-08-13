@@ -4,6 +4,10 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
+VertexShaderResource::VertexShaderResource (const std::string & _fileName, const D3D11_INPUT_ELEMENT_DESC * _pDescs, int _cDescs) :
+	BinaryFileResource { _fileName }, m_pDescriptions { _pDescs }, m_cDescriptions { _cDescs }
+{}
+
 VertexShaderResource::~VertexShaderResource ()
 {
 	if (VertexShaderResource::IsCreated ())
@@ -24,7 +28,7 @@ void VertexShaderResource::Create (ID3D11Device & _device)
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	GAME_COMC (_device.CreateVertexShader (GetData (), static_cast<SIZE_T>(GetSize ()), nullptr, &m_pShader));
-	GAME_COMC (_device.CreateInputLayout (MeshResource::s_aInputElementDesc, ARRAYSIZE (MeshResource::s_aInputElementDesc), GetData (), static_cast<SIZE_T>(GetSize ()), &m_pInputLayout));
+	GAME_COMC (_device.CreateInputLayout (m_pDescriptions, static_cast<UINT>(m_cDescriptions), GetData (), static_cast<SIZE_T>(GetSize ()), &m_pInputLayout));
 }
 
 void VertexShaderResource::Destroy ()
@@ -74,7 +78,7 @@ bool PixelShaderResource::IsCreated () const
 	return m_pShader != nullptr;
 }
 
-ShaderPassResource::ShaderPassResource (const std::string& _vertexFn, const std::string& _pixelFn) : m_VertexShader { _vertexFn }, m_PixelShader { _pixelFn } {}
+ShaderPassResource::ShaderPassResource (const std::string& _vertexFn, const std::string& _pixelFn, const D3D11_INPUT_ELEMENT_DESC * _pDescs, int _cDescs) : m_VertexShader { _vertexFn, _pDescs, _cDescs }, m_PixelShader { _pixelFn } {}
 
 void ShaderPassResource::Load ()
 {

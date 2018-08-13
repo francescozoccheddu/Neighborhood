@@ -78,7 +78,7 @@ struct App : implements<App, IFrameworkViewSource, IFrameworkView>
 		CoreApplication::Suspending ({ this, &App::OnSuspending });
 		CoreApplication::Resuming ({ this, &App::OnResuming });
 
-		pDispatcher = new Dispatcher ();
+		GAME_TRY (pDispatcher = new Dispatcher ());
 	}
 
 	void SetWindow (CoreWindow const & window)

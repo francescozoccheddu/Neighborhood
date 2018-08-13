@@ -177,11 +177,27 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_pixel.hlsl">
+    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\geometry_pixel.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\default_vertex.hlsl">
+    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\geometry_vertex.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_vertex.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <Filter>Resources\Meshes</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -27,7 +27,7 @@ public:
 
 	bool IsCreated () const override final;
 
-	const MeshResource& GetMesh (const std::string& name);
+	const SceneMeshResource& GetMesh (const std::string& name);
 
 	const TextureResource& GetTexture (const std::string& name);
 
