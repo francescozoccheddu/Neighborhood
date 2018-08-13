@@ -41,6 +41,7 @@ private:
 	const DeviceHolder & m_DeviceHolder;
 	com_ptr<ID3D11DepthStencilView> m_DepthStencilView;
 	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[s_cRenderTargets];
+	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11Buffer> m_ConstantBufferPerFrame;
 	D3D11_VIEWPORT m_Viewport;
