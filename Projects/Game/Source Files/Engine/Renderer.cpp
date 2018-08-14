@@ -7,12 +7,6 @@
 #define GEOMETRY_SHADER_PASS {RES_SHADER_FILENAME ("geometry_vertex"), RES_SHADER_FILENAME ("geometry_pixel"), SceneMeshResource::s_aInputElementDesc, ARRAYSIZE(SceneMeshResource::s_aInputElementDesc)}
 #define LIGHTING_SHADER_PASS {RES_SHADER_FILENAME ("lighting_vertex"), RES_SHADER_FILENAME ("lighting_pixel"), ScreenMeshResource::s_aInputElementDesc, ARRAYSIZE(ScreenMeshResource::s_aInputElementDesc)}
 
-struct CbPerFrame
-{
-	DirectX::XMMATRIX projection;
-	DirectX::XMMATRIX view;
-};
-
 Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }, m_GeometryShaderPass GEOMETRY_SHADER_PASS, m_LightingShaderPass LIGHTING_SHADER_PASS
 {
 	m_GeometryShaderPass.Load ();
@@ -26,6 +20,7 @@ void Renderer::OnDeviceCreated ()
 	m_LightingShaderPass.Create (device);
 	m_SceneResources.Create (device);
 	m_ScreenMesh.Create (device);
+	m_constantBufferGeometry.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -37,22 +32,12 @@ void Renderer::OnDeviceCreated ()
 		desc.MaxLOD = D3D11_FLOAT32_MAX;
 		GAME_COMC (device.CreateSamplerState (&desc, m_SamplerState.put ()));
 	}
-	{
-		D3D11_BUFFER_DESC desc;
-		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		desc.ByteWidth = sizeof (CbPerFrame);
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-		desc.StructureByteStride = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		GAME_COMC (device.CreateBuffer (&desc, nullptr, m_ConstantBufferPerFrame.put ()));
-	}
 }
 
 void Renderer::OnDeviceDestroyed ()
 {
 	m_SamplerState = nullptr;
-	m_ConstantBufferPerFrame = nullptr;
+	m_constantBufferGeometry.Destroy ();
 	m_SceneResources.Destroy ();
 	m_GeometryShaderPass.Destroy ();
 	m_LightingShaderPass.Destroy ();
@@ -155,13 +140,10 @@ void Renderer::Render (const Scene & _scene)
 
 	{
 		// Set per-frame constant buffer
-		CbPerFrame cbPerFrame;
-		cbPerFrame.projection = _scene.projection.Get ();
-		cbPerFrame.view = _scene.pView->Get ();
-
-		context.UpdateSubresource (m_ConstantBufferPerFrame.get (), 0, nullptr, &cbPerFrame, 0, 0);
-		ID3D11Buffer *buffers[] { m_ConstantBufferPerFrame.get () };
-		context.VSSetConstantBuffers (0, 1, buffers);
+		m_constantBufferGeometry.data.projection = _scene.projection.Get ();
+		m_constantBufferGeometry.data.view = _scene.pView->Get ();
+		m_constantBufferGeometry.Update (context);
+		m_constantBufferGeometry.SetForVertexShader (context, 0);
 	}
 
 

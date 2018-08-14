@@ -4,7 +4,10 @@
 #include <Game/Scene/Scene.hpp>
 #include <Game/Resources/SceneResources.hpp>
 #include <Game/Resources/ShaderResource.hpp>
+#include <Game/Resources/ConstantBufferResource.hpp>
 #include <Game/Utils/WindowRect.hpp>
+#include <Game/DirectXMath.hpp>
+#include <Game/Direct3D.hpp>
 
 
 class Renderer : public DeviceHolder::Listener
@@ -43,11 +46,18 @@ private:
 	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[s_cRenderTargets];
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
-	com_ptr<ID3D11Buffer> m_ConstantBufferPerFrame;
 	D3D11_VIEWPORT m_Viewport;
 	SceneResources m_SceneResources;
 	ScreenMeshResource m_ScreenMesh;
 	ShaderPassResource m_GeometryShaderPass;
 	ShaderPassResource m_LightingShaderPass;
+
+	struct cbGeometryPerFrame
+	{
+		DirectX::XMMATRIX projection;
+		DirectX::XMMATRIX view;
+	};
+
+	ConstantBufferStructResource<cbGeometryPerFrame> m_constantBufferGeometry;
 
 };
