@@ -82,7 +82,7 @@ public:
 		DirectX::XMFLOAT3 unrotatedUp { 0.0f, 1.0f, 0.0f };
 		DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
 
-		DirectX::XMMATRIX Get () const;
+		const DirectX::XMFLOAT4X4 & Get () const;
 
 		virtual void Update () = 0;
 
@@ -158,7 +158,7 @@ public:
 
 		void Update ();
 
-		DirectX::XMMATRIX Get () const;
+		const DirectX::XMFLOAT4X4 & Get () const;
 
 		virtual ~Projection () = default;
 

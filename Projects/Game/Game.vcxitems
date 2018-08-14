@@ -20,9 +20,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\DirectionalLightingPass.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\GeometryPass.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\Renderer.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
@@ -43,9 +47,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\DirectionalLightingPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\GeometryPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\MergingPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp" />
@@ -62,23 +69,25 @@
     </ImageContentTask>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
       <FileType>Document</FileType>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
       <FileType>Document</FileType>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
       <ShaderModel>5.0</ShaderModel>
+      <FileType>Document</FileType>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_vertex.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
       <ShaderModel>5.0</ShaderModel>
+      <FileType>Document</FileType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

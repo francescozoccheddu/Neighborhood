@@ -40,6 +40,7 @@ void BinaryFileResource::Unload ()
 {
 	GAME_ASSERT_MSG (BinaryFileResource::IsLoaded (), "Not loaded");
 	delete m_pData;
+	m_pData = nullptr;
 }
 
 bool BinaryFileResource::IsLoaded () const

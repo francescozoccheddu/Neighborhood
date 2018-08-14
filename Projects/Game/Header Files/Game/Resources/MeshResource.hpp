@@ -77,7 +77,7 @@ public:
 
 	void SetBuffer (ID3D11DeviceContext & deviceContext) const;
 
-	int GetVerticesCount () const;
+	static int GetVerticesCount ();
 
 	void Create (ID3D11Device & device) override final;
 

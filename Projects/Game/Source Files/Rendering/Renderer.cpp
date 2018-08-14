@@ -1,27 +1,30 @@
-#include <Game/Engine/Renderer.hpp>
+#include <Game/Rendering/Renderer.hpp>
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/DirectXMath.hpp>
 
-#define _SHADER_PASS(_passName,_meshClass) {RES_SHADER_FILENAME(_passName "_vertex"), RES_SHADER_FILENAME(_passName "_pixel"), _meshClass::s_aInputElementDesc, ARRAYSIZE(_meshClass::s_aInputElementDesc)}
 
-Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder },
-m_GeometryShaderPass _SHADER_PASS ("geometry", SceneMeshResource), m_LightingShaderPass _SHADER_PASS ("lighting", ScreenMeshResource)
+Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }
 {
-	m_GeometryShaderPass.Load ();
-	m_LightingShaderPass.Load ();
+	m_ScreenShader.Load ();
+	m_GeometryPass.Load ();
+	m_DirectionalLightingPass.Load ();
+}
+
+Renderer::~Renderer ()
+{
+	m_ScreenShader.Unload ();
+	m_GeometryPass.Unload ();
+	m_DirectionalLightingPass.Unload ();
 }
 
 void Renderer::OnDeviceCreated ()
 {
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
-	m_GeometryShaderPass.Create (device);
-	m_LightingShaderPass.Create (device);
-	m_SceneResources.Create (device);
+	m_GeometryPass.Create (device);
+	m_DirectionalLightingPass.Create (device);
 	m_ScreenMesh.Create (device);
-	m_constantBufferGeometry.Create (device);
-	m_constantBufferLighting.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -33,16 +36,12 @@ void Renderer::OnDeviceCreated ()
 		desc.MaxLOD = D3D11_FLOAT32_MAX;
 		GAME_COMC (device.CreateSamplerState (&desc, m_SamplerState.put ()));
 	}
+	m_ScreenShader.Create (device);
 }
 
 void Renderer::OnDeviceDestroyed ()
 {
 	m_SamplerState = nullptr;
-	m_constantBufferGeometry.Destroy ();
-	m_SceneResources.Destroy ();
-	m_GeometryShaderPass.Destroy ();
-	m_LightingShaderPass.Destroy ();
-	m_constantBufferLighting.Destroy ();
 	m_DepthStencilView = nullptr;
 	m_ScreenMesh.Destroy ();
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
@@ -50,6 +49,9 @@ void Renderer::OnDeviceDestroyed ()
 		m_RenderTargetViews[iView] = nullptr;
 		m_ShaderResourceViews[iView] = nullptr;
 	}
+	m_ScreenShader.Destroy ();
+	m_GeometryPass.Destroy ();
+	m_DirectionalLightingPass.Destroy ();
 }
 
 void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
@@ -113,6 +115,7 @@ void Renderer::Render (const Scene & _scene)
 {
 
 	ID3D11DeviceContext & context { *m_DeviceHolder.GetDeviceContext () };
+	ID3D11RenderTargetView * const pRenderTargetView { m_DeviceHolder.GetRenderTargetView () };
 
 	{
 		// Set viewport, primitive topology and sampler state
@@ -123,73 +126,27 @@ void Renderer::Render (const Scene & _scene)
 	}
 
 	{
-		// Set shader pass
-		m_GeometryShaderPass.Set (context);
-	}
-
-	{
-		// Clear and set deferred render targets
-		context.ClearDepthStencilView (m_DepthStencilView.get (), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-		const float color[4] { 0.0f, 0.0f, 0.0f, 0.0f };
-		ID3D11RenderTargetView * views[s_cRenderTargets];
-		for (int iView { 0 }; iView < s_cRenderTargets; iView++)
-		{
-			views[iView] = m_RenderTargetViews[iView].get ();
-			context.ClearRenderTargetView (m_RenderTargetViews[iView].get (), color);
-		}
-		context.OMSetRenderTargets (s_cRenderTargets, views, m_DepthStencilView.get ());
-	}
-
-	{
-		// Set per-frame constant buffer
-		m_constantBufferGeometry.data.projection = _scene.projection.Get ();
-		m_constantBufferGeometry.data.view = _scene.pView->Get ();
-		m_constantBufferGeometry.Update (context);
-		m_constantBufferGeometry.SetForVertexShader (context, 0);
-	}
-
-
-	for (const Scene::Drawable& drawable : _scene.drawables)
-	{
-
-		const SceneMeshResource & mesh { m_SceneResources.GetMesh (GetMeshFileName (drawable.mesh)) };
-
-		mesh.SetBuffers (context);
-
-		const TextureResource & texture { m_SceneResources.GetTexture (GetTextureFileName (drawable.material.name)) };
-
-		texture.SetShaderResourceView (context, 0);
-
-		context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);
-	}
-
-	{
-		// Set shader pass
-		m_LightingShaderPass.Set (context);
-	}
-
-	{
 		// Clear and set output render target
 		float color[4] { 0.2f, 0.2f, 0.2f, 1.0f };
-		ID3D11RenderTargetView * const pRenderTargetView { m_DeviceHolder.GetRenderTargetView () };
 		context.ClearRenderTargetView (pRenderTargetView, color);
-		context.OMSetRenderTargets (1, &pRenderTargetView, nullptr);
 	}
 
 	{
-		ID3D11ShaderResourceView * views[s_cRenderTargets];
-		for (int iView { 0 }; iView < s_cRenderTargets; iView++)
-		{
-			views[iView] = m_ShaderResourceViews[iView].get ();
-		}
-		context.PSSetShaderResources (0, s_cRenderTargets, views);
+		GeometryPass::Target target;
+		target.colors = m_RenderTargetViews[s_iColorTexture].get ();
+		target.normals = m_RenderTargetViews[s_iNormalTexture].get ();
+		target.material = m_RenderTargetViews[s_iMaterialTexture].get ();
+		target.depth = m_DepthStencilView.get ();
+		m_GeometryPass.Render (_scene, context, target);
 	}
 
-	m_constantBufferLighting.data.lightPosition = { 3.0f, 2.0f, -1.0f };
-	m_constantBufferLighting.Update (context);
-	m_constantBufferLighting.SetForPixelShader (context, 0);
-
-	m_ScreenMesh.SetBuffer (context);
-	context.Draw (m_ScreenMesh.GetVerticesCount (), 0);
+	{
+		DirectionalLightingPass::Inputs inputs;
+		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
+		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
+		inputs.mesh = &m_ScreenMesh;
+		inputs.screenShader = &m_ScreenShader;
+		m_DirectionalLightingPass.Render (_scene.directionalLights, context, inputs, pRenderTargetView);
+	}
 
 }

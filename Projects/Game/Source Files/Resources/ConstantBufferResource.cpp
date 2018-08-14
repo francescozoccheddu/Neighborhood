@@ -11,7 +11,7 @@ void ConstantBufferResource::SetForVertexShader (ID3D11DeviceContext & _deviceCo
 		GAME_ASSERT_MSG (_buffers[iBuf]->IsCreated (), "Not created");
 		bufs[iBuf] = _buffers[iBuf]->m_pBuffer;
 	}
-	_deviceContext.VSSetConstantBuffers (static_cast<UINT>(_startingSlot), _buffers.size (), bufs);
+	_deviceContext.VSSetConstantBuffers (static_cast<UINT>(_startingSlot), static_cast<UINT>(_buffers.size ()), bufs);
 	delete[] bufs;
 }
 
@@ -23,7 +23,7 @@ void ConstantBufferResource::SetForPixelShader (ID3D11DeviceContext & _deviceCon
 		GAME_ASSERT_MSG (_buffers[iBuf]->IsCreated (), "Not created");
 		bufs[iBuf] = _buffers[iBuf]->m_pBuffer;
 	}
-	_deviceContext.PSSetConstantBuffers (static_cast<UINT>(_startingSlot), _buffers.size (), bufs);
+	_deviceContext.PSSetConstantBuffers (static_cast<UINT>(_startingSlot), static_cast<UINT>(_buffers.size ()), bufs);
 	delete[] bufs;
 }
 
@@ -55,11 +55,11 @@ void ConstantBufferResource::Create (ID3D11Device & _device)
 	GAME_ASSERT_MSG (!ConstantBufferResource::IsCreated (), "Already created");
 	D3D11_BUFFER_DESC desc;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = GetSize ();
-	desc.CPUAccessFlags = 0;
+	desc.ByteWidth = static_cast<UINT>(GetSize ());
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.MiscFlags = 0;
 	desc.StructureByteStride = 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
 	GAME_COMC (_device.CreateBuffer (&desc, nullptr, &m_pBuffer));
 }
 

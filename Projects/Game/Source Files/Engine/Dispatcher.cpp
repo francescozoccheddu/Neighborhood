@@ -3,7 +3,7 @@
 #include <Game/Engine/GameListener.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/DirectXMath.hpp>
-#include <Game/Engine/Renderer.hpp>
+#include <Game/Rendering/Renderer.hpp>
 
 #define MAX_DELTA_TIME 1.0
 

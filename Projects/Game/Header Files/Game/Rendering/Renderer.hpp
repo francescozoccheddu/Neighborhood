@@ -2,20 +2,22 @@
 
 #include <Game/Engine/DeviceHolder.hpp>
 #include <Game/Scene/Scene.hpp>
-#include <Game/Resources/SceneResources.hpp>
 #include <Game/Resources/ShaderResource.hpp>
-#include <Game/Resources/ConstantBufferResource.hpp>
-#include <Game/Utils/WindowRect.hpp>
 #include <Game/DirectXMath.hpp>
 #include <Game/Direct3D.hpp>
-
+#include <Game/Rendering/GeometryPass.hpp>
+#include <Game/Rendering/DirectionalLightingPass.hpp>
 
 class Renderer : public DeviceHolder::Listener
 {
 
 public:
 
+	friend class RenderingPass;
+
 	Renderer (const DeviceHolder & deviceHolder);
+
+	~Renderer ();
 
 	void Render (const Scene& scene);
 
@@ -31,9 +33,9 @@ private:
 
 	enum
 	{
-		s_iColorRenderTarget,
-		s_iNormalRenderTarget,
-		s_iMaterialRenderTarget,
+		s_iColorTexture,
+		s_iNormalTexture,
+		s_iMaterialTexture,
 		s_cRenderTargets
 	};
 
@@ -47,23 +49,17 @@ private:
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	D3D11_VIEWPORT m_Viewport;
-	SceneResources m_SceneResources;
+	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource);
 	ScreenMeshResource m_ScreenMesh;
-	ShaderPassResource m_GeometryShaderPass;
-	ShaderPassResource m_LightingShaderPass;
-
-	struct cbGeometryPerFrame
-	{
-		DirectX::XMMATRIX projection;
-		DirectX::XMMATRIX view;
-	};
-
-	struct cbLightingPerFrame
-	{
-		DirectX::XMVECTOR lightPosition;
-	};
-
-	ConstantBufferStructResource<cbGeometryPerFrame> m_constantBufferGeometry;
-	ConstantBufferStructResource <cbLightingPerFrame> m_constantBufferLighting;
+	GeometryPass m_GeometryPass;
+	DirectionalLightingPass m_DirectionalLightingPass;
+	ConstantBufferStructResource<float> a;
+	ConstantBufferStructResource<float> b;
+	ConstantBufferStructResource<float> c;
+	ConstantBufferStructResource<float> d;
+	ConstantBufferStructResource<float> e;
+	ConstantBufferStructResource<float> f;
+	ConstantBufferStructResource<float> g;
+	ConstantBufferStructResource<float> h;
 
 };

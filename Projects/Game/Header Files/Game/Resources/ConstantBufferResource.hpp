@@ -55,6 +55,6 @@ protected:
 
 	int GetSize () const override final
 	{
-		return sizeof (data);
+		return sizeof (T);
 	}
 };
