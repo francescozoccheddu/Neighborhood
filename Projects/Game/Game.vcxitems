@@ -65,16 +65,20 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
       <FileType>Document</FileType>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
       <FileType>Document</FileType>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

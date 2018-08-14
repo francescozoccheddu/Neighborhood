@@ -189,8 +189,12 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">

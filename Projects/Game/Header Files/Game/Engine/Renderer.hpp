@@ -39,7 +39,7 @@ private:
 
 	static_assert(D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT >= s_cRenderTargets);
 
-	static constexpr DXGI_FORMAT s_renderTargetFormats[s_cRenderTargets] { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8_UNORM };
+	static constexpr DXGI_FORMAT s_renderTargetFormats[s_cRenderTargets] { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_SNORM, DXGI_FORMAT_R8G8_UNORM };
 
 	const DeviceHolder & m_DeviceHolder;
 	com_ptr<ID3D11DepthStencilView> m_DepthStencilView;
@@ -58,6 +58,12 @@ private:
 		DirectX::XMMATRIX view;
 	};
 
+	struct cbLightingPerFrame
+	{
+		DirectX::XMVECTOR lightPosition;
+	};
+
 	ConstantBufferStructResource<cbGeometryPerFrame> m_constantBufferGeometry;
+	ConstantBufferStructResource <cbLightingPerFrame> m_constantBufferLighting;
 
 };
