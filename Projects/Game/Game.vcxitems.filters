@@ -60,6 +60,18 @@
     <Filter Include="Source Files\Logic">
       <UniqueIdentifier>{668f97a6-7283-4163-9c16-8556fda6f2d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\Geometry">
+      <UniqueIdentifier>{13790dd8-5fd3-422c-a72f-7f25ec34d3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Lighting">
+      <UniqueIdentifier>{a127bc2b-2fcb-42f8-97aa-4e70f047ff25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{2e6a7de4-ee50-48a3-8824-f159f2d351af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Rendering">
+      <UniqueIdentifier>{5ab73890-c853-404d-83d1-7fcd1b697cae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp">
@@ -110,9 +122,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
       <Filter>Header Files\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
       <Filter>Header Files\Logic</Filter>
     </ClInclude>
@@ -131,8 +140,23 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Resources\ConstantBufferResource.hpp">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\Renderer.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\DirectionalLightingPass.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\GeometryPass.hpp">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,9 +187,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp">
       <Filter>Source Files\Logic</Filter>
     </ClCompile>
@@ -181,19 +202,31 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\Renderer.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\DirectionalLightingPass.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\MergingPass.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\GeometryPass.cpp">
+      <Filter>Source Files\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_vertex.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
+      <Filter>Resources\Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
+      <Filter>Resources\Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl">
-      <Filter>Resources\Shaders</Filter>
+    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\Screen_vertex.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 #include <Game/Engine/DeviceHolder.hpp>
-#include <Game/Engine/Renderer.hpp>
+#include <Game/Rendering/Renderer.hpp>
 #include <Game/Utils/WindowRect.hpp>
 #include <Game/Logic/Logic.hpp>
 

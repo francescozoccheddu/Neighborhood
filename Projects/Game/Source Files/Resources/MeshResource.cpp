@@ -158,7 +158,7 @@ void ScreenMeshResource::SetBuffer (ID3D11DeviceContext & _deviceContext) const
 	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pVertexBuffer, &stride, &offset));
 }
 
-int ScreenMeshResource::GetVerticesCount () const
+int ScreenMeshResource::GetVerticesCount ()
 {
 	return ARRAYSIZE (s_pVertices);
 }

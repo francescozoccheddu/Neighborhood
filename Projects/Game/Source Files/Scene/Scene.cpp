@@ -14,9 +14,9 @@ XMMATRIX Scene::Transform::Get () const
 	return XMLoadFloat4x4 (&m_Transform);
 }
 
-XMMATRIX Scene::AbstractView::Get () const
+const XMFLOAT4X4& Scene::AbstractView::Get () const
 {
-	return XMLoadFloat4x4 (&m_mTransform);
+	return m_mTransform;
 }
 
 Scene::ViewWithTarget::ViewWithTarget ()
@@ -103,7 +103,7 @@ void Scene::Projection::Update ()
 	XMStoreFloat4x4 (&m_mTransform, XMMatrixTranspose (XMMatrixPerspectiveFovLH (vFov, aspectRatio, nearZ, farZ)));
 }
 
-XMMATRIX Scene::Projection::Get () const
+const XMFLOAT4X4& Scene::Projection::Get () const
 {
-	return XMLoadFloat4x4 (&m_mTransform);
+	return m_mTransform;
 }
