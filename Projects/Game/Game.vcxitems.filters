@@ -131,6 +131,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Resources\ConstantBufferResource.hpp">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp">
@@ -175,20 +178,19 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\geometry_pixel.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\geometry_vertex.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_vertex.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\lighting_pixel.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\geometry_vertex.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">

@@ -23,6 +23,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Renderer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
@@ -45,6 +46,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />

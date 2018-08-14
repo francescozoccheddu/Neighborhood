@@ -11,12 +11,18 @@
 #ifndef GAME_THROW_FUNCTION_ENABLE
 #define GAME_THROW_FUNCTION_ENABLE 1
 #endif
+#ifndef GAME_ASSERT_ENABLE
+#define GAME_ASSERT_ENABLE 1
+#endif
 #else
 #ifndef GAME_THROW_FILE_ENABLE
 #define GAME_THROW_FILE_ENABLE 0
 #endif
 #ifndef GAME_THROW_FUNCTION_ENABLE
 #define GAME_THROW_FUNCTION_ENABLE 0
+#endif
+#ifndef GAME_ASSERT_ENABLE
+#define GAME_ASSERT_ENABLE 0
 #endif
 #endif
 
@@ -31,17 +37,22 @@
 #endif
 
 #define GAME_THROW GAME_THROW_MSG(nullptr)
+
+#if GAME_ASSERT_ENABLE
 #define GAME_ASSERT(x) {if (!(x)) { GAME_THROW }}
 #define GAME_ASSERT_MSG(x,msg) {if (!(x)) { GAME_THROW_MSG(msg) }}
-
+#else
+#define GAME_ASSERT(x)
+#define GAME_ASSERT_MSG(x,msg)
+#endif
 
 class GameException : public std::exception
 {
 public:
-	const char * const file{ nullptr };
-	const char * const function{ nullptr };
-	const int line{ -1 };
-	const char * const message{ nullptr };
+	const char * const file { nullptr };
+	const char * const function { nullptr };
+	const int line { -1 };
+	const char * const message { nullptr };
 
 	GameException (const char * function, const char * message);
 	GameException (const char * file, int line, const char * message);
@@ -57,7 +68,7 @@ protected:
 
 private:
 	mutable std::string m_what;
-	mutable bool m_cached{ false };
+	mutable bool m_cached { false };
 
 };
 
