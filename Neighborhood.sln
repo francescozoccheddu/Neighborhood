@@ -7,13 +7,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher-UWP", "Projects\La
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Launcher-Win32", "Projects\Launcher-Win32\Launcher-Win32.vcxproj", "{43CF0D5A-0B57-4F43-B906-F0C7CB7F0561}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Projects\Game\Game.vcxitems", "{68BB6086-409A-474C-8F9D-00C0E1DEF345}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cinema 4D", "Cinema 4D", "{E51B0FC8-3A15-4CCC-BFCF-E349A950FCDF}"
 	ProjectSection(SolutionItems) = preProject
 		Cinema 4D\c4d_mesh_exporter.py = Cinema 4D\c4d_mesh_exporter.py
 		Cinema 4D\Sammy.c4d = Cinema 4D\Sammy.c4d
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Projects\Game\Game.vcxitems", "{68BB6086-409A-474C-8F9D-00C0E1DEF345}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

@@ -11,6 +11,7 @@
     </ImageContentTask>
     <FxCompile>
       <ObjectFileOutput>$(OutResDir)Shaders\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <CustomBuildStep />
     <CopyResourceTask>

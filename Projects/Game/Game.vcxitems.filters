@@ -1,242 +1,205 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" 
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Utils">
-      <UniqueIdentifier>{811740c8-d7c3-420f-a164-33fb23486b53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine">
-      <UniqueIdentifier>{6e3996e5-5dac-4b35-b51c-250a32ac9bb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Input">
-      <UniqueIdentifier>{ad892d61-eade-4b35-8843-6b99d120e14f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scene">
-      <UniqueIdentifier>{4b7ce825-f122-41ed-b3f3-c522e4eec738}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{cfffde3e-21d2-4c9b-9d8a-dd304bb4eae5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Scene">
-      <UniqueIdentifier>{2f361d12-daa9-47bc-b119-c420c3c6dc61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine">
-      <UniqueIdentifier>{647eaaf0-18ba-4d3f-b5ae-4ffa4a4889b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Input">
-      <UniqueIdentifier>{d8396942-755d-4509-8724-eef8d56aa266}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{1112deb4-7595-4d2d-aedb-7b3717013aed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Resources">
-      <UniqueIdentifier>{0c290c93-606d-409d-8238-15a076864e1c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
-      <UniqueIdentifier>{edb948e3-6054-4655-80f7-e6ba44de4a84}</UniqueIdentifier>
+      <UniqueIdentifier>{b009058b-bc46-4600-b170-26e841be7eb3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Meshes">
-      <UniqueIdentifier>{f6608751-f373-4dbd-b5f5-b0556fa74884}</UniqueIdentifier>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{b327ad79-6701-4ff7-9aab-cd4d26e6604d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders">
-      <UniqueIdentifier>{e7566e94-7bbe-4a25-a925-c9c04453e829}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Textures">
-      <UniqueIdentifier>{df1aa185-fc23-4bde-b231-8ca138053e90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Scenes">
-      <UniqueIdentifier>{705b1c3d-d53d-430a-8383-bd0b4f861b66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Logic">
-      <UniqueIdentifier>{ea4af168-f1d0-4979-b709-49ecb60978d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Logic">
-      <UniqueIdentifier>{668f97a6-7283-4163-9c16-8556fda6f2d8}</UniqueIdentifier>
+      <UniqueIdentifier>{03cf8902-ef2e-4a18-ae3d-389fad17c352}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Geometry">
-      <UniqueIdentifier>{13790dd8-5fd3-422c-a72f-7f25ec34d3f1}</UniqueIdentifier>
+      <UniqueIdentifier>{985ed084-0a87-4402-8cdf-197aa7c2e3c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\Lighting">
-      <UniqueIdentifier>{a127bc2b-2fcb-42f8-97aa-4e70f047ff25}</UniqueIdentifier>
+      <UniqueIdentifier>{3e02e2ed-ff35-41f0-bda6-e9796a3bb1c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Rendering">
-      <UniqueIdentifier>{2e6a7de4-ee50-48a3-8824-f159f2d351af}</UniqueIdentifier>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{43b9b32b-42bd-4128-925d-6af751ebfa4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Rendering">
-      <UniqueIdentifier>{5ab73890-c853-404d-83d1-7fcd1b697cae}</UniqueIdentifier>
+    <Filter Include="Resources\Meshes">
+      <UniqueIdentifier>{5fdd7eff-8b88-4fcd-91d7-a26d7957e921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Input">
+      <UniqueIdentifier>{13b66ede-4dc5-4237-a9af-2f530e1da8e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Utils">
+      <UniqueIdentifier>{c648d606-dd29-42e8-b1b9-43cfebf779a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Engine">
+      <UniqueIdentifier>{b31e006e-1e38-4625-8fd4-867186bba2f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Resources">
+      <UniqueIdentifier>{404a08ef-670c-4619-9a7e-5081d96d11a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Rendering">
+      <UniqueIdentifier>{ea22e871-0fc9-4335-94a8-c0252baab577}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Scene">
+      <UniqueIdentifier>{dfe133e9-7cb9-469d-9093-bfd9b558bbde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Logic">
+      <UniqueIdentifier>{388aaa57-2ecf-4f9b-9520-028d62ef6f37}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp">
-      <Filter>Header Files\Input</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Gamepad.cpp">
+      <Filter>Sources\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp">
+      <Filter>Sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Storage.cpp">
+      <Filter>Sources\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DeviceHolder.cpp">
+      <Filter>Sources\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Dispatcher.cpp">
+      <Filter>Sources\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ConstantBufferResource.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MeshResource.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resource.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\SceneResources.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp">
+      <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\GeometryPass.cpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DirectionalLightingPass.cpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MergingPass.cpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Renderer.cpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene.cpp">
+      <Filter>Sources\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic.cpp">
+      <Filter>Sources\Logic</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp">
+      <Filter>Sources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp">
-      <Filter>Header Files\Resources</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp">
+      <Filter>Sources\Input</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp">
-      <Filter>Header Files\Resources</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp">
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp">
-      <Filter>Header Files\Resources</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp">
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp">
-      <Filter>Header Files\Resources</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp">
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
-      <Filter>Header Files\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
-      <Filter>Header Files\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp">
-      <Filter>Header Files\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp">
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp">
-      <Filter>Header Files\Utils</Filter>
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\Renderer.hpp">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\DirectionalLightingPass.hpp">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp">
-      <Filter>Header Files\Rendering</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp">
+      <Filter>Sources\Engine</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp">
-      <Filter>Header Files\Resources</Filter>
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp">
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\GeometryPass.hpp">
-      <Filter>Header Files\Rendering</Filter>
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\DirectionalLightingPass.hpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\Renderer.hpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
+      <Filter>Sources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
+      <Filter>Sources\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
+      <Filter>Sources\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp">
-      <Filter>Source Files\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp">
-      <Filter>Source Files\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp">
-      <Filter>Source Files\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\Renderer.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\DirectionalLightingPass.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\MergingPass.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\GeometryPass.cpp">
-      <Filter>Source Files\Rendering</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
-      <Filter>Resources\Shaders\Geometry</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
       <Filter>Resources\Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
+      <Filter>Resources\Shaders\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Resources\Shaders\Screen_vertex.hlsl">
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
       <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <Filter>Resources\Meshes</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <Filter>Resources\Textures</Filter>
-    </Image>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <Filter>Resources\Meshes</Filter>
+    </CopyResourceTask>
   </ItemGroup>
 </Project>
