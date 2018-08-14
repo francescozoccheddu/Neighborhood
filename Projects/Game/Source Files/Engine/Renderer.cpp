@@ -4,13 +4,13 @@
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/DirectXMath.hpp>
 
-#define GEOMETRY_SHADER_PASS {RES_SHADER_FILENAME ("geometry_vertex"), RES_SHADER_FILENAME ("geometry_pixel"), SceneMeshResource::s_aInputElementDesc, ARRAYSIZE(SceneMeshResource::s_aInputElementDesc)}
-#define LIGHTING_SHADER_PASS {RES_SHADER_FILENAME ("lighting_vertex"), RES_SHADER_FILENAME ("lighting_pixel"), ScreenMeshResource::s_aInputElementDesc, ARRAYSIZE(ScreenMeshResource::s_aInputElementDesc)}
+#define _SHADER_PASS(_passName,_meshClass) {RES_SHADER_FILENAME(_passName "_vertex"), RES_SHADER_FILENAME(_passName "_pixel"), _meshClass::s_aInputElementDesc, ARRAYSIZE(_meshClass::s_aInputElementDesc)}
 
-Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }, m_GeometryShaderPass GEOMETRY_SHADER_PASS, m_LightingShaderPass LIGHTING_SHADER_PASS
+Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder },
+m_GeometryShaderPass _SHADER_PASS ("geometry", SceneMeshResource), m_LightingShaderPass _SHADER_PASS ("lighting", ScreenMeshResource)
 {
 	m_GeometryShaderPass.Load ();
-m_LightingShaderPass.Load ();
+	m_LightingShaderPass.Load ();
 }
 
 void Renderer::OnDeviceCreated ()
@@ -21,6 +21,7 @@ void Renderer::OnDeviceCreated ()
 	m_SceneResources.Create (device);
 	m_ScreenMesh.Create (device);
 	m_constantBufferGeometry.Create (device);
+	m_constantBufferLighting.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
 		desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -41,6 +42,7 @@ void Renderer::OnDeviceDestroyed ()
 	m_SceneResources.Destroy ();
 	m_GeometryShaderPass.Destroy ();
 	m_LightingShaderPass.Destroy ();
+	m_constantBufferLighting.Destroy ();
 	m_DepthStencilView = nullptr;
 	m_ScreenMesh.Destroy ();
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
@@ -182,6 +184,10 @@ void Renderer::Render (const Scene & _scene)
 		}
 		context.PSSetShaderResources (0, s_cRenderTargets, views);
 	}
+
+	m_constantBufferLighting.data.lightPosition = { 3.0f, 2.0f, -1.0f };
+	m_constantBufferLighting.Update (context);
+	m_constantBufferLighting.SetForPixelShader (context, 0);
 
 	m_ScreenMesh.SetBuffer (context);
 	context.Draw (m_ScreenMesh.GetVerticesCount (), 0);
