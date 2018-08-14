@@ -14,12 +14,30 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ConstantBufferResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DeviceHolder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DirectionalLightingPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Dispatcher.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Gamepad.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\GeometryPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MergingPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Renderer.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\SceneResources.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Storage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\GameListener.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\DirectionalLightingPass.hpp" />
@@ -29,78 +47,44 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\Dispatcher.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\GameListener.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Engine\DeviceHolder.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Input\Gamepad.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic\Logic.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\DirectionalLightingPass.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\GeometryPass.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\MergingPass.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Rendering\Renderer.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ConstantBufferResource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\MeshResource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\SceneResources.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\Resource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\ShaderResource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resources\TextureResource.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene\Scene.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Exceptions.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Utils\Storage.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
-      <DeploymentContent>true</DeploymentContent>
-    </ImageContentTask>
-  </ItemGroup>
-  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
-      <FileType>Document</FileType>
-      <ShaderModel>5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
-      <FileType>Document</FileType>
-      <ShaderModel>5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
-      <ShaderType>Pixel</ShaderType>
-      <ShaderModel>5.0</ShaderModel>
-      <FileType>Document</FileType>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
-      <ShaderModel>5.0</ShaderModel>
-      <FileType>Document</FileType>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
+  </ItemGroup>
+  <ItemGroup>
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <DeploymentContent>true</DeploymentContent>
       <FileType>Document</FileType>
-      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
+      <DeploymentContent>true</DeploymentContent>
     </CopyResourceTask>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
-  </ItemGroup>
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\VS Customization\Copy Resource Task\CopyResourceTask.targets" />
+  </ImportGroup>
 </Project>

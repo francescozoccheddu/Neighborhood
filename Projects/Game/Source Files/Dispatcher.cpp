@@ -1,6 +1,5 @@
 #include <Game/Engine/Dispatcher.hpp>
 
-#include <Game/Engine/GameListener.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/DirectXMath.hpp>
 #include <Game/Rendering/Renderer.hpp>
