@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" 
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Resources">
       <UniqueIdentifier>{b009058b-bc46-4600-b170-26e841be7eb3}</UniqueIdentifier>
@@ -193,13 +192,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
-      <Filter>Resources\Textures</Filter>
-    </ImageContentTask>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+      <Filter>Resources\Meshes</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <Filter>Resources\Meshes</Filter>
-    </CopyResourceTask>
+    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

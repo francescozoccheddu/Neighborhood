@@ -51,15 +51,7 @@ private:
 	D3D11_VIEWPORT m_Viewport;
 	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource);
 	ScreenMeshResource m_ScreenMesh;
-	GeometryPass m_GeometryPass;
 	DirectionalLightingPass m_DirectionalLightingPass;
-	ConstantBufferStructResource<float> a;
-	ConstantBufferStructResource<float> b;
-	ConstantBufferStructResource<float> c;
-	ConstantBufferStructResource<float> d;
-	ConstantBufferStructResource<float> e;
-	ConstantBufferStructResource<float> f;
-	ConstantBufferStructResource<float> g;
-	ConstantBufferStructResource<float> h;
+	GeometryPass m_GeometryPass;
 
 };
