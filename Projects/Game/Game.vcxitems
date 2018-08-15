@@ -5,6 +5,10 @@
     <HasSharedItems>true</HasSharedItems>
     <ItemsProjectGuid>{68bb6086-409a-474c-8f9d-00c0e1def345}</ItemsProjectGuid>
   </PropertyGroup>
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.props" />
+    <Import Project="$(MSBuildThisFileDirectory)..\..\VS Customization\Copy Resource Task\CopyResourceTask.props" />
+  </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
@@ -75,13 +79,16 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif" />
-  </ItemGroup>
-  <ItemGroup>
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
       <FileType>Document</FileType>
       <DeploymentContent>true</DeploymentContent>
+      <ContentOutput>$(OutResDir)%Meshes\(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+      <DeploymentContent>true</DeploymentContent>
+    </ImageContentTask>
   </ItemGroup>
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
