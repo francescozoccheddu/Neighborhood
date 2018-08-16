@@ -6,6 +6,7 @@
 #define SWAP_CHAIN_FORMAT DXGI_FORMAT_R8G8B8A8_UNORM
 #define FIRE_EVENT(x) { if (pListener) pListener -> x ; }
 
+
 DeviceHolder::DeviceHolder () {}
 
 DeviceHolder::~DeviceHolder ()
@@ -15,7 +16,7 @@ DeviceHolder::~DeviceHolder ()
 
 void DeviceHolder::Present ()
 {
-#if GAME_PLATFORM == GAME_PLATFORM_UWP
+#if GAME_D3D11_HEADER_VERS >= 1
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
 	pars.pDirtyRects = nullptr;
@@ -28,10 +29,8 @@ void DeviceHolder::Present ()
 	{
 		pDeviceContext1->DiscardView1 (m_pRenderTargetView.get (), nullptr, 0);
 	}
-#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
-	const HRESULT hResPresent { m_pSwapChain->Present (1, 0) };
 #else
-#error Unknown platform
+	const HRESULT hResPresent { m_pSwapChain->Present (1, 0) };
 #endif
 	if (hResPresent == DXGI_ERROR_DEVICE_REMOVED || hResPresent == DXGI_ERROR_DEVICE_RESET)
 	{
@@ -68,7 +67,7 @@ void DeviceHolder::Size (WindowSize _size, WindowRotation _rotation, bool _bForc
 		{
 			CreateSwapChain ();
 		}
-#if GAME_PLATFORM_IS_UWP
+#if GAME_D3D11_HEADER_VERS >= 1
 		DXGI_MODE_ROTATION dxgiRotation;
 		switch (m_Rotation)
 		{
@@ -121,7 +120,7 @@ void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, Wi
 
 void DeviceHolder::Trim ()
 {
-#if GAME_PLATFORM_IS_UWP
+#if GAME_D3D11_HEADER_VERS >= 3
 	if (m_pDevice)
 	{
 		m_pDeviceContext->ClearState ();
@@ -136,7 +135,7 @@ void DeviceHolder::Trim ()
 
 void DeviceHolder::ValidateDevice ()
 {
-#if GAME_PLATFORM_IS_UWP
+#if GAME_D3D11_HEADER_VERS >= 3
 	com_ptr<IDXGIFactory2> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -204,12 +203,10 @@ WindowRotation DeviceHolder::GetRotation () const
 
 void DeviceHolder::CreateDeviceAndDeviceContext ()
 {
-#if GAME_PLATFORM == GAME_PLATFORM_UWP
+#if GAME_D3D11_HEADER_VERS >= 1
 	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1 };
-#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
-	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_0 };
 #else
-#error Unknown platform
+	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_0 };
 #endif
 	UINT flags { D3D11_CREATE_DEVICE_SINGLETHREADED };
 #ifdef _DEBUG
@@ -224,8 +221,8 @@ void DeviceHolder::CreateDeviceAndDeviceContext ()
 
 void DeviceHolder::CreateSwapChain ()
 {
+#if GAME_D3D11_HEADER_VERS >= 1
 	m_pSwapChain = nullptr;
-#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	com_ptr<IDXGIFactory2> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -247,9 +244,16 @@ void DeviceHolder::CreateSwapChain ()
 	desc.Stereo = FALSE;
 	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice.get (), m_NativeWindow, &desc, nullptr, m_pSwapChain.put ()));
 #elif GAME_PLATFORM == GAME_PLATFORM_WIN32
+	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice.get (), m_NativeWindow, &desc, nullptr, nullptr, m_pSwapChain.put ()));
+#else
+#error Unknown platform
+#endif
+#else
 	com_ptr<IDXGIFactory> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -272,8 +276,6 @@ void DeviceHolder::CreateSwapChain ()
 	desc.BufferDesc.Width = m_Size.width;
 	desc.BufferDesc.Height = m_Size.height;
 	GAME_COMC (pFactory->CreateSwapChain (m_pDevice.get (), &desc, m_pSwapChain.put ()));
-#else
-#error Unknown platform
 #endif
 }
 
