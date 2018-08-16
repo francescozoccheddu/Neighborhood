@@ -5,6 +5,9 @@
 
 #if GAME_PLATFORM == GAME_PLATFORM_UWP
 #define GAME_NATIVE_WINDOW_T IUnknown*
+#if GAME_D3D11_HEADER_VERS < 1
+#error UWP requires D3D11.1 header
+#endif
 #elif GAME_PLATFORM == GAME_PLATFORM_WIN32
 #define GAME_NATIVE_WINDOW_T HWND
 #else
@@ -72,12 +75,10 @@ private:
 	GAME_NATIVE_WINDOW_T m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	com_ptr<ID3D11Device> m_pDevice { nullptr };
-#if GAME_PLATFORM == GAME_PLATFORM_UWP
+#if GAME_D3D11_HEADER_VERS >= 1
 	com_ptr<IDXGISwapChain1> m_pSwapChain { nullptr };
-#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
-	com_ptr<IDXGISwapChain> m_pSwapChain { nullptr };
 #else
-#error Unknown platform
+	com_ptr<IDXGISwapChain> m_pSwapChain { nullptr };
 #endif
 	com_ptr<ID3D11DeviceContext> m_pDeviceContext { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_pRenderTargetView { nullptr };
