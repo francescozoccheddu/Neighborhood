@@ -3,17 +3,12 @@
 #include <Game/Direct3D.hpp>
 #include <Game/Utils/WindowRect.hpp>
 
-#define _GAME_NATIVE_WINDOW_TYPE_COREWINDOW 7
-#define _GAME_NATIVE_WINDOW_TYPE_HWND 8
-
-#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
-#define _GAME_NATIVE_WINDOW_TYPE _GAME_NATIVE_WINDOW_TYPE_COREWINDOW
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 #define GAME_NATIVE_WINDOW_T IUnknown*
-#elif !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
-#define _GAME_NATIVE_WINDOW_TYPE _GAME_NATIVE_WINDOW_TYPE_HWND
+#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
 #define GAME_NATIVE_WINDOW_T HWND
 #else
-#error Unknown windows API family
+#error Unknown platform
 #endif
 
 class DeviceHolder
@@ -77,8 +72,14 @@ private:
 	GAME_NATIVE_WINDOW_T m_NativeWindow { nullptr };
 	WindowSize m_Size { -1, -1 };
 	com_ptr<ID3D11Device> m_pDevice { nullptr };
-	com_ptr<ID3D11DeviceContext> m_pDeviceContext { nullptr };
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	com_ptr<IDXGISwapChain1> m_pSwapChain { nullptr };
+#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
+	com_ptr<IDXGISwapChain> m_pSwapChain { nullptr };
+#else
+#error Unknown platform
+#endif
+	com_ptr<ID3D11DeviceContext> m_pDeviceContext { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_pRenderTargetView { nullptr };
 	D3D_FEATURE_LEVEL m_SupportedFeatureLevel;
 	WindowRotation m_Rotation { WindowRotation::IDENTITY };

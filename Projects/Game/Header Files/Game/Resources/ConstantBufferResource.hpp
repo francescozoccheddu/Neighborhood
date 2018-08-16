@@ -46,6 +46,9 @@ public:
 
 	T data;
 
+	static_assert(sizeof (T) % 16 == 0, "Size is not a multiple of 16");
+	static_assert(sizeof (T) / 16 <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT, "Size exceeds maximum value");
+
 protected:
 
 	const void * GetData () const override final

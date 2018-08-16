@@ -23,14 +23,6 @@ void Renderer::OnDeviceCreated ()
 {
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
 
-	D3D11_BUFFER_DESC desc {};
-	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = 2;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	desc.MiscFlags = 0;
-	desc.StructureByteStride = 0;
-	desc.Usage = D3D11_USAGE_DYNAMIC;
-
 	m_GeometryPass.Create (device);
 	m_DirectionalLightingPass.Create (device);
 	m_ScreenMesh.Create (device);

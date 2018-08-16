@@ -192,13 +192,13 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
+    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
       <Filter>Resources\Meshes</Filter>
-    </None>
+    </CopyResourceTask>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <Filter>Resources\Textures</Filter>
-    </Image>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

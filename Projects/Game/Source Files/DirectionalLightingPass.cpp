@@ -39,7 +39,7 @@ void DirectionalLightingPass::Render (const std::vector<Scene::DirectionalLight>
 	}
 
 	{
-		//m_ConstantBuffer.data.light = _lights[0];
+		m_ConstantBuffer.data.lights[0] = _lights[0];
 		m_ConstantBuffer.Update (_context);
 		m_ConstantBuffer.SetForPixelShader (_context, 0);
 	}
