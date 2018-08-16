@@ -40,7 +40,7 @@ private:
 
 	struct ConstantBuffer
 	{
-		Scene::DirectionalLight light;
+		Scene::DirectionalLight lights[4];
 	};
 
 	PixelShaderResource m_Shader RENDERINGPASS_PIXSHADER ("DirectionalLighting");

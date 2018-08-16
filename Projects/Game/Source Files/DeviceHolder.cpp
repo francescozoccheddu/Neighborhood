@@ -15,20 +15,24 @@ DeviceHolder::~DeviceHolder ()
 
 void DeviceHolder::Present ()
 {
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	DXGI_PRESENT_PARAMETERS pars;
 	pars.DirtyRectsCount = 0;
 	pars.pDirtyRects = nullptr;
 	pars.pScrollOffset = nullptr;
 	pars.pScrollRect = nullptr;
 	const HRESULT hResPresent { m_pSwapChain->Present1 (1, 0, &pars) };
-
 	com_ptr<ID3D11DeviceContext1> pDeviceContext1;
 	m_pDeviceContext.try_as (pDeviceContext1);
 	if (pDeviceContext1)
 	{
 		pDeviceContext1->DiscardView1 (m_pRenderTargetView.get (), nullptr, 0);
 	}
-
+#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
+	const HRESULT hResPresent { m_pSwapChain->Present (1, 0) };
+#else
+#error Unknown platform
+#endif
 	if (hResPresent == DXGI_ERROR_DEVICE_REMOVED || hResPresent == DXGI_ERROR_DEVICE_RESET)
 	{
 		HandleDeviceLost ();
@@ -64,6 +68,7 @@ void DeviceHolder::Size (WindowSize _size, WindowRotation _rotation, bool _bForc
 		{
 			CreateSwapChain ();
 		}
+#if GAME_PLATFORM_IS_UWP
 		DXGI_MODE_ROTATION dxgiRotation;
 		switch (m_Rotation)
 		{
@@ -84,6 +89,7 @@ void DeviceHolder::Size (WindowSize _size, WindowRotation _rotation, bool _bForc
 				break;
 		}
 		GAME_COMC (m_pSwapChain->SetRotation (dxgiRotation));
+#endif
 		if (!recreated)
 		{
 			CreateRenderTarget ();
@@ -115,6 +121,7 @@ void DeviceHolder::SetWindow (GAME_NATIVE_WINDOW_T _window, WindowSize _size, Wi
 
 void DeviceHolder::Trim ()
 {
+#if GAME_PLATFORM_IS_UWP
 	if (m_pDevice)
 	{
 		m_pDeviceContext->ClearState ();
@@ -124,10 +131,12 @@ void DeviceHolder::Trim ()
 			pDevice->Trim ();
 		}
 	}
+#endif
 }
 
 void DeviceHolder::ValidateDevice ()
 {
+#if GAME_PLATFORM_IS_UWP
 	com_ptr<IDXGIFactory2> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -160,6 +169,7 @@ void DeviceHolder::ValidateDevice ()
 	{
 		HandleDeviceLost ();
 	}
+#endif
 }
 
 ID3D11Device * DeviceHolder::GetDevice () const
@@ -194,7 +204,13 @@ WindowRotation DeviceHolder::GetRotation () const
 
 void DeviceHolder::CreateDeviceAndDeviceContext ()
 {
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_1 };
+#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
+	const D3D_FEATURE_LEVEL featureLevels[] { D3D_FEATURE_LEVEL_11_0 };
+#else
+#error Unknown platform
+#endif
 	UINT flags { D3D11_CREATE_DEVICE_SINGLETHREADED };
 #ifdef _DEBUG
 	flags |= D3D11_CREATE_DEVICE_DEBUG;
@@ -209,6 +225,7 @@ void DeviceHolder::CreateDeviceAndDeviceContext ()
 void DeviceHolder::CreateSwapChain ()
 {
 	m_pSwapChain = nullptr;
+#if GAME_PLATFORM == GAME_PLATFORM_UWP
 	com_ptr<IDXGIFactory2> pFactory;
 	{
 		com_ptr<IDXGIDevice> pDevice;
@@ -230,14 +247,33 @@ void DeviceHolder::CreateSwapChain ()
 	desc.Stereo = FALSE;
 	desc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 	desc.Flags = 0;
-#if _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_HWND
-	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	GAME_COMC (pFactory->CreateSwapChainForHwnd (m_pDevice.get (), m_NativeWindow, &desc, nullptr, nullptr, m_pSwapChain.put ()));
-#elif _GAME_NATIVE_WINDOW_TYPE == _GAME_NATIVE_WINDOW_TYPE_COREWINDOW
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 	GAME_COMC (pFactory->CreateSwapChainForCoreWindow (m_pDevice.get (), m_NativeWindow, &desc, nullptr, m_pSwapChain.put ()));
+#elif GAME_PLATFORM == GAME_PLATFORM_WIN32
+	com_ptr<IDXGIFactory> pFactory;
+	{
+		com_ptr<IDXGIDevice> pDevice;
+		com_ptr<IDXGIAdapter> pAdapter;
+		m_pDevice.as (pDevice);
+		pDevice->GetAdapter (pAdapter.put ());
+		pAdapter->GetParent (IID_PPV_ARGS (pFactory.put ()));
+	}
+
+	DXGI_SWAP_CHAIN_DESC desc {};
+	desc.BufferCount = 1;
+	desc.BufferDesc.Format = SWAP_CHAIN_FORMAT;
+	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Quality = 0;
+	desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	desc.Windowed = TRUE;
+	desc.OutputWindow = m_NativeWindow;
+	desc.Flags = 0;
+	desc.BufferDesc.Width = m_Size.width;
+	desc.BufferDesc.Height = m_Size.height;
+	GAME_COMC (pFactory->CreateSwapChain (m_pDevice.get (), &desc, m_pSwapChain.put ()));
 #else
-#error Unknown native window type
+#error Unknown platform
 #endif
 }
 
