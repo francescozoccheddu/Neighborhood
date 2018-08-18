@@ -82,13 +82,23 @@
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
       <FileType>Document</FileType>
       <DeploymentContent>true</DeploymentContent>
-      <ContentOutput>$(OutResDir)%Meshes\(Filename)%(Extension)</ContentOutput>
+      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <DeploymentContent>true</DeploymentContent>
     </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Home.tif" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
+    </CopyResourceTask>
   </ItemGroup>
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
