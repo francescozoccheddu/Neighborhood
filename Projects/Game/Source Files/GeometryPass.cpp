@@ -46,16 +46,18 @@ void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		{
 			views[1] = _target.normals;
 			const float color[4] { 0.0f, 0.0f, 0.0f, 0.0f };
-			_context.ClearRenderTargetView (_target.colors, color);
+			_context.ClearRenderTargetView (_target.normals, color);
 		}
 		{
 			views[2] = _target.material;
 			const float color[4] { 0.0f, 0.0f, 0.0f, 0.0f };
-			_context.ClearRenderTargetView (_target.colors, color);
+			_context.ClearRenderTargetView (_target.material, color);
 		}
 		_context.ClearDepthStencilView (_target.depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 		_context.OMSetRenderTargets (3, views, _target.depth);
 	}
+
+	m_Shader.Set (_context);
 
 	{
 		m_ConstantBuffer.data.projection = _scene.projection.Get ();
@@ -63,6 +65,7 @@ void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		m_ConstantBuffer.Update (_context);
 		m_ConstantBuffer.SetForVertexShader (_context, 0);
 	}
+
 
 	for (const Scene::Drawable& drawable : _scene.drawables)
 	{

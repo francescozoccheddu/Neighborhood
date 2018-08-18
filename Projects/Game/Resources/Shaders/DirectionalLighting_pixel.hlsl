@@ -4,19 +4,25 @@ struct PSIn
     float2 TexCoord : TEXCOORD;
 };
 
-cbuffer cbPerFrame
+struct Light
 {
-    float3 mLightPosition;
+    float3 direction;
+    float3 color;
 };
 
-Texture2D gColorMap;
+cbuffer cbPerFrame
+{
+    Light mLights[2];
+};
+
 Texture2D gNormalMap;
+Texture2D gMaterialMap;
 SamplerState gSamplerState;
 
 float4 main(in PSIn _sIn) : SV_TARGET
 {
     float3 normal = normalize(gNormalMap.Sample(gSamplerState, _sIn.TexCoord).xyz);
-    float3 lightDir = normalize(mLightPosition);
+    float3 lightDir = normalize(mLights[0].direction);
     float light = saturate(dot(normal, lightDir));
-    return gColorMap.Sample(gSamplerState, _sIn.TexCoord) * light;
+    return float4(mLights[0].color * light, 1.0);
 }

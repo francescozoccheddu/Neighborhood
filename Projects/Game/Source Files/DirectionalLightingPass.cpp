@@ -38,14 +38,15 @@ void DirectionalLightingPass::Render (const std::vector<Scene::DirectionalLight>
 		_context.OMSetRenderTargets (1, &_target, nullptr);
 	}
 
+	_inputs.screenShader->SetShaderAndInputLayout (_context);
+	m_Shader.SetShader (_context);
+
 	{
-		m_ConstantBuffer.data.lights[0] = _lights[0];
+		m_ConstantBuffer.data.lights[0].direction = _lights[0].direction;
+		m_ConstantBuffer.data.lights[0].color = { 1.0f, 0.0f, 0.5f };
 		m_ConstantBuffer.Update (_context);
 		m_ConstantBuffer.SetForPixelShader (_context, 0);
 	}
-
-	_inputs.screenShader->SetShaderAndInputLayout (_context);
-	m_Shader.SetShader (_context);
 
 	{
 		ID3D11ShaderResourceView * views[2];
