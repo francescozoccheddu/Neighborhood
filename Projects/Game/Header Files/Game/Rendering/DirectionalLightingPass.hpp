@@ -38,9 +38,15 @@ public:
 
 private:
 
+	struct Light
+	{
+		DirectX::XMFLOAT3 direction;
+		DirectX::XMFLOAT3 color;
+	};
+
 	struct ConstantBuffer
 	{
-		Scene::DirectionalLight lights[4];
+		Light lights[2];
 	};
 
 	PixelShaderResource m_Shader RENDERINGPASS_PIXSHADER ("DirectionalLighting");

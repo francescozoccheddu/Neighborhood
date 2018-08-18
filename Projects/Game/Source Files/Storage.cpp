@@ -3,6 +3,7 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 char * Storage::LoadBinaryFile (const std::string& _filename, int& _size)
 {
@@ -19,7 +20,9 @@ char * Storage::LoadBinaryFile (const std::string& _filename, int& _size)
 
 std::string Storage::LoadTextFile (const std::string& _filename)
 {
-	std::ifstream file { _filename, std::ios::in };
+	std::ifstream file { _filename };
 	GAME_ASSERT_MSG (file.is_open (), "File not opened");
-	return std::string { std::istreambuf_iterator<char> (file), std::istreambuf_iterator<char> () };
+	std::stringstream buffer;
+	buffer << file.rdbuf ();
+	return buffer.str ();
 }

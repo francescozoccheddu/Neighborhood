@@ -37,7 +37,10 @@ ConstantBufferResource::~ConstantBufferResource ()
 
 void ConstantBufferResource::Update (ID3D11DeviceContext & _deviceContext) const
 {
-	_deviceContext.UpdateSubresource (m_pBuffer, 0, nullptr, GetData (), 0, 0);
+	D3D11_MAPPED_SUBRESOURCE mappedResource {};
+	_deviceContext.Map (m_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	memcpy (mappedResource.pData, GetData (), static_cast<size_t>(GetSize ()));
+	_deviceContext.Unmap (m_pBuffer, 0);
 }
 
 void ConstantBufferResource::SetForVertexShader (ID3D11DeviceContext & _deviceContext, int _slot) const
