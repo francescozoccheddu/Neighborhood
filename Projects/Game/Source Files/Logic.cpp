@@ -7,6 +7,11 @@ Logic::Logic ()
 	sammy.mesh = "Sammy";
 	sammy.transform.Update ();
 	m_Scene.drawables.push_back (sammy);
+	Scene::Drawable home;
+	home.material.name = "Home";
+	home.mesh = "Home";
+	home.transform.Update ();
+	m_Scene.drawables.push_back (home);
 	m_Scene.projection.vFov = 1.0f;
 	m_Scene.pView = new Scene::View ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };

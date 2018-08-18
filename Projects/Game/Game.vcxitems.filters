@@ -201,4 +201,14 @@
       <Filter>Resources\Textures</Filter>
     </ImageContentTask>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)Resources\Textures\Home.tif">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
+      <Filter>Resources\Meshes</Filter>
+    </None>
+  </ItemGroup>
 </Project>

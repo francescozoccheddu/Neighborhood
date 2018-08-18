@@ -16,7 +16,7 @@
     <CustomBuildStep />
     <CopyResourceTask>
       <DestinationFiles>$(OutResDir)%(Filename)%(Extension)</DestinationFiles>
-      <ContentOutput>$(OutResDir)%(Filename)%(Extension)</ContentOutput>
+      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
     </CopyResourceTask>
   </ItemDefinitionGroup>
   <ItemGroup>
