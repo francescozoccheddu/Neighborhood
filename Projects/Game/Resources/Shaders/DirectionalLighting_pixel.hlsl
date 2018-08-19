@@ -24,7 +24,7 @@ float4 main(in PSIn _sIn) : SV_TARGET
 {
     float3 normal = normalize(gNormalMap.Sample(gSamplerState, _sIn.TexCoord).xyz);
     float3 light = float3(0.0, 0.0, 0.0);
-    for (int i = 0; i < mCount; i++)
+    for (uint i = 0; i < mCount; i++)
     {
         float3 lightDir = normalize(-mLights[i].direction);
         light = saturate(light + mLights[i].color * dot(normal, lightDir));

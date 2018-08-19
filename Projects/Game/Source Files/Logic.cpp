@@ -2,20 +2,19 @@
 
 Logic::Logic ()
 {
-	Scene::Drawable sammy;
-	sammy.material.name = "Sammy";
-	sammy.mesh = "Sammy";
-	sammy.transform.Update ();
-	m_Scene.drawables.push_back (sammy);
-	Scene::Drawable home;
-	home.material.name = "Home";
-	home.mesh = "Home";
-	home.transform.Update ();
-	m_Scene.drawables.push_back (home);
+	Scene::Drawable drawable;
+	drawable.texture = "Sammy";
+	drawable.mesh = "Sammy";
+	drawable.transform.Update ();
+	m_Scene.drawables.push_back (drawable);
+	drawable.texture = "Home";
+	drawable.mesh = "Home";
+	drawable.transform.Update ();
+	m_Scene.drawables.push_back (drawable);
 	m_Scene.projection.vFov = 1.0f;
-	m_Scene.pView = new Scene::View ();
+	m_Scene.pView = new View ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
-	Scene::DirectionalLight light;
+	DirectionalLight light;
 	light.direction = { 1.0f, -1.0f, 0.5f };
 	light.color = { 0.2f, 0.2f, 1.0f };
 	m_Scene.directionalLights.push_back (light);
@@ -37,7 +36,7 @@ void Logic::Update (double _deltaTime)
 		}
 	}
 
-	Scene::View & view { *reinterpret_cast<Scene::View*>(m_Scene.pView) };
+	View & view { *reinterpret_cast<View*>(m_Scene.pView) };
 
 	if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_B, false))
 	{
@@ -67,6 +66,6 @@ const Scene& Logic::GetScene () const
 
 void Logic::Size (WindowSize _size, WindowRotation _rotation)
 {
-	m_Scene.projection.aspectRatio = Scene::Projection::CalcAspectRatio (_size.width, _size.height);
+	m_Scene.projection.aspectRatio = Projection::CalcAspectRatio (_size.width, _size.height);
 	m_Scene.projection.Update ();
 }

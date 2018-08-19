@@ -93,7 +93,15 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic.cpp">
       <Filter>Sources\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\LightingPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera.cpp">
+      <Filter>Sources\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Transform.cpp">
+      <Filter>Sources\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\LightingPass.cpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
@@ -171,7 +179,18 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
       <Filter>Sources\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\LightingPass.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Lights.hpp">
+      <Filter>Sources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp">
+      <Filter>Sources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Camera.hpp">
+      <Filter>Sources\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\LightingPass.hpp">
+      <Filter>Sources\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
@@ -183,18 +202,24 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
       <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
       <Filter>Resources\Meshes</Filter>
     </CopyResourceTask>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json" />
+    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
+      <Filter>Resources\Meshes</Filter>
+    </CopyResourceTask>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
       <Filter>Resources\Textures</Filter>
     </ImageContentTask>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Home.tif" />
+    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Home.tif">
+      <Filter>Resources\Textures</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

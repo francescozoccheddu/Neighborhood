@@ -72,7 +72,7 @@ void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		const SceneMeshResource & mesh { m_SceneResources.GetMesh (GetMeshFileName (drawable.mesh)) };
 		mesh.SetBuffers (_context);
 
-		const TextureResource & texture { m_SceneResources.GetTexture (GetTextureFileName (drawable.material.name)) };
+		const TextureResource & texture { m_SceneResources.GetTexture (GetTextureFileName (drawable.texture)) };
 		texture.SetShaderResourceView (_context, 0);
 
 		_context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);

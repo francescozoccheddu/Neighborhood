@@ -18,6 +18,7 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Camera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ConstantBufferResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DeviceHolder.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\LightingPass.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Storage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp" />
@@ -55,7 +57,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Camera.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Lights.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Transform.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
