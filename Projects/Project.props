@@ -21,7 +21,7 @@
       <SDLCheck>false</SDLCheck>
       <CompileAsWinRT>false</CompileAsWinRT>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <DisableSpecificWarnings>4453;28204;4996;</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4453;28204;4996;4324;</DisableSpecificWarnings>
       <PreprocessorDefinitions>SOLUTIONNAME="$(SolutionName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>

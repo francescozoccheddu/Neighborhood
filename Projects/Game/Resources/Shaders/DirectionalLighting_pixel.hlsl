@@ -12,7 +12,8 @@ struct Light
 
 cbuffer cbPerFrame
 {
-    Light mLights[2];
+    uint mCount;
+    Light mLights[128];
 };
 
 Texture2D gNormalMap;
@@ -22,7 +23,11 @@ SamplerState gSamplerState;
 float4 main(in PSIn _sIn) : SV_TARGET
 {
     float3 normal = normalize(gNormalMap.Sample(gSamplerState, _sIn.TexCoord).xyz);
-    float3 lightDir = normalize(mLights[0].direction);
-    float light = saturate(dot(normal, lightDir));
-    return float4(mLights[0].color * light, 1.0);
+    float3 light = float3(0.0, 0.0, 0.0);
+    for (int i = 0; i < mCount; i++)
+    {
+        float3 lightDir = normalize(-mLights[i].direction);
+        light = saturate(light + mLights[i].color * dot(normal, lightDir));
+    }
+    return float4(light, 1.0);
 }

@@ -142,12 +142,12 @@ void Renderer::Render (const Scene & _scene)
 	}
 
 	{
-		DirectionalLightingPass::Inputs inputs;
+		LightingPass::Inputs inputs;
 		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
 		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
 		inputs.mesh = &m_ScreenMesh;
 		inputs.screenShader = &m_ScreenShader;
-		m_DirectionalLightingPass.Render (_scene.directionalLights, context, inputs, pRenderTargetView);
+		m_DirectionalLightingPass.Render (_scene, context, inputs, pRenderTargetView);
 	}
 
 }
