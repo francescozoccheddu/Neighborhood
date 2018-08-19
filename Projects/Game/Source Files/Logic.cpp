@@ -16,8 +16,11 @@ Logic::Logic ()
 	m_Scene.pView = new Scene::View ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
 	Scene::DirectionalLight light;
-	light.color = { 1.0f, 0.5f, 0.3f };
-	light.direction = { 1.0f, 0.3f, .02f };
+	light.direction = { 1.0f, -1.0f, 0.5f };
+	light.color = { 0.2f, 0.2f, 1.0f };
+	m_Scene.directionalLights.push_back (light);
+	light.direction = { -1.0f, 1.0f, 0.5f };
+	light.color = { 1.0f, 0.2f, .2f };
 	m_Scene.directionalLights.push_back (light);
 }
 

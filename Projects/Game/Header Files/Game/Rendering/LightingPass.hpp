@@ -9,7 +9,8 @@
 #include <Game/Scene/Scene.hpp>
 #include <Game/Resources/SceneResources.hpp>
 
-class DirectionalLightingPass final : public RenderingPass
+
+class LightingPass final : public RenderingPass
 {
 
 public:
@@ -34,22 +35,32 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (const std::vector<Scene::DirectionalLight> & lights, ID3D11DeviceContext & context, const Inputs& inputs, ID3D11RenderTargetView * target);
+	void Render (const Scene & scene, ID3D11DeviceContext & context, const Inputs& inputs, ID3D11RenderTargetView * target);
 
 private:
 
-	struct Light
+	struct DirectionalBuffer
 	{
-		DirectX::XMFLOAT3 direction;
-		DirectX::XMFLOAT3 color;
+		alignas(16) UINT count;
+
+		struct Light
+		{
+			alignas(16) DirectX::XMFLOAT3 direction;
+			alignas(16) DirectX::XMFLOAT3 color;
+		} lights[D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT];
+
+		constexpr int GetSize () const
+		{
+			return GetSize (count);
+		}
+
+		static inline constexpr int GetSize (int _cLights)
+		{
+			return sizeof (Light) * _cLights + offsetof (DirectionalBuffer, lights);
+		}
 	};
 
-	struct ConstantBuffer
-	{
-		Light lights[2];
-	};
-
-	PixelShaderResource m_Shader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
-	ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
+	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
+	ConstantBufferStructResource<DirectionalBuffer> m_DirectionalBuffer;
 
 };

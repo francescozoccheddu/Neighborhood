@@ -6,7 +6,7 @@
 #include <Game/DirectXMath.hpp>
 #include <Game/Direct3D.hpp>
 #include <Game/Rendering/GeometryPass.hpp>
-#include <Game/Rendering/DirectionalLightingPass.hpp>
+#include <Game/Rendering/LightingPass.hpp>
 
 class Renderer : public DeviceHolder::Listener
 {
@@ -51,7 +51,7 @@ private:
 	D3D11_VIEWPORT m_Viewport;
 	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource);
 	ScreenMeshResource m_ScreenMesh;
-	DirectionalLightingPass m_DirectionalLightingPass;
+	LightingPass m_DirectionalLightingPass;
 	GeometryPass m_GeometryPass;
 
 };

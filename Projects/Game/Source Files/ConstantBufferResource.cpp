@@ -27,6 +27,12 @@ void ConstantBufferResource::SetForPixelShader (ID3D11DeviceContext & _deviceCon
 	delete[] bufs;
 }
 
+ConstantBufferResource::ConstantBufferResource (int _size) : m_cBuffer { static_cast<UINT>(_size) }
+{
+	GAME_ASSERT_MSG (_size % 16 == 0, "Size is not a multiple of 16");
+	GAME_ASSERT_MSG (_size / 16 <= D3D11_REQ_CONSTANT_BUFFER_ELEMENT_COUNT, "Size exceeds maximum value");
+}
+
 ConstantBufferResource::~ConstantBufferResource ()
 {
 	if (ConstantBufferResource::IsCreated ())
@@ -35,11 +41,11 @@ ConstantBufferResource::~ConstantBufferResource ()
 	}
 }
 
-void ConstantBufferResource::Update (ID3D11DeviceContext & _deviceContext) const
+void ConstantBufferResource::Update (ID3D11DeviceContext & _deviceContext, const void * _pData, int _cData) const
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource {};
 	_deviceContext.Map (m_pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	memcpy (mappedResource.pData, GetData (), static_cast<size_t>(GetSize ()));
+	memcpy (mappedResource.pData, _pData, static_cast<size_t>(_cData));
 	_deviceContext.Unmap (m_pBuffer, 0);
 }
 
@@ -58,7 +64,7 @@ void ConstantBufferResource::Create (ID3D11Device & _device)
 	GAME_ASSERT_MSG (!ConstantBufferResource::IsCreated (), "Already created");
 	D3D11_BUFFER_DESC desc;
 	desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	desc.ByteWidth = static_cast<UINT>(GetSize ());
+	desc.ByteWidth = m_cBuffer;
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.MiscFlags = 0;
 	desc.StructureByteStride = 0;
@@ -76,4 +82,9 @@ void ConstantBufferResource::Destroy ()
 bool ConstantBufferResource::IsCreated () const
 {
 	return m_pBuffer != nullptr;
+}
+
+int ConstantBufferResource::GetSize () const
+{
+	return m_cBuffer;
 }
