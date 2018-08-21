@@ -73,7 +73,7 @@ void GeometryPass::Render (const std::vector<Scene::Drawable>& _drawables, ID3D1
 		m_ConstantBuffer.SetForVertexShader (_context, 0);
 	}
 
-	Draw (_drawables, _context);
+	Draw (_drawables, _context, false);
 }
 
 void GeometryPass::Render (const std::vector<Scene::Drawable>& _drawables, ID3D11DeviceContext & _context, const ConstantBuffer & _buffer, ID3D11DepthStencilView * _pDepthTarget) const
@@ -93,15 +93,15 @@ void GeometryPass::Render (const std::vector<Scene::Drawable>& _drawables, ID3D1
 		m_ConstantBuffer.SetForVertexShader (_context, 0);
 	}
 
-	Draw (_drawables, _context);
+	Draw (_drawables, _context, true);
 }
 
-void GeometryPass::Draw (const std::vector<Scene::Drawable>& _drawables, ID3D11DeviceContext & _context) const
+void GeometryPass::Draw (const std::vector<Scene::Drawable>& _drawables, ID3D11DeviceContext & _context, bool _bGeometryOnly) const
 {
 	for (const Scene::Drawable& drawable : _drawables)
 	{
 		const SceneMeshResource & mesh { m_SceneResources.GetMesh (drawable.mesh) };
-		mesh.SetBuffers (_context);
+		mesh.SetBuffers (_context, _bGeometryOnly);
 
 		const TextureResource & texture { m_SceneResources.GetTexture (drawable.texture) };
 		texture.SetShaderResourceView (_context, 0);
