@@ -17,13 +17,14 @@ Logic::Logic ()
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
 	DirectionalLight light;
-	light.direction = { 1.0f, -1.0f, 0.5f };
-	light.position = { -5.0f, 5.0f, -2.0f };
+	light.direction = { 0.0f, 0.0f, 1.0f };
+	light.position = { 0.0f, 0.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
-	m_Scene.directionalLights.push_back (light);
-	light.direction = { -1.0f, 1.0f, 0.5f };
-	light.position = { 5.0f, 0.0f, -0.5f };
-	light.color = { 1.0f, 0.2f, .2f };
+	light.shadowNearZ = 0.1f;
+	light.shadowFarZ = 50.0f;
+	light.bCastShadows = true;
+	light.shadowSize = 1.0f;
+	light.Update ();
 	m_Scene.directionalLights.push_back (light);
 }
 

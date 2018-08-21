@@ -6,14 +6,14 @@ void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
 	m_DirectionalBuffer.Create (_device);
-	//m_ShadowingSubPass.Create (_device);
+	m_ShadowingSubPass.Create (_device);
 }
 
 void LightingPass::Destroy ()
 {
 	m_DirectionalBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
-	//m_ShadowingSubPass.Destroy ();
+	m_ShadowingSubPass.Destroy ();
 }
 
 bool LightingPass::IsCreated () const
@@ -42,8 +42,7 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 	for (const Light & light : _scene.directionalLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.pointLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.coneLight) { pLights.push_back (&light); }
-	//m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights);
-
+	std::list<ShadowingSubPass::ProcessedLight> lights = m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights);
 
 	{
 		_context.OMSetRenderTargets (1, &_target, nullptr);

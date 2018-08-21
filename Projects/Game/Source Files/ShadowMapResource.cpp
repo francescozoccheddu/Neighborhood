@@ -94,10 +94,12 @@ void ShadowMap3DResource::Create (ID3D11Device & _device)
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthViewDesc {};
 	depthViewDesc.Flags = 0;
 	depthViewDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	depthViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	depthViewDesc.Texture2DArray.ArraySize = 1;
+	depthViewDesc.Texture2DArray.MipSlice = 0;
 	for (int iFace { 0 }; iFace < 6; iFace++)
 	{
-		depthViewDesc.Texture2D.MipSlice = static_cast<UINT>(iFace);
+		depthViewDesc.Texture2DArray.FirstArraySlice = static_cast<UINT>(iFace);
 		GAME_COMC (_device.CreateDepthStencilView (texture.get (), &depthViewDesc, &m_pTarget[iFace]));
 	}
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceDesc {};

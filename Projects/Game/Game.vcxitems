@@ -26,6 +26,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Exceptions.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Gamepad.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\GeometryPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Lights.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MergingPass.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MeshResource.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShadowMapResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Camera.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Lights.hpp" />
