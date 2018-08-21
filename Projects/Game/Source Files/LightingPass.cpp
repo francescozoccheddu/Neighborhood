@@ -38,10 +38,12 @@ bool LightingPass::IsLoaded () const
 
 void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context, const Inputs& _inputs, ID3D11RenderTargetView * _target)
 {
+	std::list<const Light*> pLights;
+	for (const Light & light : _scene.directionalLights) { pLights.push_back (&light); }
+	for (const Light & light : _scene.pointLights) { pLights.push_back (&light); }
+	for (const Light & light : _scene.coneLight) { pLights.push_back (&light); }
+	//m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights);
 
-	const ID3D11ShaderResourceView * views[4];
-	int cLights, cMaps;
-	m_ShadowingSubPass.Render (_context, _scene.drawables, _scene.directionalLights.data (), _scene.directionalLights.size (), 4, views, cLights, cMaps);
 
 	{
 		_context.OMSetRenderTargets (1, &_target, nullptr);

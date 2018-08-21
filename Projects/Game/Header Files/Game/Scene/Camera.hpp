@@ -26,6 +26,17 @@ public:
 
 };
 
+class ViewWithDirection : public AbstractView
+{
+
+public:
+
+	DirectX::XMFLOAT3 direction { 0.0f, 0.0f, 1.0f };
+
+	void Update () override;
+
+};
+
 class ViewWithOrientation : public AbstractView
 {
 

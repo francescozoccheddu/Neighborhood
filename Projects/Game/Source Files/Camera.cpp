@@ -11,6 +11,12 @@ void ViewWithTarget::Update ()
 	XMStoreFloat4x4 (&m_Matrix, transform);
 }
 
+void ViewWithDirection::Update ()
+{
+	CXMMATRIX transform = XMMatrixTranspose (XMMatrixLookToLH (XMLoadFloat3 (&position), XMLoadFloat3 (&direction), XMLoadFloat3 (&unrotatedUp)));
+	XMStoreFloat4x4 (&m_Matrix, transform);
+}
+
 void ViewWithOrientation::Update ()
 {
 	CXMVECTOR quat { XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };

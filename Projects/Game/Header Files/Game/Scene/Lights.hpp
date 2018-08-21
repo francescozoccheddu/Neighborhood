@@ -15,6 +15,8 @@ struct Light
 	DirectX::XMFLOAT3 color;
 	DirectX::XMFLOAT3 position;
 	bool bCastShadows;
+	float nearZ { 0.1f };
+	float farZ { 100.0f };
 
 	virtual Type GetType () const = 0;
 
@@ -38,6 +40,7 @@ struct PointLight : public Light
 struct DirectionalLight : public Light
 {
 	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
+	float shadowSize;
 
 	inline Type GetType () const override final
 	{
@@ -47,9 +50,10 @@ struct DirectionalLight : public Light
 
 struct ConeLight : public Light
 {
-	DirectX::XMFLOAT3 position { 0.0f, 1.0f, 0.0f };
-	DirectX::XMFLOAT3 target { 0.0f, 0.0f, 0.0f };
-	float angle { 0.0f };
+	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
+
+	float innerAngle { 0.5f };
+	float outerAngle { 1.0f };
 
 	inline Type GetType () const override final
 	{

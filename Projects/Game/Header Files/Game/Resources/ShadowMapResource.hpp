@@ -9,9 +9,9 @@ class ShadowMapResource : public Resource
 
 public:
 
-	static void SetShaderResources (ID3D11DeviceContext & context, const ShadowMapResource * pShadowMaps, int cShadowMaps, int startingSlot);
-
 	ShadowMapResource (int size);
+
+	const ID3D11ShaderResourceView * GetShaderResourceView () const;
 
 	int GetSize () const;
 
@@ -34,7 +34,7 @@ public:
 
 	using ShadowMapResource::ShadowMapResource;
 
-	void SetDepthOnlyTarget (ID3D11DeviceContext & context) const;
+	ID3D11DepthStencilView * GetTarget () const;
 
 	void Create (ID3D11Device & device) override final;
 
@@ -53,7 +53,7 @@ public:
 
 	using ShadowMapResource::ShadowMapResource;
 
-	void SetDepthOnlyTarget (ID3D11DeviceContext & context, D3D11_TEXTURECUBE_FACE face) const;
+	ID3D11DepthStencilView * GetTarget (D3D11_TEXTURECUBE_FACE face) const;
 
 	void Create (ID3D11Device & device) override final;
 
