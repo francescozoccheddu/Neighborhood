@@ -85,153 +85,134 @@ bool ShadowingSubPass::IsCreated () const
 	return false;
 }
 
-std::list<ShadowingSubPass::ProcessedLight> ShadowingSubPass::ProcessLights (ID3D11DeviceContext & context, const std::vector<Scene::Drawable>& drawables, std::list<const Light*>& pLights)
+std::list<ShadowingSubPass::ProcessedLight> ShadowingSubPass::ProcessLights (ID3D11DeviceContext & _context, const std::vector<Scene::Drawable>& _drawables, std::list<const Light*>& _pLights)
 {
-	GAME_THROW_MSG ("Unimplemented");
+	D3D11_VIEWPORT oldViewport;
+	{
+		UINT cViewports { 1 };
+		_context.RSGetViewports (&cViewports, &oldViewport);
+	}
+	{
+		D3D11_VIEWPORT viewport;
+		viewport.Height = _SIZE;
+		viewport.Width = _SIZE;
+		viewport.MaxDepth = 1.0f;
+		viewport.MinDepth = 0.0f;
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		_context.RSSetViewports (1, &viewport);
+	}
+	std::list<ProcessedLight> processedLights;
+	while (!_pLights.empty ())
+	{
+		std::list<Task> tasks { Prepare (_pLights, processedLights) };
+		for (const Task & task : tasks)
+		{
+			GeometryPass::ConstantBuffer buffer;
+			buffer.projView = task.transform;
+			m_GeometryPass.Render (_drawables, _context, buffer, task.pTarget);
+		}
+	}
+	_context.RSSetViewports (1, &oldViewport);
+	return processedLights;
 }
 
-ShadowingSubPass::Intermediate ShadowingSubPass::Prepare (std::list<const Light*> & _pLights) const
+std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Light*> & _pLights, std::list<ProcessedLight> & _processedLights) const
 {
-	Intermediate intermediate;
+	std::list<Task> tasks;
 	int iDirectional { 0 }, iPoint { 0 }, iCone { 0 };
 	std::list<const Light*>::iterator it { _pLights.begin () };
 	while (it != _pLights.end ())
 	{
+		bool bProcessed { false };
+		const ID3D11ShaderResourceView * pShadowMapShaderResource { nullptr };
 		const Light * pLight = *it;
 		if (pLight->bCastShadows)
 		{
 			switch (pLight->GetType ())
 			{
 				case Light::Type::POINT:
-					if (iPoint < s_cPointMaps)
-					{
-						const ShadowMap3DResource & map { *m_pPointMaps[iPoint++] };
-						const PointLight & light { *reinterpret_cast<const PointLight*>(pLight) };
-						PerspectiveProjection proj;
-						proj.aspectRatio = 1.0f;
-						proj.farZ = light.farZ;
-						proj.nearZ = light.nearZ;
-						proj.vFov = DirectX::XMConvertToRadians (90.0f);
-						proj.Update ();
-						ViewWithTarget view;
-						view.position = pLight->position;
-						ProcessedLight processedLight;
-						processedLight.pShaderResource = map.GetShaderResourceView ();
-						processedLight.pLight = pLight;
-						Task task;
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_POSITIVE_X);
-						view.target = { 1.0f, 0.0f, 0.0f };
-						view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-						processedLight.transform = task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_NEGATIVE_X);
-						view.target = { -1.0f, 0.0f, 0.0f };
-						view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-						task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_POSITIVE_Y);
-						view.target = { 0.0f, 1.0f, 0.0f };
-						view.unrotatedUp = { 0.0f, 0.0f, -1.0f };
-						task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_NEGATIVE_Y);
-						view.target = { 0.0f, -1.0f, 0.0f };
-						view.unrotatedUp = { 0.0f, 0.0f, 1.0f };
-						task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_POSITIVE_Z);
-						view.target = { 0.0f, 0.0f, 1.0f };
-						view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-						task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						task.pTarget = map.GetTarget (D3D11_TEXTURECUBE_FACE_NEGATIVE_Z);
-						view.target = { 0.0f, 0.0f, -1.0f };
-						view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-						task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-
-						intermediate.lights.push_back (processedLight);
-					}
-					else if (iDirectional >= s_cDirectionalMaps && iCone >= s_cConeMaps)
-					{
-						return intermediate;
-					}
+					pShadowMapShaderResource = PreparePoint (*reinterpret_cast<const PointLight*>(pLight), tasks, iPoint);
 					break;
 				case Light::Type::DIRECTION:
-					if (iDirectional < s_cDirectionalMaps)
-					{
-						const ShadowMap2DResource & map { *m_pDirectionalMaps[iDirectional++] };
-						const DirectionalLight & light { *reinterpret_cast<const DirectionalLight*>(pLight) };
-						OrthographicProjection proj;
-						proj.aspectRatio = 1.0f;
-						proj.farZ = light.farZ;
-						proj.nearZ = light.nearZ;
-						proj.height = light.shadowSize;
-						proj.Update ();
-						ViewWithDirection view;
-						view.position = light.position;
-						view.direction = light.direction;
-						ProcessedLight processedLight;
-						processedLight.pShaderResource = map.GetShaderResourceView ();
-						processedLight.pLight = pLight;
-						Task task;
-						task.pTarget = map.GetTarget ();
-						processedLight.transform = task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-						intermediate.lights.push_back (processedLight);
-					}
-					else if (iPoint >= s_cPointMaps && iCone >= s_cConeMaps)
-					{
-						return intermediate;
-					}
+					pShadowMapShaderResource = PrepareDirectional (*reinterpret_cast<const DirectionalLight*>(pLight), tasks, iDirectional);
 					break;
 				case Light::Type::CONE:
-					if (iCone < s_cConeMaps)
-					{
-						const ShadowMap2DResource & map { *m_pConeMaps[iCone++] };
-						const ConeLight & light { *reinterpret_cast<const ConeLight*>(pLight) };
-						PerspectiveProjection proj;
-						proj.aspectRatio = 1.0f;
-						proj.farZ = light.farZ;
-						proj.nearZ = light.nearZ;
-						proj.vFov = light.outerAngle;
-						proj.Update ();
-						ViewWithDirection view;
-						view.position = light.position;
-						view.direction = light.direction;
-						ProcessedLight processedLight;
-						processedLight.pShaderResource = map.GetShaderResourceView ();
-						processedLight.pLight = pLight;
-						Task task;
-						task.pTarget = map.GetTarget ();
-						processedLight.transform = task.transform = proj * view;
-						intermediate.tasks.push_back (task);
-						intermediate.lights.push_back (processedLight);
-					}
-					else if (iPoint >= s_cPointMaps && iDirectional >= s_cDirectionalMaps)
-					{
-						return intermediate;
-					}
+					pShadowMapShaderResource = PrepareCone (*reinterpret_cast<const ConeLight*>(pLight), tasks, iCone);
 					break;
 				default:
 					GAME_THROW_MSG ("Unknown light type");
 			}
+			bProcessed = pShadowMapShaderResource != nullptr;
 		}
 		else
 		{
-			ProcessedLight processedLight;
-			processedLight.pLight = pLight;
-			processedLight.pShaderResource = nullptr;
-			intermediate.lights.push_back (processedLight);
+			bProcessed = true;
+		}
+		if (bProcessed)
+		{
+			it = _pLights.erase (it);
+			ProcessedLight processed;
+			processed.pLight = pLight;
+			processed.pShadowMapShaderResource = pShadowMapShaderResource;
+			_processedLights.push_back (processed);
 		}
 	}
-	return intermediate;
+	return tasks;
 }
+
+const ID3D11ShaderResourceView * ShadowingSubPass::PrepareDirectional (const DirectionalLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+{
+	if (_iMap >= s_cDirectionalMaps)
+	{
+		return nullptr;
+	}
+	const ShadowMap2DResource & map { *m_pDirectionalMaps[_iMap++] };
+	Task task;
+	task.transform = _light;
+	task.pTarget = map.GetTarget ();
+	_tasks.push_back (task);
+	return map.GetShaderResourceView ();
+}
+
+const ID3D11ShaderResourceView * ShadowingSubPass::PreparePoint (const PointLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+{
+	if (_iMap >= s_cPointMaps)
+	{
+		return nullptr;
+	}
+	const ShadowMap3DResource & map { *m_pPointMaps[_iMap++] };
+	constexpr D3D11_TEXTURECUBE_FACE faces[] {
+		D3D11_TEXTURECUBE_FACE_POSITIVE_X,
+		D3D11_TEXTURECUBE_FACE_NEGATIVE_X,
+		D3D11_TEXTURECUBE_FACE_POSITIVE_Y,
+		D3D11_TEXTURECUBE_FACE_NEGATIVE_Y,
+		D3D11_TEXTURECUBE_FACE_POSITIVE_Z,
+		D3D11_TEXTURECUBE_FACE_NEGATIVE_Z };
+	PerspectiveProjection proj { _light.CalcProjection () };
+	for (D3D11_TEXTURECUBE_FACE face : faces)
+	{
+		Task task;
+		task.pTarget = map.GetTarget (face);
+		task.transform = _light.CalcView (face);
+		_tasks.push_back (task);
+	}
+	return map.GetShaderResourceView ();
+}
+
+const ID3D11ShaderResourceView * ShadowingSubPass::PrepareCone (const ConeLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+{
+	if (_iMap >= s_cConeMaps)
+	{
+		return nullptr;
+	}
+	const ShadowMap2DResource & map { *m_pConeMaps[_iMap++] };
+	Task task;
+	task.transform = _light;
+	task.pTarget = map.GetTarget ();
+	_tasks.push_back (task);
+	return map.GetShaderResourceView ();
+}
+
 
 

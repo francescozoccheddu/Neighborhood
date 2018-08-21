@@ -108,6 +108,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShadowMapResource.cpp">
       <Filter>Sources\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Lights.cpp">
+      <Filter>Sources\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
@@ -202,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\MatrixWrapper.hpp">
       <Filter>Sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShadowMapResource.hpp">
+      <Filter>Sources\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

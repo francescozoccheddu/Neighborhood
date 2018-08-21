@@ -25,16 +25,10 @@ void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _
 #else
 	GAME_COMC (_deviceContext.IASetIndexBuffer (m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0));
 #endif
-	UINT offset { 0 };
-	{
-		UINT stride { sizeof (GeometryVertex) };
-		GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pGeometryVertexBuffer, &stride, &offset));
-	}
-	if (!_bGeometryOnly)
-	{
-		UINT stride { sizeof (ShadingVertex) };
-		GAME_COMC (_deviceContext.IASetVertexBuffers (1, 1, &m_pShadingVertexBuffer, &stride, &offset));
-	}
+	UINT offsets[] { 0, 0 };
+	UINT strides[] { sizeof (GeometryVertex), sizeof (ShadingVertex) };
+	ID3D11Buffer * buffers[] { m_pGeometryVertexBuffer, _bGeometryOnly ? nullptr : m_pShadingVertexBuffer };
+	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 2, buffers, strides, offsets));
 }
 
 int SceneMeshResource::GetIndicesCount () const

@@ -1,8 +1,9 @@
 #pragma once
 
+#include <Game/Utils/MatrixWrapper.hpp>
 #include <Game/DirectXMath.hpp>
 
-class Transform
+class Transform : public MatrixWrapper
 {
 
 public:
@@ -12,11 +13,5 @@ public:
 	DirectX::XMFLOAT4 rotation { 1.0f, 0.0f, 0.0f, 0.0f };
 
 	void Update ();
-
-	DirectX::XMMATRIX Get () const;
-
-private:
-
-	DirectX::XMFLOAT4X4 m_Transform;
 
 };
