@@ -50,16 +50,18 @@ class Vertex:
     def __init__(self, position, normal, textcoord):
         self._position = position
         self._normal = normal
-        self._textcoord = textcoord
+        self._texcoord = textcoord
 
     def __lt__(self,other):
-        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal), compareList(self._textcoord, other._textcoord)) == CompareResult.SMALLER
+        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal), compareList(self._texcoord, other._texcoord)) == CompareResult.SMALLER
 
     def __eq__(self, other):
-        return self._position == other._position and self._normal == other._normal and self._textcoord == other._textcoord
+        return self._position == other._position and self._normal == other._normal and self._texcoord == other._texcoord
 
-    def toList(self):
-        return vectorToList(self._position) + vectorToList(self._normal) + self._textcoord
+    def appendTo(self, positions, normals, texcoords):
+        positions.append(vectorToList(self._position))
+        normals.append(vectorToList(self._normal))
+        texcoords.append(self._texcoord)
 
 class MeshBuilder:
 
@@ -82,9 +84,19 @@ class MeshBuilder:
         self._vertices.append(vert)
 
     def toDict(self):
+        positions = []
+        normals = []
+        texcoords = []
+        vertices = self._buildVertices()
+        for vert in vertices:
+            vert.appendTo(positions,normals,texcoords)
         return {
-            "verts" : list(map(lambda v: v.toList(), self._buildVertices())),
-            "inds" : self._buildIndices()
+            "vertices" : {
+                "positions" : positions,
+                "normals" : normals,
+                "texcoords" : texcoords
+                },
+            "indices" : self._buildIndices()
             }
 
 class BisectMeshBuilder(MeshBuilder):

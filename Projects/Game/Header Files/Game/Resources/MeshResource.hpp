@@ -11,25 +11,27 @@ class SceneMeshResource final : public FileResource
 
 public:
 
-	struct Vertex
+	struct GeometryVertex
 	{
 		DirectX::XMFLOAT3 position;
+	};
+
+	struct ShadingVertex
+	{
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT2 textureCoord;
 	};
 
 	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::GeometryVertex, position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof (SceneMeshResource::ShadingVertex, normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof (SceneMeshResource::ShadingVertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
 	using FileResource::FileResource;
 
 	~SceneMeshResource ();
 
-	void SetBuffers (ID3D11DeviceContext & deviceContext) const;
-
-	int GetVerticesCount () const;
+	void SetBuffers (ID3D11DeviceContext & deviceContext, bool bGeometryOnly) const;
 
 	int GetIndicesCount () const;
 
@@ -55,13 +57,15 @@ private:
 	using ind_t = uint32_t;
 #endif
 
-	Vertex * m_pVertices { nullptr };
+	GeometryVertex * m_pGeometryVertices { nullptr };
+	ShadingVertex * m_pShadingVertices { nullptr };
 	int m_cVertices { 0 };
 
 	ind_t * m_pIndices { nullptr };
 	int m_cIndices { 0 };
 
-	ID3D11Buffer * m_pVertexBuffer { nullptr };
+	ID3D11Buffer * m_pGeometryVertexBuffer { nullptr };
+	ID3D11Buffer * m_pShadingVertexBuffer { nullptr };
 	ID3D11Buffer * m_pIndexBuffer { nullptr };
 
 };

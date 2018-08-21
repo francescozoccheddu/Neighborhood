@@ -6,14 +6,14 @@ void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
 	m_DirectionalBuffer.Create (_device);
-	m_ShadowingSubPass.Create (_device);
+	//m_ShadowingSubPass.Create (_device);
 }
 
 void LightingPass::Destroy ()
 {
 	m_DirectionalBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
-	m_ShadowingSubPass.Destroy ();
+	//m_ShadowingSubPass.Destroy ();
 }
 
 bool LightingPass::IsCreated () const

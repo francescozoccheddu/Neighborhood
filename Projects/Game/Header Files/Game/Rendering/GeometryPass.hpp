@@ -47,7 +47,7 @@ public:
 
 private:
 
-	void Draw (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context) const;
+	void Draw (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context, bool bGeometryOnly) const;
 
 	ShaderPassResource m_Shader RENDERINGPASS_SHADERPASS ("Geometry", SceneMeshResource::s_aInputElementDesc);
 	mutable ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;

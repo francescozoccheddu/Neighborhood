@@ -17,7 +17,7 @@ SceneMeshResource::~SceneMeshResource ()
 	}
 }
 
-void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
+void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _bGeometryOnly) const
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
 #if GAME_MESHRESOURCE_HALF_INDEX
@@ -25,15 +25,16 @@ void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext) const
 #else
 	GAME_COMC (_deviceContext.IASetIndexBuffer (m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0));
 #endif
-	UINT stride { sizeof (Vertex) };
 	UINT offset { 0 };
-	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pVertexBuffer, &stride, &offset));
-}
-
-int SceneMeshResource::GetVerticesCount () const
-{
-	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
-	return m_cVertices;
+	{
+		UINT stride { sizeof (GeometryVertex) };
+		GAME_COMC (_deviceContext.IASetVertexBuffers (0, 1, &m_pGeometryVertexBuffer, &stride, &offset));
+	}
+	if (!_bGeometryOnly)
+	{
+		UINT stride { sizeof (ShadingVertex) };
+		GAME_COMC (_deviceContext.IASetVertexBuffers (1, 1, &m_pShadingVertexBuffer, &stride, &offset));
+	}
 }
 
 int SceneMeshResource::GetIndicesCount () const
@@ -47,31 +48,38 @@ void SceneMeshResource::Load ()
 	GAME_ASSERT_MSG (!IsLoaded (), "Already loaded");
 	rapidjson::Document jDoc;
 	jDoc.Parse (Storage::LoadTextFile (GetFileName ()).c_str ());
-	GAME_ASSERT_MSG (jDoc.IsObject (), "Not a JSON object");
 	{
-		const rapidjson::Value& jVerts { jDoc["verts"] };
-		GAME_ASSERT_MSG (jVerts.IsArray (), "Not a JSON array");
-		const rapidjson::SizeType cArr { jVerts.Size () };
+		const rapidjson::Value& jVerts { jDoc["vertices"] };
+		const rapidjson::Value& jPositions { jVerts["positions"] };
+		const rapidjson::Value& jNormals { jVerts["normals"] };
+		const rapidjson::Value& jTexCoords { jVerts["texcoords"] };
+		const rapidjson::SizeType cArr { jPositions.Size () };
 		m_cVertices = static_cast<int>(cArr);
-		m_pVertices = new Vertex[m_cVertices];
+		m_pGeometryVertices = new GeometryVertex[m_cVertices];
+		m_pShadingVertices = new ShadingVertex[m_cVertices];
 		for (rapidjson::SizeType iArr { 0 }; iArr < cArr; iArr++)
 		{
-			Vertex& vert { m_pVertices[static_cast<unsigned int>(iArr)] };
-			const rapidjson::Value & jVert { jVerts[iArr] };
-			int iVert { 0 };
-			vert.position.x = jVert[iVert++].GetFloat ();
-			vert.position.y = jVert[iVert++].GetFloat ();
-			vert.position.z = jVert[iVert++].GetFloat ();
-			vert.normal.x = jVert[iVert++].GetFloat ();
-			vert.normal.y = jVert[iVert++].GetFloat ();
-			vert.normal.z = jVert[iVert++].GetFloat ();
-			vert.textureCoord.x = jVert[iVert++].GetFloat ();
-			vert.textureCoord.y = jVert[iVert++].GetFloat ();
+			{
+				GeometryVertex& geomVert { m_pGeometryVertices[static_cast<unsigned int>(iArr)] };
+				const rapidjson::Value & jPos { jPositions[iArr] };
+				geomVert.position.x = jPos[0].GetFloat ();
+				geomVert.position.y = jPos[1].GetFloat ();
+				geomVert.position.z = jPos[2].GetFloat ();
+			}
+			{
+				ShadingVertex& shadVert { m_pShadingVertices[static_cast<unsigned int>(iArr)] };
+				const rapidjson::Value & jNorm { jNormals[iArr] };
+				const rapidjson::Value & jTexCoord { jTexCoords[iArr] };
+				shadVert.normal.x = jNorm[0].GetFloat ();
+				shadVert.normal.y = jNorm[1].GetFloat ();
+				shadVert.normal.z = jNorm[2].GetFloat ();
+				shadVert.textureCoord.x = jTexCoord[0].GetFloat ();
+				shadVert.textureCoord.y = jTexCoord[1].GetFloat ();
+			}
 		}
 	}
 	{
-		const rapidjson::Value& jInds { jDoc["inds"] };
-		GAME_ASSERT_MSG (jInds.IsArray (), "Not a JSON array");
+		const rapidjson::Value& jInds { jDoc["indices"] };
 		const rapidjson::SizeType cArr { jInds.Size () };
 		m_cIndices = static_cast<int>(cArr);
 		m_pIndices = new ind_t[m_cIndices];
@@ -85,15 +93,17 @@ void SceneMeshResource::Load ()
 void SceneMeshResource::Unload ()
 {
 	GAME_ASSERT_MSG (SceneMeshResource::IsLoaded (), "Not loaded");
-	delete m_pVertices;
+	delete m_pGeometryVertices;
+	delete m_pShadingVertices;
 	delete m_pIndices;
-	m_pVertices = nullptr;
+	m_pGeometryVertices = nullptr;
+	m_pShadingVertices = nullptr;
 	m_pIndices = nullptr;
 }
 
 bool SceneMeshResource::IsLoaded () const
 {
-	return m_pVertices != nullptr;
+	return m_pIndices != nullptr;
 }
 
 void SceneMeshResource::Create (ID3D11Device & _device)
@@ -102,16 +112,30 @@ void SceneMeshResource::Create (ID3D11Device & _device)
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = m_cVertices * sizeof (Vertex);
+		desc.ByteWidth = m_cVertices * sizeof (GeometryVertex);
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (Vertex);
+		desc.StructureByteStride = sizeof (GeometryVertex);
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = m_pVertices;
+		data.pSysMem = m_pGeometryVertices;
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
-		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pVertexBuffer));
+		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pGeometryVertexBuffer));
+	}
+	{
+		D3D11_BUFFER_DESC desc;
+		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		desc.ByteWidth = m_cVertices * sizeof (ShadingVertex);
+		desc.CPUAccessFlags = 0;
+		desc.MiscFlags = 0;
+		desc.StructureByteStride = sizeof (ShadingVertex);
+		desc.Usage = D3D11_USAGE_DEFAULT;
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = m_pShadingVertices;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
+		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pShadingVertexBuffer));
 	}
 	{
 		D3D11_BUFFER_DESC desc;
@@ -132,15 +156,17 @@ void SceneMeshResource::Create (ID3D11Device & _device)
 void SceneMeshResource::Destroy ()
 {
 	GAME_ASSERT_MSG (SceneMeshResource::IsCreated (), "Not created");
-	m_pVertexBuffer->Release ();
+	m_pGeometryVertexBuffer->Release ();
+	m_pShadingVertexBuffer->Release ();
 	m_pIndexBuffer->Release ();
-	m_pVertexBuffer = nullptr;
+	m_pGeometryVertexBuffer = nullptr;
+	m_pShadingVertexBuffer = nullptr;
 	m_pIndexBuffer = nullptr;
 }
 
 bool SceneMeshResource::IsCreated () const
 {
-	return m_pVertexBuffer;
+	return m_pIndexBuffer != nullptr;
 }
 
 ScreenMeshResource::~ScreenMeshResource ()
