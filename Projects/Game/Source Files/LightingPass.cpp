@@ -1,15 +1,19 @@
 #include <Game/Rendering/LightingPass.hpp>
 
+LightingPass::LightingPass (const GeometryPass & _geometryPass) : m_ShadowingSubPass { _geometryPass } {}
+
 void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
 	m_DirectionalBuffer.Create (_device);
+	m_ShadowingSubPass.Create (_device);
 }
 
 void LightingPass::Destroy ()
 {
 	m_DirectionalBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
+	m_ShadowingSubPass.Destroy ();
 }
 
 bool LightingPass::IsCreated () const
@@ -34,6 +38,11 @@ bool LightingPass::IsLoaded () const
 
 void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context, const Inputs& _inputs, ID3D11RenderTargetView * _target)
 {
+
+	const ID3D11ShaderResourceView * views[4];
+	int cLights, cMaps;
+	m_ShadowingSubPass.Render (_context, _scene.drawables, _scene.directionalLights.data (), _scene.directionalLights.size (), 4, views, cLights, cMaps);
+
 	{
 		_context.OMSetRenderTargets (1, &_target, nullptr);
 	}

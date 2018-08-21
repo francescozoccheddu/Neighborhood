@@ -1,8 +1,9 @@
 #pragma once
 
+#include <Game/Utils/MatrixWrapper.hpp>
 #include <Game/DirectXMath.hpp>
 
-class AbstractView
+class AbstractView : public MatrixWrapper
 {
 
 public:
@@ -10,15 +11,7 @@ public:
 	DirectX::XMFLOAT3 unrotatedUp { 0.0f, 1.0f, 0.0f };
 	DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
 
-	const DirectX::XMFLOAT4X4 & Get () const;
-
 	virtual void Update () = 0;
-
-	virtual ~AbstractView () = default;
-
-protected:
-
-	DirectX::XMFLOAT4X4 m_mTransform;
 
 };
 
@@ -29,13 +22,11 @@ public:
 
 	DirectX::XMFLOAT3 target { 0.0f, 0.0f, 1.0f };
 
-	ViewWithTarget ();
-
 	void Update () override;
 
 };
 
-class View : public AbstractView
+class ViewWithOrientation : public AbstractView
 {
 
 public:
@@ -44,9 +35,6 @@ public:
 	float turn { 0.0f };
 	float lookUp { 0.0f };
 	float tilt { 0.0f };
-
-	View ();
-
 
 	void Update () override;
 
@@ -68,30 +56,42 @@ private:
 
 };
 
-class Projection
+class AbstractProjection : public MatrixWrapper
+{
+public:
+
+	float nearZ { 0.01f };
+	float farZ { 100.0f };
+	float aspectRatio { 1.0f };
+
+	static float CalcAspectRatio (float width, float height);
+
+	virtual void Update () = 0;
+
+};
+
+class OrthographicProjection : public AbstractProjection
+{
+
+public:
+
+	static float CalcHeight (float width, float aspectRatio);
+
+	float height { 1.0f };
+
+	void Update () override;
+
+};
+
+class PerspectiveProjection : public OrthographicProjection
 {
 
 public:
 
 	float vFov { 1.5708f };
-	float nearZ { 0.01f };
-	float farZ { 100.0f };
-	float aspectRatio { 1.0f };
-
-	static float CalcAspectRatio (int width, int height);
 
 	static float CalcVFov (float hFov, float aspectRatio);
 
-	Projection ();
-
-	void Update ();
-
-	const DirectX::XMFLOAT4X4 & Get () const;
-
-	virtual ~Projection () = default;
-
-private:
-
-	DirectX::XMFLOAT4X4 m_mTransform;
+	void Update () override;
 
 };

@@ -49,9 +49,9 @@ private:
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	D3D11_VIEWPORT m_Viewport;
-	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource);
+	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource::s_aInputElementDesc);
 	ScreenMeshResource m_ScreenMesh;
-	LightingPass m_DirectionalLightingPass;
 	GeometryPass m_GeometryPass;
+	LightingPass m_DirectionalLightingPass { m_GeometryPass };
 
 };

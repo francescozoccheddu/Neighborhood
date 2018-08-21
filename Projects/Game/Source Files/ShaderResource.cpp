@@ -3,6 +3,7 @@
 #include <Game/Resources/MeshResource.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include "..\Header Files\Game\Resources\ShaderResource.hpp"
 
 VertexShaderResource::VertexShaderResource (const std::string & _fileName, const D3D11_INPUT_ELEMENT_DESC * _pDescs, int _cDescs) :
 	BinaryFileResource { _fileName }, m_pDescriptions { _pDescs }, m_cDescriptions { _cDescs }
@@ -117,5 +118,15 @@ bool ShaderPassResource::IsCreated () const
 void ShaderPassResource::Set (ID3D11DeviceContext & _deviceContext) const
 {
 	m_VertexShader.SetShaderAndInputLayout (_deviceContext);
+	m_PixelShader.SetShader (_deviceContext);
+}
+
+void ShaderPassResource::SetVertexOnly (ID3D11DeviceContext & _deviceContext) const
+{
+	m_VertexShader.SetShaderAndInputLayout (_deviceContext);
+}
+
+void ShaderPassResource::SetPixelOnly (ID3D11DeviceContext & _deviceContext) const
+{
 	m_PixelShader.SetShader (_deviceContext);
 }

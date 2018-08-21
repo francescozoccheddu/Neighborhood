@@ -22,6 +22,11 @@ public:
 		ID3D11DepthStencilView * depth;
 	};
 
+	struct ConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 projView;
+	};
+
 	void Create (ID3D11Device & device) override final;
 
 	void Destroy () override final;
@@ -34,18 +39,18 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (const Scene & scene, ID3D11DeviceContext & context, const Target& target);
+	void Render (const Scene & scene, ID3D11DeviceContext & context, const Target& target) const;
+
+	void Render (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context, const ConstantBuffer & buffer, const Target& target) const;
+
+	void Render (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context, const ConstantBuffer & buffer, ID3D11DepthStencilView * pDepthTarget) const;
 
 private:
 
-	struct ConstantBuffer
-	{
-		DirectX::XMFLOAT4X4 projection;
-		DirectX::XMFLOAT4X4 view;
-	};
+	void Draw (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context) const;
 
-	ShaderPassResource m_Shader RENDERINGPASS_SHADERPASS ("Geometry", SceneMeshResource);
-	ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
-	SceneResources m_SceneResources;
+	ShaderPassResource m_Shader RENDERINGPASS_SHADERPASS ("Geometry", SceneMeshResource::s_aInputElementDesc);
+	mutable ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
+	mutable SceneResources m_SceneResources;
 
 };
