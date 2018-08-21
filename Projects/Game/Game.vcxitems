@@ -34,6 +34,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\SceneResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShadowingSubPass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShadowMapResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Storage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Transform.cpp" />
@@ -51,6 +53,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\Renderer.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\RenderingPass.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\ShadowingSubPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ConstantBufferResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\MeshResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
@@ -64,6 +67,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\COMExceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\MatrixWrapper.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />

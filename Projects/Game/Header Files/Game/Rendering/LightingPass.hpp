@@ -3,6 +3,7 @@
 #include <Game/Rendering/RenderingPass.hpp>
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/ConstantBufferResource.hpp>
+#include <Game/Rendering/ShadowingSubPass.hpp>
 #include <Game/Resources/MeshResource.hpp>
 #include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
@@ -14,6 +15,8 @@ class LightingPass final : public RenderingPass
 {
 
 public:
+
+	LightingPass (const GeometryPass & geometryPass);
 
 	struct Inputs
 	{
@@ -62,5 +65,6 @@ private:
 
 	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
 	ConstantBufferStructResource<DirectionalBuffer> m_DirectionalBuffer;
+	ShadowingSubPass m_ShadowingSubPass;
 
 };

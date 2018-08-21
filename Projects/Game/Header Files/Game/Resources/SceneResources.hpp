@@ -54,13 +54,13 @@ private:
 	void Destroy (map_t& map);
 
 	template<typename T>
-	const T& Get (map_t& _map, const std::string& _name)
+	const T& Get (map_t& _map, const std::string& _name, const std::string& _filename)
 	{
 		GAME_ASSERT_MSG (IsCreated (), "Not created");
 		auto it { _map.find (_name) };
 		if (it == _map.end ())
 		{
-			T * pRes { new T (_name) };
+			T * pRes { new T (_filename) };
 			it = _map.emplace (_name, Entry { pRes, 0 }).first;
 		}
 		Entry & entry { it->second };

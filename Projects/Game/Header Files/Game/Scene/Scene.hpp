@@ -24,7 +24,7 @@ public:
 	std::vector<DirectionalLight> directionalLights {};
 	std::vector<ConeLight> coneLight {};
 	AbstractView * pView { nullptr };
-	Projection projection {};
+	AbstractProjection * pProjection { nullptr };
 
 };
 

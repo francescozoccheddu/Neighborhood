@@ -1,7 +1,6 @@
 cbuffer cbPerFrame
 {
-    float4x4 mProjection;
-    float4x4 mView;
+    float4x4 mProjView;
 };
 
 struct VSIn
@@ -21,7 +20,7 @@ struct VSOut
 VSOut main(in VSIn _sIn)
 {
     VSOut sOut;
-    sOut.Position = mul(mul(float4(_sIn.Position, 1.0), mView), mProjection);
+    sOut.Position = mul(float4(_sIn.Position, 1.0), mProjView);
     sOut.Normal = _sIn.Normal;
     sOut.TexCoord = _sIn.TexCoord;
     return sOut;

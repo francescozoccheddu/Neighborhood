@@ -11,14 +11,18 @@ Logic::Logic ()
 	drawable.mesh = "Home";
 	drawable.transform.Update ();
 	m_Scene.drawables.push_back (drawable);
-	m_Scene.projection.vFov = 1.0f;
-	m_Scene.pView = new View ();
+	PerspectiveProjection* pProjection = new PerspectiveProjection;
+	pProjection->vFov = 1.0f;
+	m_Scene.pProjection = pProjection;
+	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
 	DirectionalLight light;
 	light.direction = { 1.0f, -1.0f, 0.5f };
+	light.position = { -5.0f, 5.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
 	m_Scene.directionalLights.push_back (light);
 	light.direction = { -1.0f, 1.0f, 0.5f };
+	light.position = { 5.0f, 0.0f, -0.5f };
 	light.color = { 1.0f, 0.2f, .2f };
 	m_Scene.directionalLights.push_back (light);
 }
@@ -36,7 +40,7 @@ void Logic::Update (double _deltaTime)
 		}
 	}
 
-	View & view { *reinterpret_cast<View*>(m_Scene.pView) };
+	ViewWithOrientation & view { *reinterpret_cast<ViewWithOrientation*>(m_Scene.pView) };
 
 	if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_B, false))
 	{
@@ -66,6 +70,6 @@ const Scene& Logic::GetScene () const
 
 void Logic::Size (WindowSize _size, WindowRotation _rotation)
 {
-	m_Scene.projection.aspectRatio = Projection::CalcAspectRatio (_size.width, _size.height);
-	m_Scene.projection.Update ();
+	m_Scene.pProjection->aspectRatio = AbstractProjection::CalcAspectRatio (_size.width, _size.height);
+	m_Scene.pProjection->Update ();
 }

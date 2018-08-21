@@ -11,6 +11,18 @@ class SceneMeshResource final : public FileResource
 
 public:
 
+	struct Vertex
+	{
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 textureCoord;
+	};
+
+	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, position), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (SceneMeshResource::Vertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
+
 	using FileResource::FileResource;
 
 	~SceneMeshResource ();
@@ -37,13 +49,6 @@ private:
 
 	friend class VertexShaderResource;
 
-	struct Vertex
-	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 normal;
-		DirectX::XMFLOAT2 textureCoord;
-	};
-
 #if GAME_MESHRESOURCE_HALF_INDEX
 	using ind_t = uint16_t;
 #else
@@ -59,19 +64,20 @@ private:
 	ID3D11Buffer * m_pVertexBuffer { nullptr };
 	ID3D11Buffer * m_pIndexBuffer { nullptr };
 
-public:
-
-	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, offsetof (Vertex, position), 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (Vertex, normal), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof (Vertex, textureCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
-
 };
 
 class ScreenMeshResource : public Resource
 {
 
 public:
+
+	struct Vertex
+	{
+		DirectX::XMFLOAT2 texCoord;
+	};
+
+	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof (Vertex, texCoord), D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
 	~ScreenMeshResource ();
 
@@ -87,21 +93,11 @@ public:
 
 private:
 
-	struct Vertex
-	{
-		DirectX::XMFLOAT2 texCoord;
-	};
-
 	inline static constexpr Vertex s_pVertices[] {
 		{ { 0.0f, 1.0f } }, { { 0.0f, 0.0f } }, { { 1.0f, 0.0f } },
 	{ { 1.0f, 0.0f } }, { { 1.0f, 1.0f } }, { { 0.0f, 1.0f } }
 	};
 
 	ID3D11Buffer * m_pVertexBuffer { nullptr };
-
-public:
-
-	inline constexpr static const D3D11_INPUT_ELEMENT_DESC s_aInputElementDesc[] {
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, offsetof (Vertex, texCoord), 0, D3D11_INPUT_PER_VERTEX_DATA, 0 } };
 
 };

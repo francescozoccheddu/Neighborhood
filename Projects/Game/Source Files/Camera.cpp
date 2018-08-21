@@ -1,26 +1,17 @@
 #include <Game/Scene/Camera.hpp>
 
 #include <cmath>
+#include "..\Header Files\Game\Scene\Camera.hpp"
 
 using namespace DirectX;
-
-const XMFLOAT4X4& AbstractView::Get () const
-{
-	return m_mTransform;
-}
-
-ViewWithTarget::ViewWithTarget ()
-{
-	ViewWithTarget::Update ();
-}
 
 void ViewWithTarget::Update ()
 {
 	CXMMATRIX transform = XMMatrixTranspose (XMMatrixLookAtLH (XMLoadFloat3 (&position), XMLoadFloat3 (&target), XMLoadFloat3 (&unrotatedUp)));
-	XMStoreFloat4x4 (&m_mTransform, transform);
+	XMStoreFloat4x4 (&m_Matrix, transform);
 }
 
-void View::Update ()
+void ViewWithOrientation::Update ()
 {
 	CXMVECTOR quat { XMQuaternionRotationRollPitchYaw (lookUp, turn, tilt) };
 	CXMVECTOR up { XMVector3Rotate (XMLoadFloat3 (&unrotatedUp), quat) };
@@ -30,16 +21,16 @@ void View::Update ()
 	XMStoreFloat3 (&m_Up, up);
 	XMStoreFloat3 (&m_Forward, forward);
 	XMStoreFloat3 (&m_Right, right);
-	XMStoreFloat4x4 (&m_mTransform, transform);
+	XMStoreFloat4x4 (&m_Matrix, transform);
 }
 
-void View::Move (float _right, float _up, float _forward, float _speed)
+void ViewWithOrientation::Move (float _right, float _up, float _forward, float _speed)
 {
 	CXMVECTOR newPos = XMLoadFloat3 (&position) + (_right * XMLoadFloat3 (&m_Right) + _up * XMLoadFloat3 (&m_Up) + _forward * XMLoadFloat3 (&m_Forward)) * _speed;
 	XMStoreFloat3 (&position, newPos);
 }
 
-void View::ClampLookUp (float _angle)
+void ViewWithOrientation::ClampLookUp (float _angle)
 {
 	if (lookUp > _angle)
 	{
@@ -51,49 +42,44 @@ void View::ClampLookUp (float _angle)
 	}
 }
 
-View::View ()
-{
-	View::Update ();
-}
-
-XMVECTOR View::GetUp () const
+XMVECTOR ViewWithOrientation::GetUp () const
 {
 	return XMLoadFloat3 (&m_Up);
 }
 
-XMVECTOR View::GetForward () const
+XMVECTOR ViewWithOrientation::GetForward () const
 {
 	return XMLoadFloat3 (&m_Forward);
 }
 
-XMVECTOR View::GetRight () const
+XMVECTOR ViewWithOrientation::GetRight () const
 {
 	return XMLoadFloat3 (&m_Right);
 }
 
-float Projection::CalcAspectRatio (int _w, int _h)
+float AbstractProjection::CalcAspectRatio (float _w, float _h)
 {
-	return _w / static_cast<float>(_h);
+	return _w / _h;
 }
 
-float Projection::CalcVFov (float _hf, float _a)
+float OrthographicProjection::CalcHeight (float _w, float _a)
+{
+	return _w / _a;
+}
+
+void OrthographicProjection::Update ()
+{
+	XMStoreFloat4x4 (&m_Matrix, XMMatrixTranspose (XMMatrixOrthographicLH (height * aspectRatio, height, nearZ, farZ)));
+}
+
+float PerspectiveProjection::CalcVFov (float _hf, float _a)
 {
 	float w = std::tan (_hf / 2.0f);
 	float h = w / _a;
 	return 2.0f * std::atan (h);
 }
 
-Projection::Projection ()
+void PerspectiveProjection::Update ()
 {
-	Update ();
-}
-
-void Projection::Update ()
-{
-	XMStoreFloat4x4 (&m_mTransform, XMMatrixTranspose (XMMatrixPerspectiveFovLH (vFov, aspectRatio, nearZ, farZ)));
-}
-
-const XMFLOAT4X4& Projection::Get () const
-{
-	return m_mTransform;
+	XMStoreFloat4x4 (&m_Matrix, XMMatrixTranspose (XMMatrixPerspectiveFovLH (vFov, aspectRatio, nearZ, farZ)));
 }

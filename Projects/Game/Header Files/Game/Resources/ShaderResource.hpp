@@ -72,6 +72,10 @@ public:
 
 	void Set (ID3D11DeviceContext & deviceContext) const;
 
+	void SetVertexOnly (ID3D11DeviceContext & deviceContext) const;
+
+	void SetPixelOnly (ID3D11DeviceContext & deviceContext) const;
+
 private:
 
 	VertexShaderResource m_VertexShader;
