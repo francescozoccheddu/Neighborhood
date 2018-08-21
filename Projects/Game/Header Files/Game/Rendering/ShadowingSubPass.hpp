@@ -8,12 +8,20 @@
 #include <Game/Rendering/GeometryPass.hpp>
 #include <Game/Resources/ShadowMapResource.hpp>
 #include <Game/DirectXMath.hpp>
+#include <list>
 #include <vector>
 
 class ShadowingSubPass final : public RenderingPass
 {
 
 public:
+
+	struct ProcessedLight
+	{
+		const Light * pLight;
+		const ID3D11ShaderResourceView * pShaderResource;
+		DirectX::XMFLOAT4X4 transform;
+	};
 
 	ShadowingSubPass (const GeometryPass & geometryPass);
 
@@ -31,9 +39,24 @@ public:
 
 	bool IsCreated () const override final;
 
-	void Render (ID3D11DeviceContext & _context, const std::vector<Scene::Drawable> drawables, const DirectionalLight * pLights, int cMaxLights, int cMaxMaps, const ID3D11ShaderResourceView ** out_pMaps, int& out_cLights, int& out_cMaps);
+	std::list<ProcessedLight> ProcessLights (ID3D11DeviceContext & context, const std::vector<Scene::Drawable> & drawables, std::list<const Light *> & pLights);
 
 private:
+
+	struct Task
+	{
+		ID3D11DepthStencilView * pTarget;
+		DirectX::XMFLOAT4X4 transform;
+	};
+
+	struct Intermediate
+	{
+		std::list<Task> tasks;
+		std::list<ProcessedLight> lights;
+	};
+
+	Intermediate Prepare (std::list<const Light*>& pLights) const;
+
 
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
