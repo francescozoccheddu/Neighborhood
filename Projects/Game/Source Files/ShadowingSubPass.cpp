@@ -108,7 +108,7 @@ std::list<ShadowingSubPass::ProcessedLight> ShadowingSubPass::ProcessLights (ID3
 	{
 		GeometryPass::ConstantBuffer buffer;
 		buffer.projView = task.transform;
-		m_GeometryPass.Render (_drawables, _context, buffer, task.pTarget);
+		m_GeometryPass.RenderDepthOnly (_drawables, _context, buffer, task.pTarget);
 	}
 	_context.RSSetViewports (1, &oldViewport);
 	return processedLights;

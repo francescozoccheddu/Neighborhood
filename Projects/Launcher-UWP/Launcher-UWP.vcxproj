@@ -97,11 +97,6 @@
     <ClCompile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <WarningLevel>Level4</WarningLevel>
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <CustomBuildStep />
     <CustomBuildStep />
@@ -135,11 +130,6 @@
     <ClCompile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <WarningLevel>Level4</WarningLevel>
-      <SDLCheck>false</SDLCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <CustomBuildStep />
     <CustomBuildStep />
