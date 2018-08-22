@@ -3,6 +3,7 @@
 #include <Game/Engine/DeviceHolder.hpp>
 #include <Game/Scene/Scene.hpp>
 #include <Game/Resources/ShaderResource.hpp>
+#include <Game/Resources/DepthMapResource.hpp>
 #include <Game/DirectXMath.hpp>
 #include <Game/Direct3D.hpp>
 #include <Game/Rendering/GeometryPass.hpp>
@@ -41,10 +42,10 @@ private:
 
 	static_assert(D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT >= s_cRenderTargets);
 
-	static constexpr DXGI_FORMAT s_renderTargetFormats[s_cRenderTargets] { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_SNORM, DXGI_FORMAT_R8G8_UNORM };
+	static constexpr DXGI_FORMAT s_renderTargetFormats[s_cRenderTargets] { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_SNORM, DXGI_FORMAT_R32G32B32A32_FLOAT };
 
 	const DeviceHolder & m_DeviceHolder;
-	com_ptr<ID3D11DepthStencilView> m_DepthStencilView;
+	DepthMap2DResource * m_pDepthMapResource { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[s_cRenderTargets];
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;

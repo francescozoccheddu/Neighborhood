@@ -36,7 +36,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\SceneResources.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShadowingSubPass.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShadowMapResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DepthMapResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Storage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Transform.cpp" />
@@ -60,7 +60,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShadowMapResource.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\DepthMapResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Camera.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Lights.hpp" />

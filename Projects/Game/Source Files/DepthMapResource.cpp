@@ -1,38 +1,51 @@
-#include <Game/Resources/ShadowMapResource.hpp>
+#include <Game/Resources/DepthMapResource.hpp>
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include "..\Header Files\Game\Resources\DepthMapResource.hpp"
 
-ShadowMapResource::ShadowMapResource (int _size) : m_Size (_size)
+DepthMapResource::DepthMapResource (int _width, int _height) : m_Width { _width }, m_Height { _height }
 {}
 
-const ID3D11ShaderResourceView * ShadowMapResource::GetShaderResourceView () const
+ID3D11ShaderResourceView * DepthMapResource::GetShaderResourceView () const
 {
 	return m_pShaderResource;
 }
 
-int ShadowMapResource::GetSize () const
+int DepthMapResource::GetWidth () const
 {
-	return m_Size;
+	return m_Width;
 }
 
-bool ShadowMapResource::IsCreated () const
+int DepthMapResource::GetHeight () const
+{
+	return m_Height;
+}
+
+bool DepthMapResource::IsCreated () const
 {
 	return m_pShaderResource != nullptr;
 }
 
-ID3D11DepthStencilView * ShadowMap2DResource::GetTarget () const
+DepthMap2DResource::~DepthMap2DResource ()
+{
+	if (DepthMap2DResource::IsCreated ())
+	{
+		DepthMap2DResource::Destroy ();
+	}
+}
+
+ID3D11DepthStencilView * DepthMap2DResource::GetTarget () const
 {
 	return m_pTarget;
 }
 
-void ShadowMap2DResource::Create (ID3D11Device & _device)
+void DepthMap2DResource::Create (ID3D11Device & _device)
 {
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	D3D11_TEXTURE2D_DESC textureDesc;
-	UINT size { static_cast<UINT>(GetSize ()) };
-	textureDesc.Width = size;
-	textureDesc.Height = size;
+	textureDesc.Width = static_cast<UINT>(GetWidth ());
+	textureDesc.Height = static_cast<UINT>(GetHeight ());
 	textureDesc.ArraySize = 1;
 	textureDesc.MipLevels = 1;
 	textureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
@@ -58,7 +71,7 @@ void ShadowMap2DResource::Create (ID3D11Device & _device)
 	GAME_COMC (_device.CreateShaderResourceView (texture.get (), &shaderResourceDesc, &m_pShaderResource));
 }
 
-void ShadowMap2DResource::Destroy ()
+void DepthMap2DResource::Destroy ()
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
 	m_pTarget->Release ();
@@ -67,19 +80,29 @@ void ShadowMap2DResource::Destroy ()
 	m_pShaderResource = nullptr;
 }
 
-ID3D11DepthStencilView * ShadowMap3DResource::GetTarget (D3D11_TEXTURECUBE_FACE face) const
+DepthMap3DResource::~DepthMap3DResource ()
 {
-	return m_pTarget[static_cast<unsigned int>(face)];
+	if (DepthMap3DResource::IsCreated ())
+	{
+		DepthMap3DResource::Destroy ();
+	}
+}
+
+DepthMap3DResource::DepthMap3DResource (int _size) : DepthMapResource (_size, _size)
+{}
+
+ID3D11DepthStencilView * DepthMap3DResource::GetTarget (D3D11_TEXTURECUBE_FACE _face) const
+{
+	return m_pTarget[static_cast<unsigned int>(_face)];
 }
 
 
-void ShadowMap3DResource::Create (ID3D11Device & _device)
+void DepthMap3DResource::Create (ID3D11Device & _device)
 {
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	D3D11_TEXTURE2D_DESC textureDesc;
-	UINT size { static_cast<UINT>(GetSize ()) };
-	textureDesc.Width = size;
-	textureDesc.Height = size;
+	textureDesc.Width = static_cast<UINT>(GetWidth ());
+	textureDesc.Height = static_cast<UINT>(GetHeight ());
 	textureDesc.ArraySize = 6;
 	textureDesc.MipLevels = 1;
 	textureDesc.Format = DXGI_FORMAT_R32_TYPELESS;
@@ -110,7 +133,7 @@ void ShadowMap3DResource::Create (ID3D11Device & _device)
 	GAME_COMC (_device.CreateShaderResourceView (texture.get (), &shaderResourceDesc, &m_pShaderResource));
 }
 
-void ShadowMap3DResource::Destroy ()
+void DepthMap3DResource::Destroy ()
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
 	for (int iFace { 0 }; iFace < 6; iFace++)

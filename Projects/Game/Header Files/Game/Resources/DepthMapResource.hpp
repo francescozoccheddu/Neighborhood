@@ -4,16 +4,18 @@
 #include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
 
-class ShadowMapResource : public Resource
+class DepthMapResource : public Resource
 {
 
 public:
 
-	ShadowMapResource (int size);
+	DepthMapResource (int width, int height);
 
-	const ID3D11ShaderResourceView * GetShaderResourceView () const;
+	ID3D11ShaderResourceView * GetShaderResourceView () const;
 
-	int GetSize () const;
+	int GetWidth () const;
+
+	int GetHeight () const;
 
 	bool IsCreated () const override final;
 
@@ -23,16 +25,19 @@ protected:
 
 private:
 
-	const int m_Size;
+	const int m_Width;
+	const int m_Height;
 
 };
 
-class ShadowMap2DResource final : public ShadowMapResource
+class DepthMap2DResource final : public DepthMapResource
 {
 
 public:
 
-	using ShadowMapResource::ShadowMapResource;
+	~DepthMap2DResource ();
+
+	using DepthMapResource::DepthMapResource;
 
 	ID3D11DepthStencilView * GetTarget () const;
 
@@ -46,12 +51,14 @@ private:
 
 };
 
-class ShadowMap3DResource final : public ShadowMapResource
+class DepthMap3DResource final : public DepthMapResource
 {
 
 public:
 
-	using ShadowMapResource::ShadowMapResource;
+	~DepthMap3DResource ();
+
+	DepthMap3DResource (int size);
 
 	ID3D11DepthStencilView * GetTarget (D3D11_TEXTURECUBE_FACE face) const;
 

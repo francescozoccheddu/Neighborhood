@@ -43,7 +43,8 @@ void Renderer::OnDeviceCreated ()
 void Renderer::OnDeviceDestroyed ()
 {
 	m_SamplerState = nullptr;
-	m_DepthStencilView = nullptr;
+	delete m_pDepthMapResource;
+	m_pDepthMapResource = nullptr;
 	m_ScreenMesh.Destroy ();
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
 	{
@@ -58,25 +59,8 @@ void Renderer::OnDeviceDestroyed ()
 void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 {
 	ID3D11Device * pDevice { m_DeviceHolder.GetDevice () };
-	{
-		// Depth stencil view
-		m_DepthStencilView = nullptr;
-		D3D11_TEXTURE2D_DESC desc;
-		desc.Width = _size.width;
-		desc.Height = _size.height;
-		desc.ArraySize = 1;
-		desc.MipLevels = 1;
-		desc.Format = DXGI_FORMAT_D16_UNORM;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		desc.CPUAccessFlags = 0;
-		desc.MiscFlags = 0;
-		com_ptr<ID3D11Texture2D> texture;
-		GAME_COMC (pDevice->CreateTexture2D (&desc, nullptr, texture.put ()));
-		GAME_COMC (pDevice->CreateDepthStencilView (texture.get (), nullptr, m_DepthStencilView.put ()));
-	}
+	m_pDepthMapResource = new DepthMap2DResource (_size.width, _size.height);
+	m_pDepthMapResource->Create (*pDevice);
 	{
 		// Render target views
 		for (int iView { 0 }; iView < s_cRenderTargets; iView++)
@@ -137,7 +121,7 @@ void Renderer::Render (const Scene & _scene)
 		target.colors = m_RenderTargetViews[s_iColorTexture].get ();
 		target.normals = m_RenderTargetViews[s_iNormalTexture].get ();
 		target.material = m_RenderTargetViews[s_iMaterialTexture].get ();
-		target.depth = m_DepthStencilView.get ();
+		target.depth = m_pDepthMapResource->GetTarget ();
 		m_GeometryPass.Render (_scene, context, target);
 	}
 
@@ -145,6 +129,7 @@ void Renderer::Render (const Scene & _scene)
 		LightingPass::Inputs inputs;
 		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
 		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
+		inputs.depth = m_pDepthMapResource->GetShaderResourceView ();
 		inputs.mesh = &m_ScreenMesh;
 		inputs.screenShader = &m_ScreenShader;
 		m_DirectionalLightingPass.Render (_scene, context, inputs, pRenderTargetView);
