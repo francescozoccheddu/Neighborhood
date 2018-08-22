@@ -1,5 +1,7 @@
 #include <Game/Rendering/LightingPass.hpp>
 
+#include <Game/Utils/COMExceptions.hpp>
+
 LightingPass::LightingPass (const GeometryPass & _geometryPass) : m_ShadowingSubPass { _geometryPass } {}
 
 void LightingPass::Create (ID3D11Device & _device)
@@ -7,6 +9,28 @@ void LightingPass::Create (ID3D11Device & _device)
 	m_DirectionalShader.Create (_device);
 	m_DirectionalBuffer.Create (_device);
 	m_ShadowingSubPass.Create (_device);
+	{
+		D3D11_RASTERIZER_DESC desc {};
+		desc.DepthBias = 100000;
+		desc.DepthBiasClamp = 0.0f;
+		desc.SlopeScaledDepthBias = 1.0f;
+		desc.FillMode = D3D11_FILL_SOLID;
+		desc.CullMode = D3D11_CULL_BACK;
+		desc.DepthClipEnable = TRUE;
+		GAME_COMC (_device.CreateRasterizerState (&desc, m_RasterizerState.put ()));
+	}
+	{
+		D3D11_SAMPLER_DESC desc {};
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.BorderColor[0] = desc.BorderColor[1] = desc.BorderColor[2] = desc.BorderColor[3] = 1.0f;
+		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+		desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+		GAME_COMC (_device.CreateSamplerState (&desc, m_SamplerState.put ()));
+	}
 }
 
 void LightingPass::Destroy ()
@@ -14,6 +38,8 @@ void LightingPass::Destroy ()
 	m_DirectionalBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
 	m_ShadowingSubPass.Destroy ();
+	m_RasterizerState = nullptr;
+	m_SamplerState = nullptr;
 }
 
 bool LightingPass::IsCreated () const
@@ -38,6 +64,12 @@ bool LightingPass::IsLoaded () const
 
 void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context, const Inputs& _inputs, ID3D11RenderTargetView * _target)
 {
+	_context.RSSetState (m_RasterizerState.get ());
+	{
+		ID3D11SamplerState * pSamplerState[] { m_SamplerState.get () };
+		_context.PSSetSamplers (0, 1, pSamplerState);
+	}
+
 	std::list<const Light*> pLights;
 	for (const Light & light : _scene.directionalLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.pointLights) { pLights.push_back (&light); }
@@ -79,6 +111,12 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 
 		_inputs.mesh->SetBuffer (_context);
 		_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
+	}
+
+	{
+		ID3D11SamplerState * pSamplerState[] { nullptr };
+		_context.PSSetSamplers (0, 1, pSamplerState);
+		_context.RSSetState (nullptr);
 	}
 }
 
