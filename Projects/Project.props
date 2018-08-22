@@ -24,6 +24,10 @@
       <DisableSpecificWarnings>4453;28204;4996;4324;</DisableSpecificWarnings>
       <PreprocessorDefinitions>SOLUTIONNAME="$(SolutionName)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CompileAsManaged>false</CompileAsManaged>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <EnableModules>false</EnableModules>
     </ClCompile>
     <Link />
     <Link>

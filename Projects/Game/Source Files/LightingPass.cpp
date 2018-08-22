@@ -112,11 +112,5 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		_inputs.mesh->SetBuffer (_context);
 		_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 	}
-
-	{
-		ID3D11SamplerState * pSamplerState[] { nullptr };
-		_context.PSSetSamplers (0, 1, pSamplerState);
-		_context.RSSetState (nullptr);
-	}
 }
 
