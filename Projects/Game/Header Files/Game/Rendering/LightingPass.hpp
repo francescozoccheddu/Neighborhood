@@ -70,5 +70,7 @@ private:
 	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
 	ConstantBufferStructResource<DirectionalBuffer> m_DirectionalBuffer;
 	ShadowingSubPass m_ShadowingSubPass;
+	com_ptr<ID3D11RasterizerState> m_RasterizerState;
+	com_ptr<ID3D11SamplerState> m_SamplerState;
 
 };
