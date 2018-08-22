@@ -6,7 +6,7 @@
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/MeshResource.hpp>
 #include <Game/Rendering/GeometryPass.hpp>
-#include <Game/Resources/ShadowMapResource.hpp>
+#include <Game/Resources/DepthMapResource.hpp>
 #include <Game/DirectXMath.hpp>
 #include <list>
 #include <vector>
@@ -19,7 +19,7 @@ public:
 	struct ProcessedLight
 	{
 		const Light * pLight;
-		const ID3D11ShaderResourceView * pShadowMapShaderResource;
+		ID3D11ShaderResourceView * pShadowMapShaderResource;
 	};
 
 	ShadowingSubPass (const GeometryPass & geometryPass);
@@ -56,11 +56,11 @@ private:
 
 	std::list<Task> ShadowingSubPass::Prepare (std::list<const Light*> & pLights, std::list<ProcessedLight> & processedLights) const;
 
-	const ID3D11ShaderResourceView * PrepareDirectional (const DirectionalLight & light, std::list<Task> &tasks, int& iMap) const;
+	ID3D11ShaderResourceView * PrepareDirectional (const DirectionalLight & light, std::list<Task> &tasks, int& iMap) const;
 
-	const ID3D11ShaderResourceView *  PreparePoint (const PointLight & light, std::list<Task> &tasks, int& iMap) const;
+	ID3D11ShaderResourceView *  PreparePoint (const PointLight & light, std::list<Task> &tasks, int& iMap) const;
 
-	const ID3D11ShaderResourceView *  PrepareCone (const ConeLight & light, std::list<Task> &tasks, int& iMap) const;
+	ID3D11ShaderResourceView *  PrepareCone (const ConeLight & light, std::list<Task> &tasks, int& iMap) const;
 
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
@@ -70,8 +70,8 @@ private:
 	static constexpr int s_ConeSize { 512 };
 
 	const GeometryPass & m_GeometryPass;
-	ShadowMap2DResource * m_pDirectionalMaps[s_cDirectionalMaps];
-	ShadowMap3DResource * m_pPointMaps[s_cPointMaps];
-	ShadowMap2DResource * m_pConeMaps[s_cConeMaps];
+	DepthMap2DResource * m_pDirectionalMaps[s_cDirectionalMaps];
+	DepthMap3DResource * m_pPointMaps[s_cPointMaps];
+	DepthMap2DResource * m_pConeMaps[s_cConeMaps];
 
 };

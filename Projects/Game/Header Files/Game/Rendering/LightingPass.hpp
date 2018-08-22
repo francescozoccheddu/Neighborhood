@@ -24,6 +24,7 @@ public:
 		const ScreenMeshResource * mesh;
 		ID3D11ShaderResourceView * normals;
 		ID3D11ShaderResourceView * material;
+		ID3D11ShaderResourceView * depth;
 	};
 
 	void Create (ID3D11Device & device) override final;
@@ -44,17 +45,20 @@ private:
 
 	struct DirectionalBuffer
 	{
-		alignas(16) UINT count;
+		alignas(16) DirectX::XMFLOAT4X4 invProjection;
+		alignas(16) DirectX::XMFLOAT4X4 invView;
+		alignas(16) UINT cLights;
 
 		struct Light
 		{
+			alignas(16) DirectX::XMFLOAT4X4 transform;
 			alignas(16) DirectX::XMFLOAT3 direction;
 			alignas(16) DirectX::XMFLOAT3 color;
 		} lights[D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT];
 
 		constexpr int GetSize () const
 		{
-			return GetSize (count);
+			return GetSize (cLights);
 		}
 
 		static inline constexpr int GetSize (int _cLights)

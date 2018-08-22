@@ -9,15 +9,15 @@ ShadowingSubPass::ShadowingSubPass (const GeometryPass & _geometryPass) : m_Geom
 {
 	for (int iMap { 0 }; iMap < s_cDirectionalMaps; iMap++)
 	{
-		m_pDirectionalMaps[iMap] = new ShadowMap2DResource (s_DirectionalSize);
+		m_pDirectionalMaps[iMap] = new DepthMap2DResource (s_DirectionalSize, s_DirectionalSize);
 	}
 	for (int iMap { 0 }; iMap < s_cPointMaps; iMap++)
 	{
-		m_pPointMaps[iMap] = new ShadowMap3DResource (s_PointSize);
+		m_pPointMaps[iMap] = new DepthMap3DResource (s_PointSize);
 	}
 	for (int iMap { 0 }; iMap < s_cConeMaps; iMap++)
 	{
-		m_pConeMaps[iMap] = new ShadowMap2DResource (s_ConeSize);
+		m_pConeMaps[iMap] = new DepthMap2DResource (s_ConeSize, s_ConeSize);
 	}
 }
 
@@ -103,15 +103,12 @@ std::list<ShadowingSubPass::ProcessedLight> ShadowingSubPass::ProcessLights (ID3
 		_context.RSSetViewports (1, &viewport);
 	}
 	std::list<ProcessedLight> processedLights;
-	while (!_pLights.empty ())
+	std::list<Task> tasks { Prepare (_pLights, processedLights) };
+	for (const Task & task : tasks)
 	{
-		std::list<Task> tasks { Prepare (_pLights, processedLights) };
-		for (const Task & task : tasks)
-		{
-			GeometryPass::ConstantBuffer buffer;
-			buffer.projView = task.transform;
-			m_GeometryPass.Render (_drawables, _context, buffer, task.pTarget);
-		}
+		GeometryPass::ConstantBuffer buffer;
+		buffer.projView = task.transform;
+		m_GeometryPass.Render (_drawables, _context, buffer, task.pTarget);
 	}
 	_context.RSSetViewports (1, &oldViewport);
 	return processedLights;
@@ -125,7 +122,7 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 	while (it != _pLights.end ())
 	{
 		bool bProcessed { false };
-		const ID3D11ShaderResourceView * pShadowMapShaderResource { nullptr };
+		ID3D11ShaderResourceView * pShadowMapShaderResource { nullptr };
 		const Light * pLight = *it;
 		if (pLight->bCastShadows)
 		{
@@ -157,17 +154,21 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 			processed.pShadowMapShaderResource = pShadowMapShaderResource;
 			_processedLights.push_back (processed);
 		}
+		else
+		{
+			it++;
+		}
 	}
 	return tasks;
 }
 
-const ID3D11ShaderResourceView * ShadowingSubPass::PrepareDirectional (const DirectionalLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+ID3D11ShaderResourceView * ShadowingSubPass::PrepareDirectional (const DirectionalLight & _light, std::list<Task> &  _tasks, int & _iMap) const
 {
 	if (_iMap >= s_cDirectionalMaps)
 	{
 		return nullptr;
 	}
-	const ShadowMap2DResource & map { *m_pDirectionalMaps[_iMap++] };
+	const DepthMap2DResource & map { *m_pDirectionalMaps[_iMap++] };
 	Task task;
 	task.transform = _light;
 	task.pTarget = map.GetTarget ();
@@ -175,13 +176,13 @@ const ID3D11ShaderResourceView * ShadowingSubPass::PrepareDirectional (const Dir
 	return map.GetShaderResourceView ();
 }
 
-const ID3D11ShaderResourceView * ShadowingSubPass::PreparePoint (const PointLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+ID3D11ShaderResourceView * ShadowingSubPass::PreparePoint (const PointLight & _light, std::list<Task> &  _tasks, int & _iMap) const
 {
 	if (_iMap >= s_cPointMaps)
 	{
 		return nullptr;
 	}
-	const ShadowMap3DResource & map { *m_pPointMaps[_iMap++] };
+	const DepthMap3DResource & map { *m_pPointMaps[_iMap++] };
 	constexpr D3D11_TEXTURECUBE_FACE faces[] {
 		D3D11_TEXTURECUBE_FACE_POSITIVE_X,
 		D3D11_TEXTURECUBE_FACE_NEGATIVE_X,
@@ -200,13 +201,13 @@ const ID3D11ShaderResourceView * ShadowingSubPass::PreparePoint (const PointLigh
 	return map.GetShaderResourceView ();
 }
 
-const ID3D11ShaderResourceView * ShadowingSubPass::PrepareCone (const ConeLight & _light, std::list<Task> &  _tasks, int & _iMap) const
+ID3D11ShaderResourceView * ShadowingSubPass::PrepareCone (const ConeLight & _light, std::list<Task> &  _tasks, int & _iMap) const
 {
 	if (_iMap >= s_cConeMaps)
 	{
 		return nullptr;
 	}
-	const ShadowMap2DResource & map { *m_pConeMaps[_iMap++] };
+	const DepthMap2DResource & map { *m_pConeMaps[_iMap++] };
 	Task task;
 	task.transform = _light;
 	task.pTarget = map.GetTarget ();
