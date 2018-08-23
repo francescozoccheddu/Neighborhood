@@ -21,6 +21,7 @@ public:
 	{
 		const T * pLight;
 		ID3D11ShaderResourceView * pShadowMapShaderResource;
+		int shadowMapSize;
 	};
 
 	struct ProcessOutput

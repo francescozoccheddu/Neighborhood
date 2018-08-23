@@ -39,6 +39,18 @@ void LightingPass::Create (ID3D11Device & _device)
 		desc.MaxLOD = D3D11_FLOAT32_MAX;
 		GAME_COMC (_device.CreateSamplerState (&desc, m_SamplerState.put ()));
 	}
+	{
+		D3D11_SAMPLER_DESC desc {};
+		desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+		desc.BorderColor[0] = desc.BorderColor[1] = desc.BorderColor[2] = desc.BorderColor[3] = 1.0f;
+		desc.Filter = D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+		desc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+		desc.MinLOD = 0;
+		desc.MaxLOD = D3D11_FLOAT32_MAX;
+		GAME_COMC (_device.CreateSamplerState (&desc, m_SamplerComparisonState.put ()));
+	}
 }
 
 void LightingPass::Destroy ()
@@ -49,6 +61,7 @@ void LightingPass::Destroy ()
 	m_ShadowingSubPass.Destroy ();
 	m_RasterizerState = nullptr;
 	m_SamplerState = nullptr;
+	m_SamplerComparisonState = nullptr;
 }
 
 bool LightingPass::IsCreated () const
@@ -75,8 +88,8 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 {
 	{
 		_context.RSSetState (m_RasterizerState.get ());
-		ID3D11SamplerState * pSamplerState[] { m_SamplerState.get () };
-		_context.PSSetSamplers (0, 1, pSamplerState);
+		ID3D11SamplerState * pSamplerState[] { m_SamplerState.get (), m_SamplerComparisonState.get () };
+		_context.PSSetSamplers (0, ARRAYSIZE (pSamplerState), pSamplerState);
 	}
 
 	DirectX::XMFLOAT4X4 invProjView;
@@ -133,7 +146,7 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 
 				DirectionalLightBufferData & packedLight { m_DirectionalBufferData.lights[iLight] };
 
-				packedLight.bCastShadows = light.bCastShadows;
+				packedLight.shadowMapSize = processedLight.shadowMapSize;
 				packedLight.color = light.color;
 				packedLight.intensity = light.intensity;
 				packedLight.direction = light.direction;
