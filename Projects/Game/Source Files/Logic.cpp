@@ -14,7 +14,7 @@ Logic::Logic ()
 	PerspectiveProjection* pProjection = new PerspectiveProjection;
 	pProjection->vFov = 1.0f;
 	pProjection->farZ = 10.0f;
-	pProjection->nearZ = 0.5f;
+	pProjection->nearZ = 0.05f;
 	m_Scene.pProjection = pProjection;
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };

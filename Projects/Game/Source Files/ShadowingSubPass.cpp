@@ -164,11 +164,13 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 							tasks.push_back (task);
 						}
 						outputLight.pShadowMapShaderResource = map.GetShaderResourceView ();
+						outputLight.shadowMapSize = s_PointSize;
 						iPointShadow++;
 					}
 					else
 					{
 						outputLight.pShadowMapShaderResource = nullptr;
+						outputLight.shadowMapSize = 0;
 					}
 					_output.pointLights.push_back (outputLight);
 				}
@@ -190,11 +192,13 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 						task.pTarget = map.GetTarget ();
 						tasks.push_back (task);
 						outputLight.pShadowMapShaderResource = map.GetShaderResourceView ();
+						outputLight.shadowMapSize = s_ConeSize;
 						iConeShadow++;
 					}
 					else
 					{
 						outputLight.pShadowMapShaderResource = nullptr;
+						outputLight.shadowMapSize = 0;
 					}
 					_output.coneLights.push_back (outputLight);
 				}
@@ -216,11 +220,13 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 						task.pTarget = map.GetTarget ();
 						tasks.push_back (task);
 						outputLight.pShadowMapShaderResource = map.GetShaderResourceView ();
+						outputLight.shadowMapSize = s_DirectionalSize;
 						iDirectionalShadow++;
 					}
 					else
 					{
 						outputLight.pShadowMapShaderResource = nullptr;
+						outputLight.shadowMapSize = 0;
 					}
 					_output.directionalLights.push_back (outputLight);
 				}

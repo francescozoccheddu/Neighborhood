@@ -54,7 +54,7 @@ private:
 	struct DirectionalLightBufferData
 	{
 		DirectX::XMFLOAT3 color;
-		BOOL bCastShadows;
+		UINT shadowMapSize;
 		DirectX::XMFLOAT3 direction;
 		FLOAT intensity;
 	};
@@ -96,5 +96,6 @@ private:
 	LightBufferData<DirectionalLightBufferData, s_cDirectionalTotal> m_DirectionalBufferData;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 	com_ptr<ID3D11SamplerState> m_SamplerState;
+	com_ptr<ID3D11SamplerState> m_SamplerComparisonState;
 
 };
