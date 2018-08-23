@@ -13,8 +13,7 @@ struct Light
 
 cbuffer cbPerFrame
 {
-	float4x4 cb_InvProj;
-	float4x4 cb_InvView;
+	float4x4 cb_InvProjView;
 	uint cb_cLights;
 	Light cb_Lights[128];
 };
@@ -36,9 +35,8 @@ float4 main (in PSIn _sIn) : SV_TARGET
 	worldPos2.x = _sIn.TexCoord.x * 2.0 - 1.0;
 	worldPos2.y = (1.0 - _sIn.TexCoord.y) * 2.0 - 1.0;
 	worldPos2.w = 1.0;
-	worldPos2 = mul (worldPos2, cb_InvProj);
+	worldPos2 = mul (worldPos2, cb_InvProjView);
 	worldPos2 /= worldPos2.w;
-	worldPos2 = mul (worldPos2, cb_InvView);
 	for (uint i = 0; i < cb_cLights; i++)
 	{
 		float3 lightDir = normalize (-cb_Lights[i].direction);

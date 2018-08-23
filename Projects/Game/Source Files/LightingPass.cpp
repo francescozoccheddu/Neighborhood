@@ -74,6 +74,10 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 	for (const Light & light : _scene.directionalLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.pointLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.coneLight) { pLights.push_back (&light); }
+
+	DirectX::XMFLOAT4X4 invProjView { *_scene.pProjection * *_scene.pView };
+	DirectX::XMStoreFloat4x4 (&m_DirectionalBuffer.data.invProjView, DirectX::XMMatrixInverse (nullptr, DirectX::XMLoadFloat4x4 (&invProjView)));
+
 	while (!pLights.empty ())
 	{
 		std::list<ShadowingSubPass::ProcessedLight> processedLights { m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights) };
@@ -85,8 +89,6 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		m_DirectionalShader.SetShader (_context);
 
 		{
-			DirectX::XMStoreFloat4x4 (&m_DirectionalBuffer.data.invProjection, DirectX::XMMatrixInverse (nullptr, *_scene.pProjection));
-			DirectX::XMStoreFloat4x4 (&m_DirectionalBuffer.data.invView, DirectX::XMMatrixInverse (nullptr, *_scene.pView));
 			for (int iLight { 0 }; iLight < _scene.directionalLights.size (); iLight++)
 			{
 				m_DirectionalBuffer.data.lights[iLight].direction = _scene.directionalLights[iLight].direction;
