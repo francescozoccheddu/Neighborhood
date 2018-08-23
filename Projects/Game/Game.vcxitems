@@ -78,7 +78,6 @@
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
-      <FileType>Document</FileType>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>

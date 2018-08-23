@@ -43,17 +43,30 @@ public:
 
 private:
 
-	struct DirectionalBuffer
+	static constexpr int s_cDirectionalTotal { 32 };
+	static constexpr int s_cPointTotal { 32 };
+	static constexpr int s_cConeTotal { 32 };
+	static constexpr int s_cDirectionalWithShadow { 8 };
+	static constexpr int s_cPointWithShadow { 4 };
+	static constexpr int s_cConeWithShadow { 8 };
+	static constexpr int s_cMaxWithShadow { std::max ({ s_cConeWithShadow, s_cDirectionalWithShadow, s_cPointWithShadow }) };
+
+	struct DirectionalLightBufferData
 	{
-		alignas(16) DirectX::XMFLOAT4X4 invProjView;
+		DirectX::XMFLOAT3 color;
+		BOOL bCastShadows;
+		DirectX::XMFLOAT3 direction;
+		FLOAT intensity;
+	};
+
+	template<typename T, int cMax = 1>
+	struct LightBufferData
+	{
+		DirectX::XMFLOAT4X4 invProjView;
 		alignas(16) UINT cLights;
 
-		struct Light
-		{
-			alignas(16) DirectX::XMFLOAT4X4 transform;
-			alignas(16) DirectX::XMFLOAT3 direction;
-			alignas(16) DirectX::XMFLOAT3 color;
-		} lights[D3D11_COMMONSHADER_INPUT_RESOURCE_REGISTER_COUNT];
+		alignas(16) T lights[cMax];
+
 
 		constexpr int GetSize () const
 		{
@@ -62,13 +75,25 @@ private:
 
 		static inline constexpr int GetSize (int _cLights)
 		{
-			return sizeof (Light) * _cLights + offsetof (DirectionalBuffer, lights);
+			return static_cast<int>(sizeof (T)) * _cLights + 16 * 5;
+		}
+	};
+
+	struct TransformBufferData
+	{
+		DirectX::XMFLOAT4X4 transforms[s_cMaxWithShadow];
+
+		static inline constexpr int GetSize (int _cLights)
+		{
+			return static_cast<int>(sizeof (DirectX::XMFLOAT4X4)) * _cLights;
 		}
 	};
 
 	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
-	ConstantBufferStructResource<DirectionalBuffer> m_DirectionalBuffer;
+	ConstantBufferResource m_LightBuffer { std::max ({ LightBufferData<DirectionalLightBufferData>::GetSize (s_cDirectionalTotal) }) };
+	ConstantBufferStructResource<TransformBufferData> m_TransformBuffer;
 	ShadowingSubPass m_ShadowingSubPass;
+	LightBufferData<DirectionalLightBufferData, s_cDirectionalTotal> m_DirectionalBufferData;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 

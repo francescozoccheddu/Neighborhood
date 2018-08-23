@@ -2,12 +2,20 @@
 
 #include <Game/Utils/COMExceptions.hpp>
 
+#define _DEPTH_SLOT (0)
+#define _NORMAL_SLOT (1)
+#define _MATERIAL_SLOT (2)
+#define _MAP_STARTING_SLOT (3)
+#define _LIGHTBUFFER_SLOT 0
+#define _TRANSFORMBUFFER_SLOT 1
+
 LightingPass::LightingPass (const GeometryPass & _geometryPass) : m_ShadowingSubPass { _geometryPass } {}
 
 void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
-	m_DirectionalBuffer.Create (_device);
+	m_LightBuffer.Create (_device);
+	m_TransformBuffer.Create (_device);
 	m_ShadowingSubPass.Create (_device);
 	{
 		D3D11_RASTERIZER_DESC desc {};
@@ -35,7 +43,8 @@ void LightingPass::Create (ID3D11Device & _device)
 
 void LightingPass::Destroy ()
 {
-	m_DirectionalBuffer.Destroy ();
+	m_LightBuffer.Destroy ();
+	m_TransformBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
 	m_ShadowingSubPass.Destroy ();
 	m_RasterizerState = nullptr;
@@ -64,10 +73,17 @@ bool LightingPass::IsLoaded () const
 
 void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context, const Inputs& _inputs, ID3D11RenderTargetView * _target)
 {
-	_context.RSSetState (m_RasterizerState.get ());
 	{
+		_context.RSSetState (m_RasterizerState.get ());
 		ID3D11SamplerState * pSamplerState[] { m_SamplerState.get () };
 		_context.PSSetSamplers (0, 1, pSamplerState);
+	}
+
+	DirectX::XMFLOAT4X4 invProjView;
+	{
+		DirectX::XMMATRIX proj { *_scene.pProjection };
+		DirectX::XMMATRIX view { *_scene.pView };
+		DirectX::XMStoreFloat4x4 (&invProjView, DirectX::XMMatrixInverse (nullptr, DirectX::XMMatrixMultiply (proj, view)));
 	}
 
 	std::list<const Light*> pLights;
@@ -75,44 +91,73 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 	for (const Light & light : _scene.pointLights) { pLights.push_back (&light); }
 	for (const Light & light : _scene.coneLight) { pLights.push_back (&light); }
 
-	DirectX::XMFLOAT4X4 invProjView { *_scene.pProjection * *_scene.pView };
-	DirectX::XMStoreFloat4x4 (&m_DirectionalBuffer.data.invProjView, DirectX::XMMatrixInverse (nullptr, DirectX::XMLoadFloat4x4 (&invProjView)));
+	ShadowingSubPass::ProcessLimits limits;
+	limits.cone.cTotal = s_cConeTotal;
+	limits.cone.cWithShadow = s_cConeWithShadow;
+	limits.directional.cTotal = s_cDirectionalTotal;
+	limits.directional.cWithShadow = s_cDirectionalWithShadow;
+	limits.point.cTotal = s_cPointTotal;
+	limits.point.cWithShadow = s_cPointWithShadow;
 
 	while (!pLights.empty ())
 	{
-		std::list<ShadowingSubPass::ProcessedLight> processedLights { m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights) };
-		{
-			_context.OMSetRenderTargets (1, &_target, nullptr);
-		}
+		ShadowingSubPass::ProcessOutput processedLights { m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, pLights, limits) };
 
+		_inputs.mesh->SetBuffer (_context);
+		_context.OMSetRenderTargets (1, &_target, nullptr);
 		_inputs.screenShader->SetShaderAndInputLayout (_context);
 		m_DirectionalShader.SetShader (_context);
 
+		ID3D11ShaderResourceView *pShadowMapResources[s_cMaxWithShadow];
+		int iLight, iTransform;
+
 		{
-			for (int iLight { 0 }; iLight < _scene.directionalLights.size (); iLight++)
+			iLight = iTransform = 0;
+			for (int iMap { 0 }; iMap < s_cMaxWithShadow; iMap++)
 			{
-				m_DirectionalBuffer.data.lights[iLight].direction = _scene.directionalLights[iLight].direction;
-				m_DirectionalBuffer.data.lights[iLight].color = _scene.directionalLights[iLight].color;
-				m_DirectionalBuffer.data.lights[iLight].transform = _scene.directionalLights[iLight];
+				pShadowMapResources[iMap] = nullptr;
 			}
-			m_DirectionalBuffer.data.cLights = static_cast<UINT>(_scene.directionalLights.size ());
 
-			m_DirectionalBuffer.Update (_context, m_DirectionalBuffer.data.GetSize ());
-			m_DirectionalBuffer.SetForPixelShader (_context, 0);
+			m_DirectionalBufferData.cLights = static_cast<UINT>(processedLights.directionalLights.size ());
+			m_DirectionalBufferData.invProjView = invProjView;
+
+			for (const ShadowingSubPass::ProcessedLight<DirectionalLight> & processedLight : processedLights.directionalLights)
+			{
+				const DirectionalLight & light { *processedLight.pLight };
+				pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
+
+				if (light.bCastShadows)
+				{
+					m_TransformBuffer.data.transforms[iTransform++] = light;
+				}
+
+				DirectionalLightBufferData & packedLight { m_DirectionalBufferData.lights[iLight] };
+
+				packedLight.bCastShadows = light.bCastShadows;
+				packedLight.color = light.color;
+				packedLight.intensity = light.intensity;
+				packedLight.direction = light.direction;
+
+				iLight++;
+			}
+
+			{
+				ID3D11ShaderResourceView * views[3];
+				views[_DEPTH_SLOT] = _inputs.depth;
+				views[_NORMAL_SLOT] = _inputs.normals;
+				views[_MATERIAL_SLOT] = _inputs.material;
+				_context.PSSetShaderResources (0, 3, views);
+			}
+
+			_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
+
+			m_LightBuffer.Update (_context, &m_DirectionalBufferData, m_DirectionalBufferData.GetSize ());
+			m_LightBuffer.SetForPixelShader (_context, _LIGHTBUFFER_SLOT);
+
+			m_TransformBuffer.Update (_context, TransformBufferData::GetSize (iTransform));
+			m_TransformBuffer.SetForPixelShader (_context, _TRANSFORMBUFFER_SLOT);
+
+			_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 		}
-
-		{
-			ID3D11ShaderResourceView * views[3];
-			views[0] = _inputs.depth;
-			views[1] = _inputs.normals;
-			views[2] = _inputs.material;
-			_context.PSSetShaderResources (0, 3, views);
-		}
-
-		_context.PSSetShaderResources (3, 1, &processedLights.front ().pShadowMapShaderResource);
-
-		_inputs.mesh->SetBuffer (_context);
-		_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 	}
 }
-
