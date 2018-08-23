@@ -45,8 +45,7 @@ private:
 
 	struct DirectionalBuffer
 	{
-		alignas(16) DirectX::XMFLOAT4X4 invProjection;
-		alignas(16) DirectX::XMFLOAT4X4 invView;
+		alignas(16) DirectX::XMFLOAT4X4 invProjView;
 		alignas(16) UINT cLights;
 
 		struct Light
