@@ -16,10 +16,33 @@ class ShadowingSubPass final : public RenderingPass
 
 public:
 
+	template <typename T>
 	struct ProcessedLight
 	{
-		const Light * pLight;
+		const T * pLight;
 		ID3D11ShaderResourceView * pShadowMapShaderResource;
+	};
+
+	struct ProcessOutput
+	{
+		template<typename T>
+		using list_t = std::list<ProcessedLight<T>>;
+
+		list_t<ConeLight> coneLights;
+		list_t<DirectionalLight> directionalLights;
+		list_t<PointLight> pointLights;
+	};
+
+	struct ProcessLimits
+	{
+		struct LightType
+		{
+			int cTotal;
+			int cWithShadow;
+		};
+		LightType directional;
+		LightType point;
+		LightType cone;
 	};
 
 	ShadowingSubPass (const GeometryPass & geometryPass);
@@ -38,29 +61,18 @@ public:
 
 	bool IsCreated () const override final;
 
-	std::list<ProcessedLight> ProcessLights (ID3D11DeviceContext & context, const std::vector<Scene::Drawable> & drawables, std::list<const Light *> & pLights);
+	ProcessOutput ProcessLights (ID3D11DeviceContext & context, const std::vector<Scene::Drawable> & drawables, std::list<const Light *> & pLights, const ProcessLimits & limits);
 
 private:
 
 	struct Task
 	{
 		ID3D11DepthStencilView * pTarget;
+		int viewportSize;
 		DirectX::XMFLOAT4X4 transform;
 	};
 
-	struct PreparedLights
-	{
-		std::list<Task> tasks;
-		std::list<ProcessedLight> lights;
-	};
-
-	std::list<Task> ShadowingSubPass::Prepare (std::list<const Light*> & pLights, std::list<ProcessedLight> & processedLights) const;
-
-	ID3D11ShaderResourceView * PrepareDirectional (const DirectionalLight & light, std::list<Task> &tasks, int& iMap) const;
-
-	ID3D11ShaderResourceView *  PreparePoint (const PointLight & light, std::list<Task> &tasks, int& iMap) const;
-
-	ID3D11ShaderResourceView *  PrepareCone (const ConeLight & light, std::list<Task> &tasks, int& iMap) const;
+	std::list<Task> ShadowingSubPass::Prepare (std::list<const Light*> & pLights, ProcessOutput & processedLights, const ProcessLimits & limits) const;
 
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
