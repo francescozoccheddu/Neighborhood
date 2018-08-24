@@ -77,7 +77,7 @@ void ConeLight::Update ()
 	proj.aspectRatio = 1.0f;
 	proj.farZ = shadowFarZ;
 	proj.nearZ = shadowNearZ;
-	proj.vFov = outerAngle;
+	proj.vFov = outerAngle * 2.0f;
 	proj.Update ();
 	ViewWithDirection view;
 	view.position = position;

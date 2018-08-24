@@ -66,9 +66,9 @@ private:
 		DirectX::XMFLOAT3 position;
 		FLOAT intensity;
 		DirectX::XMFLOAT3 direction;
-		FLOAT innerAngle;
-		FLOAT outerAngle;
-		FLOAT startLenght;
+		FLOAT innerCutoff;
+		FLOAT outerCutoff;
+		FLOAT startLength;
 		FLOAT endLenght;
 		FLOAT realEndLength;
 	};

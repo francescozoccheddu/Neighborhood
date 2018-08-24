@@ -10,8 +10,14 @@ struct Light
 {
 	float3 color;
 	uint shadowMapSize;
-	float3 direction;
+	float3 position;
 	float intensity;
+	float3 direction;
+	float innerCutoff;
+	float outerCutoff;
+	float startLength;
+	float endLength;
+	float realEndLength;
 };
 
 cbuffer cbLights : register(b0)
@@ -92,8 +98,15 @@ for (uint iLight = 0; iLight < cb_cLights; iLight++)
 	{
 		shadowFactor = 1.0;
 	}
-	float3 lightDir = normalize (-cb_Lights[iLight].direction);
-	const float direct = dot (normal, lightDir);
+
+	float3 lightToPixDir = cb_Lights[iLight].position - position.xyz;
+	const float3 lightDir = normalize (-cb_Lights[iLight].direction);
+	const float distance = length (lightToPixDir);
+	lightToPixDir /= distance;
+
+	const float omniDirect = max (dot (lightToPixDir, normal), 0.0);
+	float attenuation = smoothstep (cb_Lights[iLight].outerCutoff, cb_Lights[iLight].innerCutoff, dot (lightToPixDir, lightDir));
+	const float direct = omniDirect * attenuation;
 	const float total = direct * shadowFactor;
 	light = saturate (light + cb_Lights[iLight].color * total * cb_Lights[iLight].intensity);
 }

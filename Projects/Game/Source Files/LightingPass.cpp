@@ -201,12 +201,12 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 					packedLight.color = light.color;
 					packedLight.intensity = light.intensity;
 					packedLight.direction = light.direction;
-					packedLight.innerAngle = light.innerAngle;
-					packedLight.outerAngle = light.outerAngle;
+					packedLight.innerCutoff = std::cosf (light.innerAngle);
+					packedLight.outerCutoff = std::cosf (light.outerAngle);
 					packedLight.position = light.position;
 					packedLight.realEndLength = light.realEndLength;
 					packedLight.endLenght = light.endLength;
-					packedLight.startLenght = light.startLength;
+					packedLight.startLength = light.startLength;
 
 					iLight++;
 				}
