@@ -28,7 +28,7 @@ Logic::Logic ()
 	light.shadowSize = 3.0f;
 	light.Update ();
 	m_Scene.directionalLights.push_back (light);*/
-	ConeLight light;
+	/*ConeLight light;
 	light.direction = { 0.5f, -0.75f, 1.0f };
 	light.position = { -1.0f, 1.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
@@ -38,7 +38,15 @@ Logic::Logic ()
 	light.outerAngle = 0.3f;
 	light.bCastShadows = true;
 	light.Update ();
-	m_Scene.coneLight.push_back (light);
+	m_Scene.coneLight.push_back (light);*/
+	PointLight light;
+	light.position = { -1.0f, 1.0f, -2.0f };
+	light.color = { 0.2f, 0.2f, 1.0f };
+	light.shadowNearZ = 0.5f;
+	light.shadowFarZ = 10.0f;
+	//light.bCastShadows = true;
+	light.Update ();
+	m_Scene.pointLights.push_back (light);
 }
 
 void Logic::Update (double _deltaTime)

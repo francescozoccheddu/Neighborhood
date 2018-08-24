@@ -88,6 +88,9 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\PointLighting_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
