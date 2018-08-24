@@ -59,6 +59,20 @@ private:
 		FLOAT intensity;
 	};
 
+	struct ConeLightBufferData
+	{
+		DirectX::XMFLOAT3 color;
+		UINT shadowMapSize;
+		DirectX::XMFLOAT3 position;
+		FLOAT intensity;
+		DirectX::XMFLOAT3 direction;
+		FLOAT innerAngle;
+		FLOAT outerAngle;
+		FLOAT startLenght;
+		FLOAT endLenght;
+		FLOAT realEndLength;
+	};
+
 	template<typename T, int cMax = 1>
 	struct LightBufferData
 	{
@@ -90,10 +104,12 @@ private:
 	};
 
 	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
+	PixelShaderResource m_ConeShader RENDERINGPASS_PIXSHADER ("ConeLighting");
 	ConstantBufferResource m_LightBuffer { std::max ({ LightBufferData<DirectionalLightBufferData>::GetSize (s_cDirectionalTotal) }) };
 	ConstantBufferStructResource<TransformBufferData> m_TransformBuffer;
 	ShadowingSubPass m_ShadowingSubPass;
 	LightBufferData<DirectionalLightBufferData, s_cDirectionalTotal> m_DirectionalBufferData;
+	LightBufferData<ConeLightBufferData, s_cConeTotal> m_ConeBufferData;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11SamplerState> m_SamplerComparisonState;
