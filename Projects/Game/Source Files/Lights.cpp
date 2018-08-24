@@ -79,9 +79,9 @@ void ConeLight::Update ()
 	proj.nearZ = shadowNearZ;
 	proj.vFov = outerAngle;
 	proj.Update ();
-	ViewWithTarget view;
+	ViewWithDirection view;
 	view.position = position;
-	view.target = target;
+	view.direction = direction;
 	view.Update ();
 	m_Matrix = proj * view;
 }

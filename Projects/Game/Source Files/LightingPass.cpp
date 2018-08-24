@@ -14,6 +14,7 @@ LightingPass::LightingPass (const GeometryPass & _geometryPass) : m_ShadowingSub
 void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
+	m_ConeShader.Create (_device);
 	m_LightBuffer.Create (_device);
 	m_TransformBuffer.Create (_device);
 	m_ShadowingSubPass.Create (_device);
@@ -58,6 +59,7 @@ void LightingPass::Destroy ()
 	m_LightBuffer.Destroy ();
 	m_TransformBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
+	m_ConeShader.Destroy ();
 	m_ShadowingSubPass.Destroy ();
 	m_RasterizerState = nullptr;
 	m_SamplerState = nullptr;
@@ -72,11 +74,13 @@ bool LightingPass::IsCreated () const
 void LightingPass::Load ()
 {
 	m_DirectionalShader.Load ();
+	m_ConeShader.Load ();
 }
 
 void LightingPass::Unload ()
 {
 	m_DirectionalShader.Unload ();
+	m_ConeShader.Unload ();
 }
 
 bool LightingPass::IsLoaded () const
@@ -119,58 +123,105 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		_inputs.mesh->SetBuffer (_context);
 		_context.OMSetRenderTargets (1, &_target, nullptr);
 		_inputs.screenShader->SetShaderAndInputLayout (_context);
-		m_DirectionalShader.SetShader (_context);
+		m_TransformBuffer.SetForPixelShader (_context, _TRANSFORMBUFFER_SLOT);
+		m_LightBuffer.SetForPixelShader (_context, _LIGHTBUFFER_SLOT);
 
-		ID3D11ShaderResourceView *pShadowMapResources[s_cMaxWithShadow];
+		{
+			ID3D11ShaderResourceView * views[3];
+			views[_DEPTH_SLOT] = _inputs.depth;
+			views[_NORMAL_SLOT] = _inputs.normals;
+			views[_MATERIAL_SLOT] = _inputs.material;
+			_context.PSSetShaderResources (0, 3, views);
+		}
+
+		ID3D11ShaderResourceView *pShadowMapResources[s_cMaxWithShadow] {};
 		int iLight, iTransform;
 
 		{
 			iLight = iTransform = 0;
-			for (int iMap { 0 }; iMap < s_cMaxWithShadow; iMap++)
+			if (!processedLights.directionalLights.empty ())
 			{
-				pShadowMapResources[iMap] = nullptr;
-			}
+				m_DirectionalBufferData.cLights = static_cast<UINT>(processedLights.directionalLights.size ());
+				m_DirectionalBufferData.invProjView = invProjView;
 
-			m_DirectionalBufferData.cLights = static_cast<UINT>(processedLights.directionalLights.size ());
-			m_DirectionalBufferData.invProjView = invProjView;
-
-			for (const ShadowingSubPass::ProcessedLight<DirectionalLight> & processedLight : processedLights.directionalLights)
-			{
-				const DirectionalLight & light { *processedLight.pLight };
-				pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
-
-				if (light.bCastShadows)
+				for (const ShadowingSubPass::ProcessedLight<DirectionalLight> & processedLight : processedLights.directionalLights)
 				{
-					m_TransformBuffer.data.transforms[iTransform++] = light;
+					const DirectionalLight & light { *processedLight.pLight };
+					pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
+
+					if (light.bCastShadows)
+					{
+						m_TransformBuffer.data.transforms[iTransform++] = light;
+					}
+
+					DirectionalLightBufferData & packedLight { m_DirectionalBufferData.lights[iLight] };
+
+					packedLight.shadowMapSize = processedLight.shadowMapSize;
+					packedLight.color = light.color;
+					packedLight.intensity = light.intensity;
+					packedLight.direction = light.direction;
+
+					iLight++;
 				}
 
-				DirectionalLightBufferData & packedLight { m_DirectionalBufferData.lights[iLight] };
+				m_DirectionalShader.SetShader (_context);
 
-				packedLight.shadowMapSize = processedLight.shadowMapSize;
-				packedLight.color = light.color;
-				packedLight.intensity = light.intensity;
-				packedLight.direction = light.direction;
+				_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
 
-				iLight++;
+				m_LightBuffer.Update (_context, &m_DirectionalBufferData, m_DirectionalBufferData.GetSize ());
+				m_TransformBuffer.Update (_context, TransformBufferData::GetSize (iTransform));
+
+				_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 			}
 
+			if (!processedLights.coneLights.empty ())
 			{
-				ID3D11ShaderResourceView * views[3];
-				views[_DEPTH_SLOT] = _inputs.depth;
-				views[_NORMAL_SLOT] = _inputs.normals;
-				views[_MATERIAL_SLOT] = _inputs.material;
-				_context.PSSetShaderResources (0, 3, views);
+				for (int iMap { 0 }; iMap < iLight; iMap++)
+				{
+					pShadowMapResources[iMap] = nullptr;
+				}
+				iLight = iTransform = 0;
+
+				m_ConeBufferData.cLights = static_cast<UINT>(processedLights.coneLights.size ());
+				m_ConeBufferData.invProjView = invProjView;
+
+				for (const ShadowingSubPass::ProcessedLight<ConeLight> & processedLight : processedLights.coneLights)
+				{
+					const ConeLight & light { *processedLight.pLight };
+					pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
+
+					if (light.bCastShadows)
+					{
+						m_TransformBuffer.data.transforms[iTransform++] = light;
+					}
+
+					ConeLightBufferData & packedLight { m_ConeBufferData.lights[iLight] };
+
+					packedLight.shadowMapSize = processedLight.shadowMapSize;
+					packedLight.color = light.color;
+					packedLight.intensity = light.intensity;
+					packedLight.direction = light.direction;
+					packedLight.innerAngle = light.innerAngle;
+					packedLight.outerAngle = light.outerAngle;
+					packedLight.position = light.position;
+					packedLight.realEndLength = light.realEndLength;
+					packedLight.endLenght = light.endLength;
+					packedLight.startLenght = light.startLength;
+
+					iLight++;
+				}
+
+				m_ConeShader.SetShader (_context);
+
+				_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
+
+				m_LightBuffer.Update (_context, &m_ConeBufferData, m_ConeBufferData.GetSize ());
+				m_TransformBuffer.Update (_context, TransformBufferData::GetSize (iTransform));
+
+				_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
+
 			}
 
-			_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
-
-			m_LightBuffer.Update (_context, &m_DirectionalBufferData, m_DirectionalBufferData.GetSize ());
-			m_LightBuffer.SetForPixelShader (_context, _LIGHTBUFFER_SLOT);
-
-			m_TransformBuffer.Update (_context, TransformBufferData::GetSize (iTransform));
-			m_TransformBuffer.SetForPixelShader (_context, _TRANSFORMBUFFER_SLOT);
-
-			_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 		}
 	}
 }

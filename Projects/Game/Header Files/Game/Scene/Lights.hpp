@@ -62,10 +62,13 @@ struct DirectionalLight : public Light
 
 struct ConeLight : public Light
 {
-	DirectX::XMFLOAT3 target { 0.0f, -1.0f, 0.0f };
+	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
 
 	float innerAngle { 0.5f };
 	float outerAngle { 1.0f };
+	float startLength { 1.0f };
+	float endLength { 1.0f };
+	float realEndLength { 1.0f };
 
 	void Update () override final;
 

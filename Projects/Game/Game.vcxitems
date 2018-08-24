@@ -76,6 +76,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\ConeLighting_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
