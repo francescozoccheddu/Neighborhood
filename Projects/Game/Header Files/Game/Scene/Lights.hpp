@@ -13,11 +13,11 @@ struct Light : public MatrixWrapper
 		POINT, DIRECTION, CONE
 	};
 
-	DirectX::XMFLOAT3 color;
-	DirectX::XMFLOAT3 position;
-	bool bCastShadows;
-	float shadowNearZ { 0.1f };
-	float shadowFarZ { 100.0f };
+	DirectX::XMFLOAT3 color { 1.0f, 1.0f, 1.0f };
+	DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
+	bool bCastShadows { false };
+	float shadowNearZ { 0.5f };
+	float shadowFarZ { 10.0f };
 	float intensity { 1.0f };
 
 	virtual Type GetType () const = 0;
@@ -32,8 +32,7 @@ protected:
 
 struct PointLight : public Light
 {
-	DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
-	DirectX::XMFLOAT3 radius { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 radius { 1.0f, 1.0f, 1.0f };
 
 	void Update () override final;
 
@@ -50,7 +49,7 @@ struct PointLight : public Light
 struct DirectionalLight : public Light
 {
 	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
-	float shadowSize;
+	float shadowSize { 2.0f };
 
 	void Update () override final;
 
@@ -66,9 +65,9 @@ struct ConeLight : public Light
 
 	float innerAngle { 0.5f };
 	float outerAngle { 1.0f };
-	float startLength { 1.0f };
-	float endLength { 1.0f };
-	float realEndLength { 1.0f };
+	float startLength { 0.1f };
+	float endLength { 2.0f };
+	float realEndLength { 2.5f };
 
 	void Update () override final;
 

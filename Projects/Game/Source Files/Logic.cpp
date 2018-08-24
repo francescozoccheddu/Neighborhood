@@ -18,7 +18,7 @@ Logic::Logic ()
 	m_Scene.pProjection = pProjection;
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
-	DirectionalLight light;
+	/*DirectionalLight light;
 	light.direction = { 0.5f, -0.75f, 1.0f };
 	light.position = { -1.0f, 1.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
@@ -27,7 +27,18 @@ Logic::Logic ()
 	light.bCastShadows = true;
 	light.shadowSize = 3.0f;
 	light.Update ();
-	m_Scene.directionalLights.push_back (light);
+	m_Scene.directionalLights.push_back (light);*/
+	ConeLight light;
+	light.direction = { 0.5f, -0.75f, 1.0f };
+	light.position = { -1.0f, 1.0f, -2.0f };
+	light.color = { 0.2f, 0.2f, 1.0f };
+	light.shadowNearZ = 0.5f;
+	light.shadowFarZ = 10.0f;
+	light.innerAngle = 0.2f;
+	light.outerAngle = 0.3f;
+	light.bCastShadows = true;
+	light.Update ();
+	m_Scene.coneLight.push_back (light);
 }
 
 void Logic::Update (double _deltaTime)
