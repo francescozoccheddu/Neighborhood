@@ -15,6 +15,7 @@ void LightingPass::Create (ID3D11Device & _device)
 {
 	m_DirectionalShader.Create (_device);
 	m_ConeShader.Create (_device);
+	m_PointShader.Create (_device);
 	m_LightBuffer.Create (_device);
 	m_TransformBuffer.Create (_device);
 	m_ShadowingSubPass.Create (_device);
@@ -60,6 +61,7 @@ void LightingPass::Destroy ()
 	m_TransformBuffer.Destroy ();
 	m_DirectionalShader.Destroy ();
 	m_ConeShader.Destroy ();
+	m_PointShader.Destroy ();
 	m_ShadowingSubPass.Destroy ();
 	m_RasterizerState = nullptr;
 	m_SamplerState = nullptr;
@@ -75,12 +77,14 @@ void LightingPass::Load ()
 {
 	m_DirectionalShader.Load ();
 	m_ConeShader.Load ();
+	m_PointShader.Load ();
 }
 
 void LightingPass::Unload ()
 {
 	m_DirectionalShader.Unload ();
 	m_ConeShader.Unload ();
+	m_PointShader.Unload ();
 }
 
 bool LightingPass::IsLoaded () const
@@ -222,6 +226,48 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 
 			}
 
+			if (!processedLights.pointLights.empty ())
+			{
+				for (int iMap { 0 }; iMap < iLight; iMap++)
+				{
+					pShadowMapResources[iMap] = nullptr;
+				}
+				iLight = iTransform = 0;
+
+				m_PointBufferData.cLights = static_cast<UINT>(processedLights.pointLights.size ());
+				m_PointBufferData.invProjView = invProjView;
+
+				for (const ShadowingSubPass::ProcessedLight<PointLight> & processedLight : processedLights.pointLights)
+				{
+					const PointLight & light { *processedLight.pLight };
+					pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
+
+					if (light.bCastShadows)
+					{
+						m_TransformBuffer.data.transforms[iTransform++] = light;
+					}
+
+					PointLightBufferData & packedLight { m_PointBufferData.lights[iLight] };
+
+					packedLight.shadowMapSize = processedLight.shadowMapSize;
+					packedLight.color = light.color;
+					packedLight.intensity = light.intensity;
+					packedLight.position = light.position;
+					packedLight.radius = light.radius;
+
+					iLight++;
+				}
+
+				m_ConeShader.SetShader (_context);
+
+				_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
+
+				m_LightBuffer.Update (_context, &m_PointBufferData, m_PointBufferData.GetSize ());
+				m_TransformBuffer.Update (_context, TransformBufferData::GetSize (iTransform));
+
+				_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
+
+			}
 		}
 	}
 }

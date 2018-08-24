@@ -226,6 +226,9 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\ConeLighting_pixel.hlsl">
       <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\PointLighting_pixel.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
