@@ -40,7 +40,6 @@ float4 GetWorldPosition (in float2 _texCoord)
 	float4 screenPos = float4(_texCoord * float2(2, -2) + float2(-1, +1), z, 1.0);
 	float4 worldPos = mul (screenPos, cb_InvProjView);
 	return worldPos / worldPos.w;
-	float4 worldPos2;
 }
 
 /*
@@ -96,10 +95,11 @@ for (uint iLight = 0; iLight < cb_cLights; iLight++)
 	{
 		shadowFactor = 1.0;
 	}
+	shadowFactor = 1.0;
 	float3 lightToPixDir = cb_Lights[iLight].position - position.xyz;
 	const float distance = length (lightToPixDir);
 	lightToPixDir /= distance;
-	const float direct = dot (normal, lightToPixDir);
+	const float direct = dot (lightToPixDir, normal);
 	const float total = direct * shadowFactor;
 	light = saturate (light + cb_Lights[iLight].color * total * cb_Lights[iLight].intensity);
 }
