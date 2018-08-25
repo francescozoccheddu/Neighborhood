@@ -38,7 +38,7 @@ struct PointLight : public Light
 
 	PerspectiveProjection CalcProjection () const;
 
-	ViewWithTarget CalcView (D3D11_TEXTURECUBE_FACE face) const;
+	ViewWithDirection CalcView (D3D11_TEXTURECUBE_FACE face) const;
 
 	inline Type GetType () const override final
 	{

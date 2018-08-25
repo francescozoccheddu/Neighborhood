@@ -258,7 +258,7 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 					iLight++;
 				}
 
-				m_ConeShader.SetShader (_context);
+				m_PointShader.SetShader (_context);
 
 				_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
 
@@ -268,6 +268,18 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 				_context.Draw (ScreenMeshResource::GetVerticesCount (), 0);
 
 			}
+
+			for (int iMap { 0 }; iMap < iLight; iMap++)
+			{
+				pShadowMapResources[iMap] = nullptr;
+			}
+			_context.PSSetShaderResources (_MAP_STARTING_SLOT, s_cMaxWithShadow, pShadowMapResources);
 		}
+	}
+
+
+	{
+		ID3D11ShaderResourceView* views[3] {};
+		_context.PSSetShaderResources (0, 3, views);
 	}
 }

@@ -2,7 +2,6 @@
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include "..\Header Files\Game\Resources\DepthMapResource.hpp"
 
 DepthMapResource::DepthMapResource (int _width, int _height) : m_Width { _width }, m_Height { _height }
 {}

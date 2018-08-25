@@ -76,7 +76,7 @@ void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 			const float color[4] { 0.0f, 0.0f, 0.0f, 0.0f };
 			_context.ClearRenderTargetView (_target.material, color);
 		}
-		_context.ClearDepthStencilView (_target.depth, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		_context.ClearDepthStencilView (_target.depth, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		_context.OMSetRenderTargets (3, views, _target.depth);
 	}
 
@@ -102,7 +102,7 @@ void GeometryPass::RenderDepthOnly (const std::vector<Scene::Drawable>& _drawabl
 {
 
 	{
-		_context.ClearDepthStencilView (_pDepthTarget, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+		_context.ClearDepthStencilView (_pDepthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
 		_context.OMSetRenderTargets (0, nullptr, _pDepthTarget);
 	}
 

@@ -42,9 +42,9 @@ Logic::Logic ()
 	PointLight light;
 	light.position = { -1.0f, 1.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
-	light.shadowNearZ = 0.5f;
+	light.shadowNearZ = 0.1f;
 	light.shadowFarZ = 10.0f;
-	//light.bCastShadows = true;
+	light.bCastShadows = true;
 	light.Update ();
 	m_Scene.pointLights.push_back (light);
 }
@@ -80,6 +80,23 @@ void Logic::Update (double _deltaTime)
 		view.turn += rt.x * fdt * angSpeed;
 		view.lookUp += -rt.y * fdt * angSpeed;
 		view.ClampLookUp (DirectX::XMConvertToRadians (70.f));
+
+		{
+			float x { 0 }, y { 0 };
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_RIGHT, false))
+				x += 1.0;
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_LEFT, false))
+				x -= 1.0;
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_UP, false))
+				y += 1.0;
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_DOWN, false))
+				y -= 1.0;
+
+			m_Scene.pointLights[0].position.x += x * fdt;
+			m_Scene.pointLights[0].position.z += y * fdt;
+			m_Scene.pointLights[0].Update ();
+		}
+
 	}
 
 	view.Update ();

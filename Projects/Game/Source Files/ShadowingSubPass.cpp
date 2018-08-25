@@ -160,7 +160,7 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 							Task task;
 							task.pTarget = map.GetTarget (face);
 							task.viewportSize = s_PointSize;
-							task.transform = pPointLight->CalcView (face);
+							task.transform = proj * pPointLight->CalcView (face);
 							tasks.push_back (task);
 						}
 						outputLight.pShadowMapShaderResource = map.GetShaderResourceView ();
