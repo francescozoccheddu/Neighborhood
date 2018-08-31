@@ -80,6 +80,7 @@ private:
 		DirectX::XMFLOAT3 position;
 		FLOAT intensity;
 		DirectX::XMFLOAT3 radius;
+		FLOAT farZ;
 	};
 
 	template<typename T, int cMax = 1>

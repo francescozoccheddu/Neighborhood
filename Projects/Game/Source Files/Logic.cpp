@@ -18,7 +18,7 @@ Logic::Logic ()
 	m_Scene.pProjection = pProjection;
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
-	/*DirectionalLight light;
+	DirectionalLight light;
 	light.direction = { 0.5f, -0.75f, 1.0f };
 	light.position = { -1.0f, 1.0f, -2.0f };
 	light.color = { 0.2f, 0.2f, 1.0f };
@@ -27,7 +27,7 @@ Logic::Logic ()
 	light.bCastShadows = true;
 	light.shadowSize = 3.0f;
 	light.Update ();
-	m_Scene.directionalLights.push_back (light);*/
+	//m_Scene.directionalLights.push_back (light);
 	/*ConeLight light;
 	light.direction = { 0.5f, -0.75f, 1.0f };
 	light.position = { -1.0f, 1.0f, -2.0f };
@@ -39,14 +39,14 @@ Logic::Logic ()
 	light.bCastShadows = true;
 	light.Update ();
 	m_Scene.coneLight.push_back (light);*/
-	PointLight light;
-	light.position = { -1.0f, 1.0f, -2.0f };
-	light.color = { 0.2f, 0.2f, 1.0f };
-	light.shadowNearZ = 0.1f;
-	light.shadowFarZ = 10.0f;
-	light.bCastShadows = true;
-	light.Update ();
-	m_Scene.pointLights.push_back (light);
+	PointLight light3;
+	light3.position = { -1.0f, 1.0f, -2.0f };
+	light3.color = { 0.2f, 0.2f, 1.0f };
+	light3.shadowNearZ = 0.1f;
+	light3.shadowFarZ = 10.0f;
+	light3.bCastShadows = true;
+	light3.Update ();
+	m_Scene.pointLights.push_back (light3);
 }
 
 void Logic::Update (double _deltaTime)
@@ -82,18 +82,23 @@ void Logic::Update (double _deltaTime)
 		view.ClampLookUp (DirectX::XMConvertToRadians (70.f));
 
 		{
-			float x { 0 }, y { 0 };
+			float x { 0 }, y { 0 }, z { 0 };
 			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_RIGHT, false))
 				x += 1.0;
 			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_LEFT, false))
 				x -= 1.0;
 			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_UP, false))
-				y += 1.0;
+				z += 1.0;
 			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_DOWN, false))
+				z -= 1.0;
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_RIGHT_SHOULDER, false))
+				y += 1.0;
+			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_LEFT_SHOULDER, false))
 				y -= 1.0;
 
 			m_Scene.pointLights[0].position.x += x * fdt;
-			m_Scene.pointLights[0].position.z += y * fdt;
+			m_Scene.pointLights[0].position.y += y * fdt;
+			m_Scene.pointLights[0].position.z += z * fdt;
 			m_Scene.pointLights[0].Update ();
 		}
 

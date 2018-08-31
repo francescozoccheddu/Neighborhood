@@ -242,6 +242,7 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 					const PointLight & light { *processedLight.pLight };
 					pShadowMapResources[iLight] = processedLight.pShadowMapShaderResource;
 
+
 					if (light.bCastShadows)
 					{
 						m_TransformBuffer.data.transforms[iTransform++] = light;
