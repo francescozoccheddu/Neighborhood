@@ -20,9 +20,7 @@ void TextureResource::SetShaderResourceView (ID3D11DeviceContext & _deviceContex
 void TextureResource::Create (ID3D11Device & _device)
 {
 	GAME_ASSERT_MSG (IsLoaded (), "Not created");
-	ID3D11Resource * pResource;
-	GAME_COMC (DirectX::CreateDDSTextureFromMemory (&_device, reinterpret_cast<const uint8_t*> (GetData ()), static_cast<size_t>(GetSize ()), &pResource, &m_pResourceView));
-	pResource->Release ();
+	GAME_COMC (DirectX::CreateDDSTextureFromMemory (&_device, reinterpret_cast<const uint8_t*> (GetData ()), static_cast<size_t>(GetSize ()), nullptr, &m_pResourceView));
 }
 
 void TextureResource::Destroy ()

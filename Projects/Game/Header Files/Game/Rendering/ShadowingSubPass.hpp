@@ -78,7 +78,7 @@ private:
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
 	static constexpr int s_cPointMaps { 4 };
-	static constexpr int s_PointSize { 256 };
+	static constexpr int s_PointSize { 1024 };
 	static constexpr int s_cConeMaps { 4 };
 	static constexpr int s_ConeSize { 512 };
 

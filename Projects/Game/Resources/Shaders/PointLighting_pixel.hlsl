@@ -1,4 +1,4 @@
-#define ENABLE_PCF 1
+#define ENABLE_PCF 0
 
 struct PSIn
 {
@@ -13,6 +13,7 @@ struct Light
 	float3 position;
 	float intensity;
 	float3 radius;
+	float farZ;
 };
 
 cbuffer cbLights : register(b0)
@@ -42,66 +43,44 @@ float4 GetWorldPosition (in float2 _texCoord)
 	return worldPos / worldPos.w;
 }
 
-/*
-#if ENABLE_PCF
-float GetShadowFactor (in float4 _position, in uint _iTransform, in uint _iMap, in float _pcfOffset)
-#else
-float GetShadowFactor (in float4 _position, in uint _iTransform, in uint _iMap)
-#endif
+float VectorToDepthValue (const float3 Vec)
 {
-	float4 projPos = mul (_position, cb_Transforms[_iTransform]);
-	float2 shadowTexc = projPos.xy / projPos.w * float2(0.5, -0.5) + 0.5;
-	float projDepth = projPos.z / projPos.w;
+	float3 AbsVec = abs (Vec);
+	float LocalZcomp = max (AbsVec.x, max (AbsVec.y, AbsVec.z));
 
-#if ENABLE_PCF
-	float res = 0.0;
-	const float2 offsets[9] = {
-		float2(-1, -1), float2(0, -1), float2(1, -1),
-		float2(-1, 0), float2(0, 0), float2(1, 0),
-		float2(-1, +1), float2(0, +1), float2(1, +1)
-	};
+	const float f = 10;
+	const float n = 0.1;
 
-	for (uint iCmp = 0; iCmp < 9; iCmp++)
-	{
-		res += gMaps2D[_iMap].SampleCmpLevelZero (gSamplerComparisonState, shadowTexc + offsets[iCmp] * _pcfOffset, projDepth);
-	}
-	return res / 9.0f;
-#else
-	return gMaps2D[_iMap].SampleCmpLevelZero (gSamplerComparisonState, shadowTexc, projDepth);
-#endif
+	float NormZComp = -(f / (n - f) - (n * f) / (n - f) / LocalZcomp);
+
+	return NormZComp;
 }
-*/
+
 float4 main (in PSIn _sIn) : SV_Target
 {
 	const float4 position = GetWorldPosition (_sIn.TexCoord);
 const float3 normal = normalize (gNormalMap.Sample (gSamplerState, _sIn.TexCoord).xyz);
 float3 light = float3(0.0, 0.0, 0.0);
-uint iTransform = 0;
-for (uint iLight = 0; iLight < cb_cLights; iLight++)
+
+const float3 lightVec = normalize (position.xyz - cb_Lights[0].position);
+const float diffuseFactor = saturate (dot (normal, -lightVec));
+const float attenuationFactor = saturate (1.0 / dot (lightVec, lightVec));
+
+float shadowFactor = 1.0;
+
+// BEGIN
+
+float3 cubemapDir = position.xyz - cb_Lights[0].position;
+float storedDepth = gMaps[0].Sample (gSamplerState, cubemapDir).r;
+
+if (storedDepth < VectorToDepthValue (cubemapDir))
 {
-	float shadowFactor;
-	if (cb_Lights[iLight].shadowMapSize)
-	{
-		/*
-#if ENABLE_PCF
-		shadowFactor = GetShadowFactor (position, iTransform, iLight, 1.0 / cb_Lights[iLight].shadowMapSize);
-#else
-		shadowFactor = GetShadowFactor (position, iTransform, iLight);
-#endif
-*/
-		iTransform++;
-	}
-	else
-	{
-		shadowFactor = 1.0;
-	}
-	shadowFactor = 1.0;
-	float3 lightToPixDir = cb_Lights[iLight].position - position.xyz;
-	const float distance = length (lightToPixDir);
-	lightToPixDir /= distance;
-	const float direct = dot (lightToPixDir, normal);
-	const float total = direct * shadowFactor;
-	light = saturate (light + cb_Lights[iLight].color * total * cb_Lights[iLight].intensity);
+	shadowFactor = 0.0;
 }
-return float4(light, 1.0);
+
+
+// END
+const float finalLight = diffuseFactor * attenuationFactor * shadowFactor;
+
+return float4(finalLight, finalLight, finalLight, 1.0);
 }
