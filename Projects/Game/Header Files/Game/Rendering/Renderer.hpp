@@ -45,7 +45,7 @@ private:
 	static constexpr DXGI_FORMAT s_renderTargetFormats[s_cRenderTargets] { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_SNORM, DXGI_FORMAT_R32G32B32A32_FLOAT };
 
 	const DeviceHolder & m_DeviceHolder;
-	DepthMap2DResource * m_pDepthMapResource { nullptr };
+	DepthMapResource * m_pDepthMapResource { nullptr };
 	com_ptr<ID3D11RenderTargetView> m_RenderTargetViews[s_cRenderTargets];
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
@@ -53,6 +53,6 @@ private:
 	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource::s_aInputElementDesc);
 	ScreenMeshResource m_ScreenMesh;
 	GeometryPass m_GeometryPass;
-	LightingPass m_DirectionalLightingPass { m_GeometryPass };
+	//LightingPass m_DirectionalLightingPass { m_GeometryPass };
 
 };

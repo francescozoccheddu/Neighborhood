@@ -9,14 +9,14 @@ Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _devi
 {
 	m_ScreenShader.Load ();
 	m_GeometryPass.Load ();
-	m_DirectionalLightingPass.Load ();
+	//m_DirectionalLightingPass.Load ();
 }
 
 Renderer::~Renderer ()
 {
 	m_ScreenShader.Unload ();
 	m_GeometryPass.Unload ();
-	m_DirectionalLightingPass.Unload ();
+	//m_DirectionalLightingPass.Unload ();
 }
 
 void Renderer::OnDeviceCreated ()
@@ -24,7 +24,7 @@ void Renderer::OnDeviceCreated ()
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
 
 	m_GeometryPass.Create (device);
-	m_DirectionalLightingPass.Create (device);
+	//m_DirectionalLightingPass.Create (device);
 	m_ScreenMesh.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
@@ -53,13 +53,13 @@ void Renderer::OnDeviceDestroyed ()
 	}
 	m_ScreenShader.Destroy ();
 	m_GeometryPass.Destroy ();
-	m_DirectionalLightingPass.Destroy ();
+	//m_DirectionalLightingPass.Destroy ();
 }
 
 void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 {
 	ID3D11Device * pDevice { m_DeviceHolder.GetDevice () };
-	m_pDepthMapResource = new DepthMap2DResource (_size.width, _size.height);
+	m_pDepthMapResource = new DepthMapResource (_size.width, _size.height, false);
 	m_pDepthMapResource->Create (*pDevice);
 	{
 		// Render target views
@@ -119,20 +119,21 @@ void Renderer::Render (const Scene & _scene)
 	{
 		GeometryPass::Target target;
 		target.colors = m_RenderTargetViews[s_iColorTexture].get ();
+		target.colors = m_DeviceHolder.GetRenderTargetView (); // TODO remove
 		target.normals = m_RenderTargetViews[s_iNormalTexture].get ();
 		target.material = m_RenderTargetViews[s_iMaterialTexture].get ();
-		target.depth = m_pDepthMapResource->GetTarget ();
+		target.depth = m_pDepthMapResource->GetDepthStencilView ();
 		m_GeometryPass.Render (_scene, context, target);
 	}
 
 	{
-		LightingPass::Inputs inputs;
+		/*LightingPass::Inputs inputs;
 		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
 		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
 		inputs.depth = m_pDepthMapResource->GetShaderResourceView ();
 		inputs.mesh = &m_ScreenMesh;
 		inputs.screenShader = &m_ScreenShader;
-		m_DirectionalLightingPass.Render (_scene, context, inputs, pRenderTargetView);
+		m_DirectionalLightingPass.Render (_scene, context, inputs, pRenderTargetView);*/
 	}
 
 }

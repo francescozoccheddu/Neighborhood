@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include <Game/Rendering/RenderingPass.hpp>
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/ConstantBufferResource.hpp>
@@ -126,4 +126,4 @@ private:
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11SamplerState> m_SamplerComparisonState;
 
-};
+};*/
