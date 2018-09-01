@@ -2,6 +2,7 @@
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
 
+/*
 ShadowingSubPass::ShadowingSubPass (const GeometryPass & _geometryPass) : m_GeometryPass { _geometryPass }
 {
 	for (int iMap { 0 }; iMap < s_cDirectionalMaps; iMap++)
@@ -248,3 +249,4 @@ std::list<ShadowingSubPass::Task> ShadowingSubPass::Prepare (std::list<const Lig
 
 
 
+*/

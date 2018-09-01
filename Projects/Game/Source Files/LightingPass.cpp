@@ -1,5 +1,5 @@
 #include <Game/Rendering/LightingPass.hpp>
-
+/*
 #include <Game/Utils/COMExceptions.hpp>
 
 #define _DEPTH_SLOT (0)
@@ -284,3 +284,4 @@ void LightingPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 		_context.PSSetShaderResources (0, 3, views);
 	}
 }
+*/

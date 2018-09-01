@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include <Game/Direct3D.hpp>
 #include <Game/Scene/Scene.hpp>
 #include <Game/Rendering/RenderingPass.hpp>
@@ -87,4 +87,4 @@ private:
 	DepthMap3DResource * m_pPointMaps[s_cPointMaps];
 	DepthMap2DResource * m_pConeMaps[s_cConeMaps];
 
-};
+};*/
