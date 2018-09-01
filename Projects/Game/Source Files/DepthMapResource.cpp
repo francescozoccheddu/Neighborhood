@@ -2,6 +2,7 @@
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include "..\Header Files\Game\Resources\DepthMapResource.hpp"
 
 DepthMapResource::DepthMapResource (int _width, int _height, bool _bCubic, int _cArray) : m_Width { _width }, m_Height { _height }, m_bCubic { _bCubic }, m_cArray { _cArray }, m_bArray { true }
 {
@@ -32,6 +33,12 @@ ID3D11DepthStencilView * DepthMapResource::GetDepthStencilView () const
 	return m_pDepthStencilView;
 }
 
+void DepthMapResource::Clear (ID3D11DeviceContext & _context, FLOAT _value)
+{
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	_context.ClearDepthStencilView (m_pDepthStencilView, D3D11_CLEAR_DEPTH, _value, 0);
+}
+
 void DepthMapResource::SetPixelShaderResource (ID3D11DeviceContext & _context, UINT _slot) const
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
@@ -52,6 +59,11 @@ bool DepthMapResource::IsCube () const
 int DepthMapResource::GetArraySize () const
 {
 	return m_cArray;
+}
+
+bool DepthMapResource::IsArray () const
+{
+	return m_bArray;
 }
 
 int DepthMapResource::GetWidth () const

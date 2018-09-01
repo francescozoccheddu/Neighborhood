@@ -43,7 +43,8 @@ public:
 
 private:
 
-	ShaderPassResource m_Shader RENDERINGPASS_SHADERPASS ("Geometry", SceneMeshResource::s_aInputElementDesc);
+	VertexShaderResource m_VertexShader { GAME_VERTEXSHADER_FILENAME ("Geometry"), SceneMeshResource::s_aInputElementDesc, ARRAYSIZE (SceneMeshResource::s_aInputElementDesc) };
+	PixelShaderResource m_PixelShader { GAME_PIXELSHADER_FILENAME ("Geometry") };
 	mutable ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;

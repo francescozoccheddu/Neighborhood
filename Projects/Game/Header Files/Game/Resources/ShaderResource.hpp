@@ -2,6 +2,16 @@
 
 #include <Game/Resources/Resource.hpp>
 
+#define GAME_SHADER_RESOURCES_DIR GAME_RESOURCES_DIR "Shaders/"
+#define GAME_SHADER_RESOURCES_EXT ".cso"
+#define GAME_SHADER_RESOURCES_FILENAME(_name) (GAME_SHADER_RESOURCES_DIR _name GAME_SHADER_RESOURCES_EXT)
+#define GAME_PIXELSHADER_FILENAME_SUFFIX "_pixel"
+#define GAME_VERTEXSHADER_FILENAME_SUFFIX "_vertex"
+#define GAME_GEOMETRYSHADER_FILENAME_SUFFIX "_geometry"
+#define GAME_PIXELSHADER_FILENAME(_passName) GAME_SHADER_RESOURCES_FILENAME(_passName GAME_PIXELSHADER_FILENAME_SUFFIX)
+#define GAME_VERTEXSHADER_FILENAME(_passName) GAME_SHADER_RESOURCES_FILENAME(_passName GAME_VERTEXSHADER_FILENAME_SUFFIX)
+#define GAME_GEOMETRYSHADER_FILENAME(_passName) GAME_SHADER_RESOURCES_FILENAME(_passName GAME_GEOMETRYSHADER_FILENAME_SUFFIX)
+
 class VertexShaderResource final : public BinaryFileResource
 {
 
@@ -51,18 +61,16 @@ private:
 
 };
 
-class ShaderPassResource final : public LoadableResource
+class GeometryShaderResource final : public BinaryFileResource
 {
 
 public:
 
-	ShaderPassResource (const std::string& vertexFileName, const std::string& pixelFileName, const D3D11_INPUT_ELEMENT_DESC * pDescriptions, int cDescriptions);
+	using BinaryFileResource::BinaryFileResource;
 
-	void Load () override final;
+	~GeometryShaderResource ();
 
-	void Unload () override final;
-
-	bool IsLoaded () const override final;
+	void SetShader (ID3D11DeviceContext & deviceContext) const;
 
 	void Create (ID3D11Device & device) override final;
 
@@ -70,15 +78,7 @@ public:
 
 	bool IsCreated () const override final;
 
-	void Set (ID3D11DeviceContext & deviceContext) const;
-
-	void SetVertexOnly (ID3D11DeviceContext & deviceContext) const;
-
-	void SetPixelOnly (ID3D11DeviceContext & deviceContext) const;
-
 private:
 
-	VertexShaderResource m_VertexShader;
-	PixelShaderResource m_PixelShader;
-
+	ID3D11GeometryShader * m_pShader { nullptr };
 };

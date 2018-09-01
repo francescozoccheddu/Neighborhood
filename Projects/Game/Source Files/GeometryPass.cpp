@@ -5,7 +5,8 @@
 void GeometryPass::Create (ID3D11Device & _device)
 {
 	m_ConstantBuffer.Create (_device);
-	m_Shader.Create (_device);
+	m_VertexShader.Create (_device);
+	m_PixelShader.Create (_device);
 	{
 		D3D11_RASTERIZER_DESC desc {};
 		desc.FillMode = D3D11_FILL_SOLID;
@@ -30,29 +31,32 @@ void GeometryPass::Create (ID3D11Device & _device)
 void GeometryPass::Destroy ()
 {
 	m_ConstantBuffer.Destroy ();
-	m_Shader.Destroy ();
+	m_VertexShader.Destroy ();
+	m_PixelShader.Destroy ();
 	m_RasterizerState = nullptr;
 	m_SamplerState = nullptr;
 }
 
 bool GeometryPass::IsCreated () const
 {
-	return m_Shader.IsCreated ();
+	return m_VertexShader.IsCreated ();
 }
 
 void GeometryPass::Load ()
 {
-	m_Shader.Load ();
+	m_VertexShader.Load ();
+	m_PixelShader.Load ();
 }
 
 void GeometryPass::Unload ()
 {
-	m_Shader.Unload ();
+	m_VertexShader.Unload ();
+	m_PixelShader.Unload ();
 }
 
 bool GeometryPass::IsLoaded () const
 {
-	return m_Shader.IsLoaded ();
+	return m_VertexShader.IsLoaded ();
 }
 
 void GeometryPass::Render (ID3D11DeviceContext & _context, const SceneResources & _sceneResources, const Scene & _scene, const Target& _target) const
@@ -78,7 +82,8 @@ void GeometryPass::Render (ID3D11DeviceContext & _context, const SceneResources 
 		_context.OMSetRenderTargets (3, views, _target.depth);
 	}
 
-	m_Shader.Set (_context);
+	m_VertexShader.SetShaderAndInputLayout (_context);
+	m_PixelShader.SetShader (_context);
 	_context.RSSetState (m_RasterizerState.get ());
 	ID3D11SamplerState * pSamplerStates[] { m_SamplerState.get () };
 	_context.PSSetSamplers (0, 1, pSamplerStates);

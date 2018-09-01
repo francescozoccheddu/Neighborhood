@@ -19,6 +19,8 @@ public:
 
 	ID3D11DepthStencilView * GetDepthStencilView () const;
 
+	void Clear (ID3D11DeviceContext & context, FLOAT value);
+
 	void SetPixelShaderResource (ID3D11DeviceContext & context, UINT slot) const;
 
 	void SetDepthStencilView (ID3D11DeviceContext & context) const;
@@ -26,6 +28,8 @@ public:
 	bool IsCube () const;
 
 	int GetArraySize () const;
+
+	bool IsArray () const;
 
 	int GetWidth () const;
 
