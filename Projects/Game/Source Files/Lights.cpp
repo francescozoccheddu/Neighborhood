@@ -4,18 +4,13 @@
 
 void PointLight::Update ()
 {
-	DirectX::XMStoreFloat4x4 (&m_Matrix, DirectX::XMMatrixMultiply (CalcProjection (), CalcView (D3D11_TEXTURECUBE_FACE_POSITIVE_Z)));
-}
-
-PerspectiveProjection PointLight::CalcProjection () const
-{
 	PerspectiveProjection proj;
 	proj.aspectRatio = 1.0f;
 	proj.farZ = shadowFarZ;
 	proj.nearZ = shadowNearZ;
 	proj.vFov = DirectX::XMConvertToRadians (90.0f);
 	proj.Update ();
-	return proj;
+	m_Matrix = proj;
 }
 
 ViewWithDirection PointLight::CalcView (D3D11_TEXTURECUBE_FACE _face) const

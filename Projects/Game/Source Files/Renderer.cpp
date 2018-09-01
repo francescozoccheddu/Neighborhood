@@ -24,6 +24,7 @@ void Renderer::OnDeviceCreated ()
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
 
 	m_GeometryPass.Create (device);
+	m_SceneResources.Create (device);
 	//m_DirectionalLightingPass.Create (device);
 	m_ScreenMesh.Create (device);
 	{
@@ -46,6 +47,7 @@ void Renderer::OnDeviceDestroyed ()
 	delete m_pDepthMapResource;
 	m_pDepthMapResource = nullptr;
 	m_ScreenMesh.Destroy ();
+	m_SceneResources.Destroy ();
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
 	{
 		m_RenderTargetViews[iView] = nullptr;
@@ -123,7 +125,7 @@ void Renderer::Render (const Scene & _scene)
 		target.normals = m_RenderTargetViews[s_iNormalTexture].get ();
 		target.material = m_RenderTargetViews[s_iMaterialTexture].get ();
 		target.depth = m_pDepthMapResource->GetDepthStencilView ();
-		m_GeometryPass.Render (_scene, context, target);
+		m_GeometryPass.Render (context, m_SceneResources, _scene, target);
 	}
 
 	{

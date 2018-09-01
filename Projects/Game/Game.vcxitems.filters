@@ -43,6 +43,9 @@
     <Filter Include="Sources\Logic">
       <UniqueIdentifier>{388aaa57-2ecf-4f9b-9520-028d62ef6f37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\Shadowing">
+      <UniqueIdentifier>{fd40ad24-4a3c-46d0-adaa-d8b5c7d30f01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Gamepad.cpp">
@@ -228,6 +231,12 @@
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\PointLighting_pixel.hlsl">
       <Filter>Resources\Shaders\Lighting</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_vertex.hlsl">
+      <Filter>Resources\Shaders\Shadowing</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_geometry.hlsl">
+      <Filter>Resources\Shaders\Shadowing</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

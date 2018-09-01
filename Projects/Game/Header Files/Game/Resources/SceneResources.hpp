@@ -27,9 +27,9 @@ public:
 
 	bool IsCreated () const override final;
 
-	const SceneMeshResource& GetMesh (const std::string& name);
+	const SceneMeshResource& GetMesh (const std::string& name) const;
 
-	const TextureResource& GetTexture (const std::string& name);
+	const TextureResource& GetTexture (const std::string& name) const;
 
 private:
 
@@ -44,8 +44,8 @@ private:
 	moment_t m_Moment { 0 };
 	ID3D11Device * m_pDevice { nullptr };
 
-	map_t m_Meshes;
-	map_t m_Textures;
+	mutable map_t m_Meshes;
+	mutable map_t m_Textures;
 
 	static void DestroyUnusedResources (map_t& map, moment_t minMoment);
 
@@ -54,7 +54,7 @@ private:
 	void Destroy (map_t& map);
 
 	template<typename T>
-	const T& Get (map_t& _map, const std::string& _name, const std::string& _filename)
+	const T& Get (map_t& _map, const std::string& _name, const std::string& _filename) const
 	{
 		GAME_ASSERT_MSG (IsCreated (), "Not created");
 		auto it { _map.find (_name) };
