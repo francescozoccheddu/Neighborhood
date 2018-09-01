@@ -39,17 +39,12 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (const Scene & scene, ID3D11DeviceContext & context, const Target& target) const;
-
-	void RenderDepthOnly (const std::vector<Scene::Drawable> & drawables, ID3D11DeviceContext & context, const ConstantBuffer & buffer, ID3D11DepthStencilView * pDepthTarget) const;
+	void Render (ID3D11DeviceContext & context, const SceneResources & sceneResources, const Scene & scene, const Target& target) const;
 
 private:
 
-	void Draw (const std::vector<Scene::Drawable> & drawables, const ConstantBuffer & buffer, ID3D11DeviceContext & context, bool bGeometryOnly) const;
-
 	ShaderPassResource m_Shader RENDERINGPASS_SHADERPASS ("Geometry", SceneMeshResource::s_aInputElementDesc);
 	mutable ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
-	mutable SceneResources m_SceneResources;
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 

@@ -6,7 +6,6 @@ void GeometryPass::Create (ID3D11Device & _device)
 {
 	m_ConstantBuffer.Create (_device);
 	m_Shader.Create (_device);
-	m_SceneResources.Create (_device);
 	{
 		D3D11_RASTERIZER_DESC desc {};
 		desc.FillMode = D3D11_FILL_SOLID;
@@ -32,7 +31,6 @@ void GeometryPass::Destroy ()
 {
 	m_ConstantBuffer.Destroy ();
 	m_Shader.Destroy ();
-	m_SceneResources.Destroy ();
 	m_RasterizerState = nullptr;
 	m_SamplerState = nullptr;
 }
@@ -57,7 +55,7 @@ bool GeometryPass::IsLoaded () const
 	return m_Shader.IsLoaded ();
 }
 
-void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context, const Target& _target) const
+void GeometryPass::Render (ID3D11DeviceContext & _context, const SceneResources & _sceneResources, const Scene & _scene, const Target& _target) const
 {
 	{
 		ID3D11RenderTargetView * views[3];
@@ -81,56 +79,27 @@ void GeometryPass::Render (const Scene & _scene, ID3D11DeviceContext & _context,
 	}
 
 	m_Shader.Set (_context);
-
-	{
-		m_ConstantBuffer.data.projView = *_scene.pProjection * *_scene.pView;
-		m_ConstantBuffer.Update (_context);
-		m_ConstantBuffer.SetForVertexShader (_context, 0);
-	}
-
 	_context.RSSetState (m_RasterizerState.get ());
 	ID3D11SamplerState * pSamplerStates[] { m_SamplerState.get () };
 	_context.PSSetSamplers (0, 1, pSamplerStates);
 
-	ConstantBuffer buffer;
-	buffer.projView = *_scene.pProjection * *_scene.pView;
-
-	Draw (_scene.drawables, buffer, _context, false);
-}
-
-void GeometryPass::RenderDepthOnly (const std::vector<Scene::Drawable>& _drawables, ID3D11DeviceContext & _context, const ConstantBuffer & _buffer, ID3D11DepthStencilView * _pDepthTarget) const
-{
-
 	{
-		_context.ClearDepthStencilView (_pDepthTarget, D3D11_CLEAR_DEPTH, 1.0f, 0);
-		_context.OMSetRenderTargets (0, nullptr, _pDepthTarget);
-	}
-
-	m_Shader.SetVertexOnly (_context);
-	_context.PSSetShader (nullptr, nullptr, 0);
-
-	Draw (_drawables, _buffer, _context, true);
-}
-
-void GeometryPass::Draw (const std::vector<Scene::Drawable>& _drawables, const ConstantBuffer & _buffer, ID3D11DeviceContext & _context, bool _bGeometryOnly) const
-{
-	{
-		m_ConstantBuffer.data = _buffer;
+		ConstantBuffer buffer;
+		buffer.projView = *_scene.pProjection * *_scene.pView;
+		m_ConstantBuffer.data = buffer;
 		m_ConstantBuffer.Update (_context);
 		m_ConstantBuffer.SetForVertexShader (_context, 0);
 	}
 
-	for (const Scene::Drawable& drawable : _drawables)
+	for (const Scene::Drawable& drawable : _scene.drawables)
 	{
-		const SceneMeshResource & mesh { m_SceneResources.GetMesh (drawable.mesh) };
-		mesh.SetBuffers (_context, _bGeometryOnly);
+		const SceneMeshResource & mesh { _sceneResources.GetMesh (drawable.mesh) };
+		mesh.SetBuffers (_context, false);
 
-		if (!_bGeometryOnly)
-		{
-			const TextureResource & texture { m_SceneResources.GetTexture (drawable.texture) };
-			texture.SetShaderResourceView (_context, 0);
-		}
+		const TextureResource & texture { _sceneResources.GetTexture (drawable.texture) };
+		texture.SetShaderResourceView (_context, 0);
 
 		_context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);
 	}
 }
+

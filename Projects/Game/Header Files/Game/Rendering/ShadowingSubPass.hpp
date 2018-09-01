@@ -1,5 +1,5 @@
 #pragma once
-/*
+
 #include <Game/Direct3D.hpp>
 #include <Game/Scene/Scene.hpp>
 #include <Game/Rendering/RenderingPass.hpp>
@@ -16,37 +16,11 @@ class ShadowingSubPass final : public RenderingPass
 
 public:
 
-	template <typename T>
 	struct ProcessedLight
 	{
-		const T * pLight;
-		ID3D11ShaderResourceView * pShadowMapShaderResource;
-		int shadowMapSize;
+		const Light * pLight;
+		UINT iShadowMap1Based;
 	};
-
-	struct ProcessOutput
-	{
-		template<typename T>
-		using list_t = std::list<ProcessedLight<T>>;
-
-		list_t<ConeLight> coneLights;
-		list_t<DirectionalLight> directionalLights;
-		list_t<PointLight> pointLights;
-	};
-
-	struct ProcessLimits
-	{
-		struct LightType
-		{
-			int cTotal;
-			int cWithShadow;
-		};
-		LightType directional;
-		LightType point;
-		LightType cone;
-	};
-
-	ShadowingSubPass (const GeometryPass & geometryPass);
 
 	~ShadowingSubPass ();
 
@@ -62,29 +36,33 @@ public:
 
 	bool IsCreated () const override final;
 
-	ProcessOutput ProcessLights (ID3D11DeviceContext & context, const std::vector<Scene::Drawable> & drawables, std::list<const Light *> & pLights, const ProcessLimits & limits);
+	std::vector<ProcessedLight> ProcessLights (_In_ ID3D11DeviceContext & context, const _In_ GeometryPass & geometryPass, _In_ const std::vector<Scene::Drawable> & drawables, _Inout_ std::list<const Light *> & pLights, _In_ int cMaxLights);
+
+	const DepthMapResource& GetConeMapResource () const;
+
+	const DepthMapResource& GetDirectionalMapResource () const;
+
+	const DepthMapResource& GetPointMapResource () const;
 
 private:
 
 	struct Task
 	{
-		ID3D11DepthStencilView * pTarget;
-		int viewportSize;
-		DirectX::XMFLOAT4X4 transform;
+		DepthMapResource * target;
+		std::vector<DirectX::XMFLOAT4X4> transform;
 	};
 
-	std::list<Task> ShadowingSubPass::Prepare (std::list<const Light*> & pLights, ProcessOutput & processedLights, const ProcessLimits & limits) const;
+	std::vector<Task> ShadowingSubPass::Prepare (_Inout_ std::list<const Light*> & lights, _Inout_ std::vector<ProcessedLight> & processedLights, _In_ int cMaxLights) const;
 
+	static constexpr int s_cConeMaps { 4 };
+	static constexpr int s_ConeSize { 512 };
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
 	static constexpr int s_cPointMaps { 4 };
 	static constexpr int s_PointSize { 1024 };
-	static constexpr int s_cConeMaps { 4 };
-	static constexpr int s_ConeSize { 512 };
 
-	const GeometryPass & m_GeometryPass;
-	DepthMap2DResource * m_pDirectionalMaps[s_cDirectionalMaps];
-	DepthMap3DResource * m_pPointMaps[s_cPointMaps];
-	DepthMap2DResource * m_pConeMaps[s_cConeMaps];
+	mutable DepthMapResource m_ConeMaps { s_ConeSize, s_ConeSize, false, s_cConeMaps };
+	mutable DepthMapResource m_DirectionalMaps { s_DirectionalSize, s_DirectionalSize, false, s_cDirectionalMaps };
+	mutable DepthMapResource m_PointMaps { s_PointSize, s_PointSize, true, s_cPointMaps };
 
-};*/
+};

@@ -46,12 +46,12 @@ bool SceneResources::IsCreated () const
 	return m_pDevice != nullptr;
 }
 
-const SceneMeshResource & SceneResources::GetMesh (const std::string & _name)
+const SceneMeshResource & SceneResources::GetMesh (const std::string & _name) const
 {
 	return Get<SceneMeshResource> (m_Meshes, _name, GetMeshFileName (_name));
 }
 
-const TextureResource & SceneResources::GetTexture (const std::string & _name)
+const TextureResource & SceneResources::GetTexture (const std::string & _name) const
 {
 	return Get<TextureResource> (m_Textures, _name, GetTextureFileName (_name));
 }

@@ -53,6 +53,7 @@ private:
 	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource::s_aInputElementDesc);
 	ScreenMeshResource m_ScreenMesh;
 	GeometryPass m_GeometryPass;
+	SceneResources m_SceneResources;
 	//LightingPass m_DirectionalLightingPass { m_GeometryPass };
 
 };
