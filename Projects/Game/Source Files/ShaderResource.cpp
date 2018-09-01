@@ -3,7 +3,6 @@
 #include <Game/Resources/MeshResource.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include "..\Header Files\Game\Resources\ShaderResource.hpp"
 
 VertexShaderResource::VertexShaderResource (const std::string & _fileName, const D3D11_INPUT_ELEMENT_DESC * _pDescs, int _cDescs) :
 	BinaryFileResource { _fileName }, m_pDescriptions { _pDescs }, m_cDescriptions { _cDescs }
@@ -79,54 +78,35 @@ bool PixelShaderResource::IsCreated () const
 	return m_pShader != nullptr;
 }
 
-ShaderPassResource::ShaderPassResource (const std::string& _vertexFn, const std::string& _pixelFn, const D3D11_INPUT_ELEMENT_DESC * _pDescs, int _cDescs) : m_VertexShader { _vertexFn, _pDescs, _cDescs }, m_PixelShader { _pixelFn } {}
-
-void ShaderPassResource::Load ()
+GeometryShaderResource::~GeometryShaderResource ()
 {
-	m_VertexShader.Load ();
-	m_PixelShader.Load ();
+	if (GeometryShaderResource::IsCreated ())
+	{
+		GeometryShaderResource::Destroy ();
+	}
 }
 
-void ShaderPassResource::Unload ()
+void GeometryShaderResource::SetShader (ID3D11DeviceContext & _deviceContext) const
 {
-	m_VertexShader.Unload ();
-	m_PixelShader.Unload ();
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	GAME_COMC (_deviceContext.GSSetShader (m_pShader, nullptr, 0));
 }
 
-bool ShaderPassResource::IsLoaded () const
+void GeometryShaderResource::Create (ID3D11Device & _device)
 {
-	return m_VertexShader.IsLoaded ();
+	GAME_ASSERT_MSG (!IsCreated (), "Already created");
+	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
+	GAME_COMC (_device.CreateGeometryShader (GetData (), static_cast<SIZE_T>(GetSize ()), nullptr, &m_pShader));
 }
 
-void ShaderPassResource::Create (ID3D11Device & _device)
+void GeometryShaderResource::Destroy ()
 {
-	m_VertexShader.Create (_device);
-	m_PixelShader.Create (_device);
+	GAME_ASSERT_MSG (IsCreated (), "Not created");
+	m_pShader->Release ();
+	m_pShader = nullptr;
 }
 
-void ShaderPassResource::Destroy ()
+bool GeometryShaderResource::IsCreated () const
 {
-	m_VertexShader.Destroy ();
-	m_PixelShader.Destroy ();
-}
-
-bool ShaderPassResource::IsCreated () const
-{
-	return m_VertexShader.IsCreated ();
-}
-
-void ShaderPassResource::Set (ID3D11DeviceContext & _deviceContext) const
-{
-	m_VertexShader.SetShaderAndInputLayout (_deviceContext);
-	m_PixelShader.SetShader (_deviceContext);
-}
-
-void ShaderPassResource::SetVertexOnly (ID3D11DeviceContext & _deviceContext) const
-{
-	m_VertexShader.SetShaderAndInputLayout (_deviceContext);
-}
-
-void ShaderPassResource::SetPixelOnly (ID3D11DeviceContext & _deviceContext) const
-{
-	m_PixelShader.SetShader (_deviceContext);
+	return m_pShader != nullptr;
 }

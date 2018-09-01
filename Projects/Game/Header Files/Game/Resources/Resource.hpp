@@ -4,31 +4,7 @@
 #include <Game/Utils/NonCopyable.h>
 #include <string>
 
-#define RES_DIR "Resources/"
-#define RES_SHADERS_DIR RES_DIR "Shaders/"
-#define RES_TEXTURES_DIR RES_DIR "Textures/"
-#define RES_MESHES_DIR RES_DIR "Meshes/"
-#define RES_SHADERS_EXT ".cso"
-#define RES_TEXTURES_EXT ".dds"
-#define RES_MESHES_EXT ".json"
-#define RES_SHADER_FILENAME(_name) (RES_SHADERS_DIR _name RES_SHADERS_EXT)
-#define RES_TEXTURES_FILENAME(_name) (RES_TEXTURES_DIR _name RES_TEXTURES_EXT)
-#define RES_MESHES_FILENAME(_name) (RES_MESHES_DIR _name RES_MESHES_EXT)
-
-inline std::string GetShaderFileName (const std::string& _name)
-{
-	return RES_SHADERS_DIR + _name + RES_SHADERS_EXT;
-}
-
-inline std::string GetMeshFileName (const std::string& _name)
-{
-	return RES_MESHES_DIR + _name + RES_MESHES_EXT;
-}
-
-inline std::string GetTextureFileName (const std::string& _name)
-{
-	return RES_TEXTURES_DIR + _name + RES_TEXTURES_EXT;
-}
+#define GAME_RESOURCES_DIR "Resources/"
 
 class Resource : private NonCopyable
 {

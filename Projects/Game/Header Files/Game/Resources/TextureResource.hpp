@@ -3,6 +3,10 @@
 #include <Game/Resources/Resource.hpp>
 #include <Game/Direct3D.hpp>
 
+#define GAME_TEXTURERESOURCE_DIR GAME_RESOURCES_DIR "Textures/"
+#define GAME_TEXTURERESOURCE_EXT ".dds"
+#define GAME_TEXTURERESOURCE_FILENAME(_name) (TEXTURERESOURCES_DIR _name TEXTURERESOURCES_EXT)
+
 class TextureResource final : public BinaryFileResource
 {
 

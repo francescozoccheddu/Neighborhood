@@ -50,7 +50,7 @@ private:
 	com_ptr<ID3D11ShaderResourceView> m_ShaderResourceViews[s_cRenderTargets];
 	com_ptr<ID3D11SamplerState> m_SamplerState;
 	D3D11_VIEWPORT m_Viewport;
-	VertexShaderResource m_ScreenShader RENDERINGPASS_VERTSHADER ("Screen", ScreenMeshResource::s_aInputElementDesc);
+	VertexShaderResource m_ScreenShader { GAME_VERTEXSHADER_FILENAME ("Screen"), ScreenMeshResource::s_aInputElementDesc, ARRAYSIZE (ScreenMeshResource::s_aInputElementDesc) };
 	ScreenMeshResource m_ScreenMesh;
 	GeometryPass m_GeometryPass;
 	SceneResources m_SceneResources;

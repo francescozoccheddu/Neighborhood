@@ -48,12 +48,12 @@ bool SceneResources::IsCreated () const
 
 const SceneMeshResource & SceneResources::GetMesh (const std::string & _name) const
 {
-	return Get<SceneMeshResource> (m_Meshes, _name, GetMeshFileName (_name));
+	return Get<SceneMeshResource> (m_Meshes, _name, GAME_MESHRESOURCE_DIR + _name + GAME_MESHRESOURCE_EXT);
 }
 
 const TextureResource & SceneResources::GetTexture (const std::string & _name) const
 {
-	return Get<TextureResource> (m_Textures, _name, GetTextureFileName (_name));
+	return Get<TextureResource> (m_Textures, _name, GAME_TEXTURERESOURCE_DIR + _name + GAME_TEXTURERESOURCE_EXT);
 }
 
 void SceneResources::DestroyUnusedResources (map_t& _map, moment_t _minMoment)

@@ -5,6 +5,9 @@
 #include <cstdint>
 
 #define GAME_MESHRESOURCE_HALF_INDEX 1
+#define GAME_MESHRESOURCE_DIR GAME_RESOURCES_DIR "Meshes/"
+#define GAME_MESHRESOURCE_EXT ".json"
+#define GAME_MESHRESOURCE_FILENAME(_name) (GAME_MESHRESOURCE_DIR _name GAME_MESHRESOURCE_EXT)
 
 class SceneMeshResource final : public FileResource
 {
