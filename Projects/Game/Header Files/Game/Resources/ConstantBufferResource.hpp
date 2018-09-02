@@ -23,6 +23,8 @@ public:
 
 	void SetForPixelShader (ID3D11DeviceContext & deviceContext, int slot) const;
 
+	void SetForGeometryShader (ID3D11DeviceContext & deviceContext, int slot) const;
+
 	void Create (ID3D11Device & device) override final;
 
 	void Destroy () override final;

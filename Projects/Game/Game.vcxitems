@@ -99,7 +99,7 @@
       <ShaderModel>4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_vertex.hlsl">
-      <ShaderType>Geometry</ShaderType>
+      <ShaderType>Vertex</ShaderType>
       <ShaderModel>4.0</ShaderModel>
     </FxCompile>
   </ItemGroup>

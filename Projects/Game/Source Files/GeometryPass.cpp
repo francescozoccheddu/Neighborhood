@@ -106,5 +106,8 @@ void GeometryPass::Render (ID3D11DeviceContext & _context, const SceneResources 
 
 		_context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);
 	}
+
+	_context.VSSetShader (nullptr, nullptr, 0);
+	_context.PSSetShader (nullptr, nullptr, 0);
 }
 
