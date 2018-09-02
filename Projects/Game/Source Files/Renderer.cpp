@@ -4,7 +4,6 @@
 #include <Game/Utils/COMExceptions.hpp>
 #include <Game/DirectXMath.hpp>
 
-
 Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _deviceHolder }
 {
 	m_ScreenShader.Load ();

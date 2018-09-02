@@ -1,18 +1,32 @@
-struct GSOutput
+#define MAX_ARRAY_SLICES 24
+
+struct GSOut
 {
-	float4 pos : SV_POSITION;
+	float4 Position : SV_Position;
+	uint TargetSlice : SV_RenderTargetArrayIndex;
 };
 
-[maxvertexcount(3)]
-void main(
-	triangle float4 input[3] : SV_POSITION, 
-	inout TriangleStream< GSOutput > output
+cbuffer cbPerFrame
+{
+	uint cb_SliceCount;
+	float4x4 cb_Transforms[MAX_ARRAY_SLICES];
+};
+
+[maxvertexcount (MAX_ARRAY_SLICES * 3)]
+void main (
+	triangle float4 _sIn[3] : SV_Position,
+	inout TriangleStream< GSOut > _sOut
 )
 {
-	for (uint i = 0; i < 3; i++)
+	for (uint iSlice = 0; iSlice < cb_SliceCount; iSlice++)
 	{
-		GSOutput element;
-		element.pos = input[i];
-		output.Append(element);
+		for (uint iVert = 0; iVert < 3; iVert++)
+		{
+			GSOut element;
+			element.Position = mul (_sIn[iVert], cb_Transforms[iSlice]);
+			element.TargetSlice = iSlice;
+			_sOut.Append (element);
+		}
+		_sOut.RestartStrip ();
 	}
 }

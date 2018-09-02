@@ -2,6 +2,7 @@
 
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include "..\Header Files\Game\Resources\ConstantBufferResource.hpp"
 
 void ConstantBufferResource::SetForVertexShader (ID3D11DeviceContext & _deviceContext, int _startingSlot, std::vector<ConstantBufferResource*> _buffers)
 {
@@ -57,6 +58,11 @@ void ConstantBufferResource::SetForVertexShader (ID3D11DeviceContext & _deviceCo
 void ConstantBufferResource::SetForPixelShader (ID3D11DeviceContext & _deviceContext, int _slot) const
 {
 	_deviceContext.PSSetConstantBuffers (static_cast<UINT>(_slot), 1, &m_pBuffer);
+}
+
+void ConstantBufferResource::SetForGeometryShader (ID3D11DeviceContext & _deviceContext, int _slot) const
+{
+	_deviceContext.GSSetConstantBuffers (static_cast<UINT>(_slot), 1, &m_pBuffer);
 }
 
 void ConstantBufferResource::Create (ID3D11Device & _device)

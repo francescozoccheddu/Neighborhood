@@ -1,18 +1,9 @@
-struct GSOutput
+cbuffer cbPerModel : register(b0)
 {
-	float4 pos : SV_POSITION;
+	float4x4 cb_ModelTransform;
 };
 
-[maxvertexcount(3)]
-void main(
-	triangle float4 input[3] : SV_POSITION, 
-	inout TriangleStream< GSOutput > output
-)
+float4 main (float3 _position : POSITION) : SV_Position
 {
-	for (uint i = 0; i < 3; i++)
-	{
-		GSOutput element;
-		element.pos = input[i];
-		output.Append(element);
-	}
+	return mul (float4 (_position, 1.0), cb_ModelTransform);
 }

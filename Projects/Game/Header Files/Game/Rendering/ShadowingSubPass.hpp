@@ -36,7 +36,7 @@ public:
 
 	bool IsCreated () const override final;
 
-	std::vector<ProcessedLight> ProcessLights (_In_ ID3D11DeviceContext & context, const _In_ GeometryPass & geometryPass, _In_ const std::vector<Scene::Drawable> & drawables, _Inout_ std::list<const Light *> & pLights, _In_ int cMaxLights);
+	std::vector<ProcessedLight> ProcessLights (_In_ ID3D11DeviceContext & context, const _In_ SceneResources & sceneResources, _In_ const std::vector<Scene::Drawable> & drawables, _Inout_ std::list<const Light *> & pLights, _In_ int cMaxLights);
 
 	const DepthMapResource& GetConeMapResource () const;
 
@@ -46,20 +46,51 @@ public:
 
 private:
 
-	struct Task
-	{
-		DepthMapResource * target;
-		std::vector<DirectX::XMFLOAT4X4> transform;
-	};
-
-	std::vector<Task> ShadowingSubPass::Prepare (_Inout_ std::list<const Light*> & lights, _Inout_ std::vector<ProcessedLight> & processedLights, _In_ int cMaxLights) const;
-
 	static constexpr int s_cConeMaps { 4 };
 	static constexpr int s_ConeSize { 512 };
 	static constexpr int s_cDirectionalMaps { 4 };
 	static constexpr int s_DirectionalSize { 1024 };
 	static constexpr int s_cPointMaps { 4 };
 	static constexpr int s_PointSize { 1024 };
+
+	static constexpr int s_cMaxSlices { std::max ({ s_cConeMaps, s_cDirectionalMaps, s_cPointMaps * 6 }) };
+
+	struct Task
+	{
+		DepthMapResource * target;
+		std::vector<DirectX::XMFLOAT4X4> transforms;
+	};
+
+	struct PrepareResult
+	{
+		std::vector<Task> tasks;
+		std::vector<ProcessedLight> lights;
+	};
+
+	struct ModelBufferData
+	{
+		DirectX::XMFLOAT4X4 transform;
+	};
+
+	struct ProjViewBufferData
+	{
+		alignas(16) UINT cSlices;
+		alignas(16) DirectX::XMFLOAT4X4 transforms[s_cMaxSlices];
+
+		inline int GetSize () const
+		{
+			return sizeof (DirectX::XMFLOAT4X4) * cSlices + offsetof (ProjViewBufferData, transforms);
+		}
+
+	};
+
+	PrepareResult ShadowingSubPass::Prepare (_Inout_ std::list<const Light*> & lights, _In_ int cMaxLights) const;
+
+	VertexShaderResource m_VertexShader { GAME_VERTEXSHADER_FILENAME ("Shadowing"), SceneMeshResource::s_aGeometryOnlyInputElementDesc, ARRAYSIZE (SceneMeshResource::s_aGeometryOnlyInputElementDesc) };
+	GeometryShaderResource m_GeometryShader { GAME_GEOMETRYSHADER_FILENAME ("Shadowing") };
+
+	ConstantBufferStructResource<ModelBufferData> m_ModelBuffer;
+	ConstantBufferStructResource<ProjViewBufferData> m_ProjViewBuffer;
 
 	mutable DepthMapResource m_ConeMaps { s_ConeSize, s_ConeSize, false, s_cConeMaps };
 	mutable DepthMapResource m_DirectionalMaps { s_DirectionalSize, s_DirectionalSize, false, s_cDirectionalMaps };
