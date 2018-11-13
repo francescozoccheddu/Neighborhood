@@ -3,12 +3,10 @@
 Logic::Logic ()
 {
 	Scene::Drawable drawable;
-	drawable.texture = "Sammy";
-	drawable.mesh = "Sammy";
+	drawable.pMesh = new SceneMeshResource (GAME_MESHRESOURCE_FILENAME ("Sammy"));
 	drawable.transform.Update ();
 	m_Scene.drawables.push_back (drawable);
-	drawable.texture = "Home";
-	drawable.mesh = "Home";
+	drawable.pMesh = new SceneMeshResource (GAME_MESHRESOURCE_FILENAME ("Home"));
 	drawable.transform.Update ();
 	m_Scene.drawables.push_back (drawable);
 	PerspectiveProjection* pProjection = new PerspectiveProjection;
@@ -18,35 +16,6 @@ Logic::Logic ()
 	m_Scene.pProjection = pProjection;
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
-	DirectionalLight light;
-	light.direction = { 0.5f, -0.75f, 1.0f };
-	light.position = { -1.0f, 1.0f, -2.0f };
-	light.color = { 0.2f, 0.2f, 1.0f };
-	light.shadowNearZ = 0.5f;
-	light.shadowFarZ = 10.0f;
-	light.bCastShadows = true;
-	light.shadowSize = 3.0f;
-	light.Update ();
-	m_Scene.directionalLights.push_back (light);
-	ConeLight light2;
-	light2.direction = { 0.5f, -0.75f, 1.0f };
-	light2.position = { -1.0f, 1.0f, -2.0f };
-	light2.color = { 0.2f, 0.2f, 1.0f };
-	light2.shadowNearZ = 0.5f;
-	light2.shadowFarZ = 10.0f;
-	light2.innerAngle = 0.2f;
-	light2.outerAngle = 0.3f;
-	light2.bCastShadows = true;
-	light2.Update ();
-	m_Scene.coneLight.push_back (light2);
-	PointLight light3;
-	light3.position = { -1.0f, 1.0f, -2.0f };
-	light3.color = { 0.2f, 0.2f, 1.0f };
-	light3.shadowNearZ = 0.1f;
-	light3.shadowFarZ = 10.0f;
-	light3.bCastShadows = true;
-	light3.Update ();
-	m_Scene.pointLights.push_back (light3);
 }
 
 void Logic::Update (double _deltaTime)

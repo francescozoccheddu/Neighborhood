@@ -15,6 +15,7 @@ struct Light : public MatrixWrapper
 
 	DirectX::XMFLOAT3 color { 1.0f, 1.0f, 1.0f };
 	DirectX::XMFLOAT3 position { 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
 	bool bCastShadows { false };
 	float shadowNearZ { 0.5f };
 	float shadowFarZ { 10.0f };
@@ -30,23 +31,8 @@ protected:
 
 };
 
-struct PointLight : public Light
-{
-	DirectX::XMFLOAT3 radius { 1.0f, 1.0f, 1.0f };
-
-	void Update () override final;
-
-	ViewWithDirection CalcView (D3D11_TEXTURECUBE_FACE face) const;
-
-	inline Type GetType () const override final
-	{
-		return Type::POINT;
-	}
-};
-
 struct DirectionalLight : public Light
 {
-	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
 	float shadowSize { 2.0f };
 
 	void Update () override final;
@@ -59,7 +45,6 @@ struct DirectionalLight : public Light
 
 struct ConeLight : public Light
 {
-	DirectX::XMFLOAT3 direction { 0.0f, -1.0f, 0.0f };
 
 	float innerAngle { 0.5f };
 	float outerAngle { 1.0f };

@@ -1,4 +1,3 @@
-import json
 import os
 import bisect
 import c4d
@@ -6,8 +5,9 @@ from c4d import gui
 from c4d import documents
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
-output_directory = os.path.join(script_directory, "../Projects/Game/Resources/Meshes/")
-output_ext = ".json"
+output_prefix = "Mesh_"
+output_suffix = ".hpp"
+output_directory = os.path.join(script_directory, "../Projects/Game/Resources/")
 output_scale = 1.0 / 100.0
 
 class CompareResult:
@@ -34,34 +34,30 @@ def compareChain(*ress):
 def compareVector(a,b):
     return compareChain(compare(a.x,b.x), compare(a.y,b.y), compare(a.z,b.z))
 
-def compareList(a,b):
-    for ea, eb in zip(a,b):
-        if ea < eb:
-            return CompareResult.SMALLER
-        elif ea > eb:
-            return CompareResult.GREATER 
-    return CompareResult.EQUAL
-
 def vectorToList(vec):
     return [vec.x,vec.y,vec.z]
 
 class Vertex:
 
-    def __init__(self, position, normal, textcoord):
+    def __init__(self, position, normal, color):
         self._position = position
         self._normal = normal
-        self._texcoord = textcoord
+        self._color = color
 
     def __lt__(self,other):
-        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal), compareList(self._texcoord, other._texcoord)) == CompareResult.SMALLER
+        return compareChain(compareVector(self._position, other._position), compareVector(self._normal, other._normal), compareVector(self._color, other._color)) == CompareResult.SMALLER
 
     def __eq__(self, other):
-        return self._position == other._position and self._normal == other._normal and self._texcoord == other._texcoord
+        return self._position == other._position and self._normal == other._normal and self._color == other._color
 
-    def appendTo(self, positions, normals, texcoords):
-        positions.append(vectorToList(self._position))
-        normals.append(vectorToList(self._normal))
-        texcoords.append(self._texcoord)
+    def getPosition(self):
+        return vectorToList(self._position)
+
+    def getNormal(self):
+        return vectorToList(self._normal)
+
+    def getColor(self):
+        return vectorToList(self._color)
 
 class MeshBuilder:
 
@@ -83,21 +79,20 @@ class MeshBuilder:
         self._indices.append(len(self._vertices))
         self._vertices.append(vert)
 
-    def toDict(self):
-        positions = []
-        normals = []
-        texcoords = []
+    def buildBuffers(self):
         vertices = self._buildVertices()
+        indices = self._buildIndices()
+        geometry = []
+        shading = []
         for vert in vertices:
-            vert.appendTo(positions,normals,texcoords)
-        return {
-            "vertices" : {
-                "positions" : positions,
-                "normals" : normals,
-                "texcoords" : texcoords
-                },
-            "indices" : self._buildIndices()
-            }
+            geometry += vert.getPosition()
+            shading += vert.getNormal()
+            shading += vert.getColor()
+        bufs = {}
+        bufs["geometry"] = geometry
+        bufs["shading"] = shading
+        bufs["indices"] = indices
+        return bufs
 
 class BisectMeshBuilder(MeshBuilder):
 
@@ -130,39 +125,62 @@ def calculateTriangleNormal(verts):
     w = verts[2] - verts[0]
     return v.Cross(w).GetNormalized()
 
-
-def getTextCoordFromVector(vec):
-    if vec.z != 0:
-        raise RuntimeError("Unexpected UVW mapping")
-    return [vec.x, vec.y]
-
 def makeMeshForObject(obj, scale=1.0, useBisect=True):
     if obj.GetType() == c4d.Opolygon:
         points = obj.GetAllPoints()
         phong_norms = obj.CreatePhongNormals()
-        uvw_tag = obj.GetTag(c4d.Tuvw)
+        color_tag = obj.GetTag(c4d.Tvertexcolor)
+        if color_tag is None:
+            raise RuntimeError("Polygon object has no vertex color tag")
+        color_data = color_tag.GetDataAddressR()
         mesh = BisectMeshBuilder() if useBisect else MeshBuilder()
         for poly_ind, poly in enumerate(obj.GetAllPolygons()):
             if not poly.IsTriangle():
                 raise RuntimeError("Polygon object is not triangulated")
-            poly_poss = [points[poly.a] * scale, points[poly.b] * scale, points[poly.c] * scale]
+            poly_inds = [poly.a, poly.b, poly.c]
+            poly_poss = []
+            for vert_ind in range(3):
+                poly_poss += [scale * points[poly_inds[vert_ind]]]
             if phong_norms is not None:
                 poly_norms = [phong_norms[poly_ind * 4 + i] for i in range(3)]
             else:
                 poly_norms = [calculateTriangleNormal(poly_poss)] * 3
-            if uvw_tag is not None:
-                uvw = uvw_tag.GetSlow(poly_ind)
-                poly_uvs = [getTextCoordFromVector(uvw[key]) for key in ["a","b","c"]]
+            if color_tag.IsPerPointColor():
+                poly_cols = []
+                for vert_ind in range(3):
+                    poly_cols += [c4d.VertexColorTag.GetPoint(color_data, None, None, poly_inds[vert_ind])]
             else:
-                poly_uvs = [0] * 3
+                poly_cols_dict = c4d.VertexColorTag.GetPolygon(color_data, poly_ind)
+                poly_cols = [poly_cols_dict.a, poly_cols_dict.b, poly_cols_dict.c]
             for vert_ind in range(3):
-                mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_uvs[vert_ind]))
+                mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_cols[vert_ind]))
         return mesh
     else:
         raise RuntimeError("Object is not a polygon object")
 
-def objToDict(obj, scale=1.0):
-    return makeMeshForObject(obj, scale).toDict()
+def objToBufDict(obj, scale=1.0):
+    return makeMeshForObject(obj, scale).buildBuffers()
+
+def toCArray(ctype, varname, list, structlen=None):
+    txt = ctype + " " + varname + "[] = {"
+    fields = 0
+    structs = 0
+    for item in list:
+        if structlen is not None:
+            if fields == 0:
+                if structs > 0:
+                    txt += ","
+                txt += "{"
+        if fields > 0:
+            txt += ","
+        txt += str(item)
+        fields += 1
+        if structlen is not None and fields == structlen:
+            txt += "}"
+            fields = 0
+            structs += 1
+    txt += "};"
+    return txt
 
 def main():
     doc = documents.GetActiveDocument()
@@ -171,21 +189,25 @@ def main():
     
     print("-- C4D JSON mesh exporter for Neighborhood project --")
     
-    jobjs = {}
+    objbufdicts = {}
 
     for obj in objs:
             try:
-                jobj = objToDict(obj, output_scale)
-                jobjs[obj.GetName()] = jobj
+                objbufdict = objToBufDict(obj, output_scale)
+                objbufdicts[obj.GetName()] = objbufdict
             except RuntimeError as ex:
                 print("Error while exporting object '%s'" % obj.GetName())
                 print(ex)
                 return
     
-    for name, jobj in jobjs.iteritems():
-        filename = os.path.join(output_directory, name + output_ext)
+    for name, objbufdict in objbufdicts.iteritems():
+        filename = os.path.join(output_directory, output_prefix + name + output_suffix)
         with open(filename, "w") as out:
-            out.write(json.dumps(jobj, separators=(',', ':'), indent=None))
+            txt = ""
+            txt += toCArray("const float", name + "_Geometry", objbufdict["geometry"]) + "\n"
+            txt += toCArray("const float", name + "_Shading", objbufdict["shading"], 6) + "\n"
+            txt += toCArray("const int", name + "_Indices", objbufdict["indices"]) + "\n"
+            out.write(txt)
         print("Successfully written mesh '%s'" % name)
 
     gui.MessageDialog("Exporting done successfully", c4d.GEMB_OK)

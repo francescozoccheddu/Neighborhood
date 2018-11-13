@@ -2,6 +2,7 @@
 
 #include <Game/Scene/Lights.hpp>
 #include <Game/Scene/Camera.hpp>
+#include <Game/Resources/MeshResource.hpp>
 #include <Game/Scene/Transform.hpp>
 #include <vector>
 #include <string>
@@ -14,15 +15,12 @@ public:
 
 	struct Drawable
 	{
-		std::string mesh;
+		const SceneMeshResource * pMesh;
 		Transform transform;
-		std::string texture;
 	};
 
 	std::vector<Drawable> drawables {};
-	std::vector<PointLight> pointLights {};
-	std::vector<DirectionalLight> directionalLights {};
-	std::vector<ConeLight> coneLight {};
+	std::vector<Light*> lights {};
 	AbstractView * pView { nullptr };
 	AbstractProjection * pProjection { nullptr };
 
