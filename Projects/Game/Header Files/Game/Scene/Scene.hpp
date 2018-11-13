@@ -15,7 +15,7 @@ public:
 
 	struct Drawable
 	{
-		const SceneMeshResource * pMesh;
+		const MeshResource * pMesh;
 		Transform transform;
 	};
 

@@ -5,10 +5,6 @@
     <HasSharedItems>true</HasSharedItems>
     <ItemsProjectGuid>{68bb6086-409a-474c-8f9d-00c0e1def345}</ItemsProjectGuid>
   </PropertyGroup>
-  <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.props" />
-    <Import Project="$(MSBuildThisFileDirectory)..\..\VS Customization\Copy Resource Task\CopyResourceTask.props" />
-  </ImportGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
@@ -71,50 +67,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\ConeLighting_pixel.hlsl">
-      <ShaderType>Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
-      <ShaderType>Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
-      <ShaderType>Pixel</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
-      <ShaderType>Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Lighting_pixel.hlsl">
-      <ShaderType>Pixel</ShaderType>
-      <ShaderModel>5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
-      <ShaderType>Vertex</ShaderType>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_geometry.hlsl">
-      <ShaderType>Geometry</ShaderType>
-      <ShaderModel>4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_vertex.hlsl">
-      <ShaderType>Vertex</ShaderType>
-      <ShaderModel>4.0</ShaderModel>
-    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\ConeLighting_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\DirectionalLighting_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_vertex.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Lighting_pixel.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Screen_vertex.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_geometry.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_vertex.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <FileType>Document</FileType>
-      <DeploymentContent>true</DeploymentContent>
-      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
-    </CopyResourceTask>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_mesh_exporter.py" />
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Sammy.c4d" />
   </ItemGroup>
-  <ItemGroup>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
-      <DeploymentContent>true</DeploymentContent>
-      <FileType>Document</FileType>
-      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
-    </CopyResourceTask>
-  </ItemGroup>
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
-    <Import Project="$(MSBuildThisFileDirectory)..\..\VS Customization\Copy Resource Task\CopyResourceTask.targets" />
-  </ImportGroup>
 </Project>

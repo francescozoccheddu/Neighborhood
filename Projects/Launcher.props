@@ -6,18 +6,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
-    <ImageContentTask>
-      <ContentOutput>$(OutResDir)Textures\%(Filename).dds</ContentOutput>
-    </ImageContentTask>
     <FxCompile>
       <ObjectFileOutput>$(OutResDir)Shaders\%(Filename).cso</ObjectFileOutput>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
-    <CustomBuildStep />
-    <CopyResourceTask>
-      <DestinationFiles>$(OutResDir)%(Filename)%(Extension)</DestinationFiles>
-      <ContentOutput>$(OutResDir)Meshes\%(Filename)%(Extension)</ContentOutput>
-    </CopyResourceTask>
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="OutResDir">

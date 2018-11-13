@@ -7,7 +7,7 @@ from c4d import documents
 script_directory = os.path.dirname(os.path.realpath(__file__))
 output_prefix = "Mesh_"
 output_suffix = ".hpp"
-output_directory = os.path.join(script_directory, "../Projects/Game/Resources/")
+output_directory = os.path.join(script_directory, "../Projects/Neighborhood/Projects/Game/Header Files/Game/Resources/Meshes")
 output_scale = 1.0 / 100.0
 
 class CompareResult:
@@ -92,6 +92,8 @@ class MeshBuilder:
         bufs["geometry"] = geometry
         bufs["shading"] = shading
         bufs["indices"] = indices
+        bufs["indices_count"] = len(indices)
+        bufs["vertices_count"] = len(vertices)
         return bufs
 
 class BisectMeshBuilder(MeshBuilder):
@@ -151,9 +153,9 @@ def makeMeshForObject(obj, scale=1.0, useBisect=True):
                     poly_cols += [c4d.VertexColorTag.GetPoint(color_data, None, None, poly_inds[vert_ind])]
             else:
                 poly_cols_dict = c4d.VertexColorTag.GetPolygon(color_data, poly_ind)
-                poly_cols = [poly_cols_dict.a, poly_cols_dict.b, poly_cols_dict.c]
+                poly_cols = [poly_cols_dict["a"], poly_cols_dict["b"], poly_cols_dict["c"]]
             for vert_ind in range(3):
-                mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_cols[vert_ind]))
+                mesh.add(Vertex(poly_poss[vert_ind], poly_norms[vert_ind], poly_cols[vert_ind].GetVector3()))
         return mesh
     else:
         raise RuntimeError("Object is not a polygon object")
@@ -161,7 +163,7 @@ def makeMeshForObject(obj, scale=1.0, useBisect=True):
 def objToBufDict(obj, scale=1.0):
     return makeMeshForObject(obj, scale).buildBuffers()
 
-def toCArray(ctype, varname, list, structlen=None):
+def toCArray(ctype, varname, list, structlen=None, structname=None, uniforminit=False):
     txt = ctype + " " + varname + "[] = {"
     fields = 0
     structs = 0
@@ -170,13 +172,15 @@ def toCArray(ctype, varname, list, structlen=None):
             if fields == 0:
                 if structs > 0:
                     txt += ","
-                txt += "{"
+                if structname is not None:
+                    txt += structname
+                txt += "{" if uniforminit else "("
         if fields > 0:
             txt += ","
         txt += str(item)
         fields += 1
         if structlen is not None and fields == structlen:
-            txt += "}"
+            txt += "}" if uniforminit else ")"
             fields = 0
             structs += 1
     txt += "};"
@@ -207,6 +211,8 @@ def main():
             txt += toCArray("const float", name + "_Geometry", objbufdict["geometry"]) + "\n"
             txt += toCArray("const float", name + "_Shading", objbufdict["shading"], 6) + "\n"
             txt += toCArray("const int", name + "_Indices", objbufdict["indices"]) + "\n"
+            txt += toCArray("const int", name + "_IndicesCount", objbufdict["indices_count"]) + "\n"
+            txt += toCArray("const int", name + "_VerticesCount", objbufdict["vertices_count"]) + "\n"
             out.write(txt)
         print("Successfully written mesh '%s'" % name)
 
