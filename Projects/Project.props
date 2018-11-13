@@ -11,8 +11,6 @@
     <OutDir>$(BuildDir)Output\$(BuildConfSubdir)</OutDir>
     <IntDir>$(BuildDir)Intermediate\$(BuildConfSubdir)</IntDir>
     <_PropertySheetDisplayName>Project</_PropertySheetDisplayName>
-    <CustomBuildAfterTargets>
-    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -29,17 +27,9 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <EnableModules>false</EnableModules>
     </ClCompile>
-    <Link />
     <Link>
       <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
     </Link>
-    <CustomBuild />
-    <CustomBuild />
-    <CustomBuild />
-    <CustomBuild />
-    <CustomBuildStep />
-    <FxCompile />
-    <ImageContentTask />
   </ItemDefinitionGroup>
   <ItemGroup>
     <BuildMacro Include="BuildDir">

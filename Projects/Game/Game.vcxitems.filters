@@ -1,23 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{b009058b-bc46-4600-b170-26e841be7eb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources">
       <UniqueIdentifier>{b327ad79-6701-4ff7-9aab-cd4d26e6604d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Shaders">
-      <UniqueIdentifier>{03cf8902-ef2e-4a18-ae3d-389fad17c352}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Shaders\Geometry">
-      <UniqueIdentifier>{985ed084-0a87-4402-8cdf-197aa7c2e3c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Shaders\Lighting">
-      <UniqueIdentifier>{3e02e2ed-ff35-41f0-bda6-e9796a3bb1c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resources\Meshes">
-      <UniqueIdentifier>{5fdd7eff-8b88-4fcd-91d7-a26d7957e921}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\Input">
       <UniqueIdentifier>{13b66ede-4dc5-4237-a9af-2f530e1da8e6}</UniqueIdentifier>
@@ -40,8 +25,11 @@
     <Filter Include="Sources\Logic">
       <UniqueIdentifier>{388aaa57-2ecf-4f9b-9520-028d62ef6f37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Shaders\Shadowing">
-      <UniqueIdentifier>{fd40ad24-4a3c-46d0-adaa-d8b5c7d30f01}</UniqueIdentifier>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{ad24cfb3-00c4-4fc1-a593-a58a303a8f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cinema 4D">
+      <UniqueIdentifier>{8fb7937a-9edf-473b-a145-c5dcbc2d0fee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,9 +155,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Scene\Scene.hpp">
       <Filter>Sources\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
-      <Filter>Sources\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp">
       <Filter>Sources\Engine</Filter>
     </ClInclude>
@@ -194,39 +179,42 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\DepthMapResource.hpp">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
+      <Filter>Sources\Logic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_pixel.hlsl">
-      <Filter>Resources\Shaders\Geometry</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\ConeLighting_pixel.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Geometry_vertex.hlsl">
-      <Filter>Resources\Shaders\Geometry</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\DirectionalLighting_pixel.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Screen_vertex.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_pixel.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\DirectionalLighting_pixel.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_vertex.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\ConeLighting_pixel.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Lighting_pixel.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_vertex.hlsl">
-      <Filter>Resources\Shaders\Shadowing</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Screen_vertex.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_geometry.hlsl">
-      <Filter>Resources\Shaders\Shadowing</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_geometry.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Lighting_pixel.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_vertex.hlsl">
+      <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Sammy.json">
-      <Filter>Resources\Meshes</Filter>
-    </CopyResourceTask>
-    <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
-      <Filter>Resources\Meshes</Filter>
-    </CopyResourceTask>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_mesh_exporter.py">
+      <Filter>Cinema 4D</Filter>
+    </None>
+    <None Include="$(MSBuildThisFileDirectory)Cinema 4D\Sammy.c4d">
+      <Filter>Cinema 4D</Filter>
+    </None>
   </ItemGroup>
 </Project>

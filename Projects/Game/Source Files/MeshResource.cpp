@@ -1,23 +1,23 @@
 #include <Game/Resources/MeshResource.hpp>
 
 #include <Game/Utils/Storage.hpp>
-#include <rapidjson/document.h>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
+#include "..\Header Files\Game\Resources\MeshResource.hpp"
 
-SceneMeshResource::~SceneMeshResource ()
+MeshResource::~MeshResource ()
 {
-	if (SceneMeshResource::IsCreated ())
+	if (MeshResource::IsCreated ())
 	{
-		SceneMeshResource::Destroy ();
-	}
-	if (SceneMeshResource::IsLoaded ())
-	{
-		SceneMeshResource::Unload ();
+		MeshResource::Destroy ();
 	}
 }
 
-void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _bGeometryOnly) const
+MeshResource::MeshResource (const GeometryVertex * _pGeometry, const ShadingVertex * _pShading, const ind_t * _pIndices, int _cVertices, int _cIndices)
+	: m_pGeometryVertices { _pGeometry }, m_pShadingVertices { _pShading }, m_pIndices { _pIndices }, m_cVertices { _cVertices }, m_cIndices { _cIndices }
+{}
+
+void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _bGeometryOnly) const
 {
 	GAME_ASSERT_MSG (IsCreated (), "Not created");
 #if GAME_MESHRESOURCE_HALF_INDEX
@@ -31,76 +31,12 @@ void SceneMeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _
 	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 2, buffers, strides, offsets));
 }
 
-int SceneMeshResource::GetIndicesCount () const
+int MeshResource::GetIndicesCount () const
 {
-	GAME_ASSERT_MSG (IsLoaded (), "Not loaded");
 	return m_cIndices;
 }
 
-void SceneMeshResource::Load ()
-{
-	GAME_ASSERT_MSG (!IsLoaded (), "Already loaded");
-	rapidjson::Document jDoc;
-	jDoc.Parse (Storage::LoadTextFile (GetFileName ()).c_str ());
-	{
-		const rapidjson::Value& jVerts { jDoc["vertices"] };
-		const rapidjson::Value& jPositions { jVerts["positions"] };
-		const rapidjson::Value& jNormals { jVerts["normals"] };
-		const rapidjson::Value& jTexCoords { jVerts["texcoords"] };
-		const rapidjson::SizeType cArr { jPositions.Size () };
-		m_cVertices = static_cast<int>(cArr);
-		m_pGeometryVertices = new GeometryVertex[m_cVertices];
-		m_pShadingVertices = new ShadingVertex[m_cVertices];
-		for (rapidjson::SizeType iArr { 0 }; iArr < cArr; iArr++)
-		{
-			{
-				GeometryVertex& geomVert { m_pGeometryVertices[static_cast<unsigned int>(iArr)] };
-				const rapidjson::Value & jPos { jPositions[iArr] };
-				geomVert.position.x = jPos[0].GetFloat ();
-				geomVert.position.y = jPos[1].GetFloat ();
-				geomVert.position.z = jPos[2].GetFloat ();
-			}
-			{
-				ShadingVertex& shadVert { m_pShadingVertices[static_cast<unsigned int>(iArr)] };
-				const rapidjson::Value & jNorm { jNormals[iArr] };
-				const rapidjson::Value & jTexCoord { jTexCoords[iArr] };
-				shadVert.normal.x = jNorm[0].GetFloat ();
-				shadVert.normal.y = jNorm[1].GetFloat ();
-				shadVert.normal.z = jNorm[2].GetFloat ();
-				shadVert.textureCoord.x = jTexCoord[0].GetFloat ();
-				shadVert.textureCoord.y = jTexCoord[1].GetFloat ();
-			}
-		}
-	}
-	{
-		const rapidjson::Value& jInds { jDoc["indices"] };
-		const rapidjson::SizeType cArr { jInds.Size () };
-		m_cIndices = static_cast<int>(cArr);
-		m_pIndices = new ind_t[m_cIndices];
-		for (rapidjson::SizeType iArr { 0 }; iArr < cArr; iArr++)
-		{
-			m_pIndices[static_cast<unsigned int>(iArr)] = static_cast<ind_t>(jInds[iArr].GetUint ());
-		}
-	}
-}
-
-void SceneMeshResource::Unload ()
-{
-	GAME_ASSERT_MSG (SceneMeshResource::IsLoaded (), "Not loaded");
-	delete m_pGeometryVertices;
-	delete m_pShadingVertices;
-	delete m_pIndices;
-	m_pGeometryVertices = nullptr;
-	m_pShadingVertices = nullptr;
-	m_pIndices = nullptr;
-}
-
-bool SceneMeshResource::IsLoaded () const
-{
-	return m_pIndices != nullptr;
-}
-
-void SceneMeshResource::Create (ID3D11Device & _device)
+void MeshResource::Create (ID3D11Device & _device)
 {
 	GAME_ASSERT_MSG (!IsCreated (), "Already created");
 	{
@@ -147,9 +83,9 @@ void SceneMeshResource::Create (ID3D11Device & _device)
 	}
 }
 
-void SceneMeshResource::Destroy ()
+void MeshResource::Destroy ()
 {
-	GAME_ASSERT_MSG (SceneMeshResource::IsCreated (), "Not created");
+	GAME_ASSERT_MSG (MeshResource::IsCreated (), "Not created");
 	m_pGeometryVertexBuffer->Release ();
 	m_pShadingVertexBuffer->Release ();
 	m_pIndexBuffer->Release ();
@@ -158,7 +94,7 @@ void SceneMeshResource::Destroy ()
 	m_pIndexBuffer = nullptr;
 }
 
-bool SceneMeshResource::IsCreated () const
+bool MeshResource::IsCreated () const
 {
 	return m_pIndexBuffer != nullptr;
 }
