@@ -182,6 +182,12 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
       <Filter>Sources\Logic</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Utils\NonCopyable.hpp">
+      <Filter>Sources\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\EngineListener.hpp">
+      <Filter>Sources\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\ConeLighting_pixel.hlsl">

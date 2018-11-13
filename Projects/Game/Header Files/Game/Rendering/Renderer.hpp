@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Game/Engine/DeviceHolder.hpp>
+#include <Game/Engine/DeviceHolder.hpp>
 #include <Game/Scene/Scene.hpp>
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/DepthMapResource.hpp>
@@ -9,7 +10,7 @@
 #include <Game/Rendering/GeometryPass.hpp>
 #include <Game/Rendering/LightingPass.hpp>
 
-class Renderer : public DeviceHolder::Listener
+class Renderer : public EngineListener
 {
 
 public:
@@ -21,14 +22,6 @@ public:
 	~Renderer ();
 
 	void Render (const Scene& scene);
-
-protected:
-
-	void OnDeviceCreated () override;
-
-	void OnDeviceDestroyed () override;
-
-	void OnSized (WindowSize size, WindowRotation rotation) override;
 
 private:
 
@@ -59,9 +52,13 @@ private:
 
 	ScreenMeshResource m_ScreenMesh;
 
-	SceneResources m_SceneResources;
-
 	GeometryPass m_GeometryPass;
-	LightingPass m_LightingPass;
+	//LightingPass m_LightingPass;
+
+	void OnDeviceCreated (const DeviceHolder & deviceHolder) override;
+
+	void OnDeviceDestroyed () override;
+
+	void OnSized (const DeviceHolder & deviceHolder) override;
 
 };

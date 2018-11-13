@@ -1,8 +1,8 @@
 #include <Game/Rendering/ShadowingSubPass.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include "..\Header Files\Game\Rendering\ShadowingSubPass.hpp"
 
+/*
 ShadowingSubPass::~ShadowingSubPass ()
 {
 	if (ShadowingSubPass::IsCreated ())
@@ -212,3 +212,4 @@ ShadowingSubPass::PrepareResult ShadowingSubPass::Prepare (std::list<const Light
 	result.lights = std::move (processedLights);
 	return result;
 }
+*/

@@ -83,7 +83,7 @@ void GeometryPass::Render (ID3D11DeviceContext & _context, const Scene & _scene,
 
 	for (const Scene::Drawable& drawable : _scene.drawables)
 	{
-		const SceneMeshResource & mesh { *drawable.pMesh };
+		const MeshResource & mesh { *drawable.pMesh };
 		mesh.SetBuffers (_context, false);
 
 		_context.DrawIndexed (static_cast<UINT>(mesh.GetIndicesCount ()), 0, 0);

@@ -2,6 +2,8 @@
 
 #include <Game/Direct3D.hpp>
 #include <Game/Utils/WindowRect.hpp>
+#include <Game/Engine/EngineListener.hpp>
+#include <vector>
 
 #if GAME_PLATFORM == GAME_PLATFORM_UWP
 #define GAME_NATIVE_WINDOW_T IUnknown*
@@ -18,26 +20,6 @@ class DeviceHolder
 {
 
 public:
-
-	class Listener
-	{
-	public:
-
-		virtual ~Listener () = default;
-
-	protected:
-
-		friend class DeviceHolder;
-
-		Listener () = default;
-
-		virtual void OnDeviceDestroyed () = 0;
-
-		virtual void OnDeviceCreated () = 0;
-
-		virtual void OnSized (WindowSize size, WindowRotation rotation) = 0;
-
-	};
 
 	DeviceHolder ();
 
@@ -67,7 +49,7 @@ public:
 
 	WindowRotation GetRotation () const;
 
-	Listener * pListener { nullptr };
+	std::vector<EngineListener*> Listeners;
 
 private:
 

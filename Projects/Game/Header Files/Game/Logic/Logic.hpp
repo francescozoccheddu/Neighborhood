@@ -2,9 +2,9 @@
 
 #include <Game/Scene/Scene.hpp>
 #include <Game/Input/Gamepad.hpp>
-#include <Game/Utils/WindowRect.hpp>
+#include <Game/Engine/EngineListener.hpp>
 
-class Logic
+class Logic : public EngineListener
 {
 
 public:
@@ -14,12 +14,16 @@ public:
 	void Update (double deltaTime);
 
 	const Scene& GetScene () const;
-
-	void Size (WindowSize size, WindowRotation rotation);
-
 private:
 
 	Scene m_Scene;
 	Gamepad m_Gamepad;
+
+	virtual void OnDeviceDestroyed () override;
+
+	virtual void OnDeviceCreated (const DeviceHolder& deviceHolder) override;
+
+	virtual void OnSized (const DeviceHolder& deviceHolder) override;
+
 
 };

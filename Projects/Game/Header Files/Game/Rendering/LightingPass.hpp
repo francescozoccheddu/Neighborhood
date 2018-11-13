@@ -1,5 +1,5 @@
 #pragma once
-
+/*
 #include <Game/Rendering/RenderingPass.hpp>
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/ConstantBufferResource.hpp>
@@ -8,8 +8,6 @@
 #include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
 #include <Game/Scene/Scene.hpp>
-#include <Game/Resources/SceneResources.hpp>
-
 
 class LightingPass final : public RenderingPass
 {
@@ -37,7 +35,7 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (ID3D11DeviceContext & context, const SceneResources & sceneResources, const Scene & scene, const Inputs& inputs, ID3D11RenderTargetView * target);
+	void Render (ID3D11DeviceContext & context, const Scene & scene, const Inputs& inputs, ID3D11RenderTargetView * target);
 
 private:
 
@@ -64,13 +62,6 @@ private:
 			{
 				switch (_light.GetType ())
 				{
-					case Light::Type::POINT:
-					{
-						const PointLight & pointLight { static_cast<const PointLight&>(_light) };
-						position = pointLight.position;
-						direction = { 0.0f, 0.0f, 0.0f };
-					}
-					break;
 					case Light::Type::DIRECTION:
 					{
 
@@ -133,4 +124,4 @@ private:
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 	ID3D11SamplerState * m_apSamplerStates[2];
 
-};
+};*/

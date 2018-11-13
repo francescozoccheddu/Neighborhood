@@ -163,7 +163,7 @@ def makeMeshForObject(obj, scale=1.0, useBisect=True):
 def objToBufDict(obj, scale=1.0):
     return makeMeshForObject(obj, scale).buildBuffers()
 
-def toCArray(ctype, varname, list, structlen=None, structname=None, uniforminit=False):
+def toCArray(ctype, varname, list, structlen=None, structname=None, uniforminit=True):
     txt = ctype + " " + varname + "[] = {"
     fields = 0
     structs = 0
