@@ -2,55 +2,6 @@
 
 #include <Game/Utils/Exceptions.hpp>
 
-void PointLight::Update ()
-{
-	PerspectiveProjection proj;
-	proj.aspectRatio = 1.0f;
-	proj.farZ = shadowFarZ;
-	proj.nearZ = shadowNearZ;
-	proj.vFov = DirectX::XMConvertToRadians (90.0f);
-	proj.Update ();
-	m_Matrix = proj;
-}
-
-ViewWithDirection PointLight::CalcView (D3D11_TEXTURECUBE_FACE _face) const
-{
-	ViewWithDirection view;
-	view.position = position;
-	switch (_face)
-	{
-		case D3D11_TEXTURECUBE_FACE_POSITIVE_X:
-			view.direction = { 1.0f, 0.0f, 0.0f };
-			view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-			break;
-		case D3D11_TEXTURECUBE_FACE_NEGATIVE_X:
-			view.direction = { -1.0f, 0.0f, 0.0f };
-			view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-			break;
-		case D3D11_TEXTURECUBE_FACE_POSITIVE_Y:
-			view.direction = { 0.0f, 1.0f, 0.0f };
-			view.unrotatedUp = { 0.0f, 0.0f, -1.0f };
-			break;
-		case D3D11_TEXTURECUBE_FACE_NEGATIVE_Y:
-			view.direction = { 0.0f, -1.0f, 0.0f };
-			view.unrotatedUp = { 0.0f, 0.0f, 1.0f };
-			break;
-		case D3D11_TEXTURECUBE_FACE_POSITIVE_Z:
-			view.direction = { 0.0f, 0.0f, 1.0f };
-			view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-			break;
-		case D3D11_TEXTURECUBE_FACE_NEGATIVE_Z:
-			view.direction = { 0.0f, 0.0f, -1.0f };
-			view.unrotatedUp = { 0.0f, 1.0f, 0.0f };
-			break;
-		default:
-			GAME_THROW_MSG ("Unknown face");
-			break;
-	}
-	view.Update ();
-	return view;
-}
-
 void DirectionalLight::Update ()
 {
 	OrthographicProjection proj;

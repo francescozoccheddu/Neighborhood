@@ -39,14 +39,13 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (ID3D11DeviceContext & context, const SceneResources & sceneResources, const Scene & scene, const Target& target) const;
+	void Render (ID3D11DeviceContext & context, const Scene & scene, const Target& target) const;
 
 private:
 
 	VertexShaderResource m_VertexShader { GAME_VERTEXSHADER_FILENAME ("Geometry"), SceneMeshResource::s_aInputElementDesc, ARRAYSIZE (SceneMeshResource::s_aInputElementDesc) };
 	PixelShaderResource m_PixelShader { GAME_PIXELSHADER_FILENAME ("Geometry") };
 	mutable ConstantBufferStructResource<ConstantBuffer> m_ConstantBuffer;
-	com_ptr<ID3D11SamplerState> m_SamplerState;
 	com_ptr<ID3D11RasterizerState> m_RasterizerState;
 
 };

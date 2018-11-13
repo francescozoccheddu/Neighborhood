@@ -8,14 +8,14 @@ Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _devi
 {
 	m_ScreenShader.Load ();
 	m_GeometryPass.Load ();
-	//m_DirectionalLightingPass.Load ();
+	m_LightingPass.Load ();
 }
 
 Renderer::~Renderer ()
 {
 	m_ScreenShader.Unload ();
 	m_GeometryPass.Unload ();
-	//m_DirectionalLightingPass.Unload ();
+	m_LightingPass.Unload ();
 }
 
 void Renderer::OnDeviceCreated ()
@@ -24,7 +24,7 @@ void Renderer::OnDeviceCreated ()
 
 	m_GeometryPass.Create (device);
 	m_SceneResources.Create (device);
-	//m_DirectionalLightingPass.Create (device);
+	m_LightingPass.Create (device);
 	m_ScreenMesh.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
@@ -54,7 +54,7 @@ void Renderer::OnDeviceDestroyed ()
 	}
 	m_ScreenShader.Destroy ();
 	m_GeometryPass.Destroy ();
-	//m_DirectionalLightingPass.Destroy ();
+	m_LightingPass.Destroy ();
 }
 
 void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
@@ -128,13 +128,13 @@ void Renderer::Render (const Scene & _scene)
 	}
 
 	{
-		/*LightingPass::Inputs inputs;
+		LightingPass::Inputs inputs;
 		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
 		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
 		inputs.depth = m_pDepthMapResource->GetShaderResourceView ();
 		inputs.mesh = &m_ScreenMesh;
 		inputs.screenShader = &m_ScreenShader;
-		m_DirectionalLightingPass.Render (_scene, context, inputs, pRenderTargetView);*/
+		m_LightingPass.Render (context, m_SceneResources, _scene, inputs, pRenderTargetView);
 	}
 
 }

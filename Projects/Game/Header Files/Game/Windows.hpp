@@ -13,11 +13,13 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+#include <Unknwn.h>
+
 #include <winrt/base.h>
 
-using namespace winrt;
-
 #pragma comment(lib,"windowsapp")
+
+using namespace winrt;
 
 #define GAME_PLATFORM_UWP 5
 #define GAME_PLATFORM_WIN32 6

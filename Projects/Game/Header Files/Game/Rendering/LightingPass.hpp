@@ -1,5 +1,5 @@
 #pragma once
-/*
+
 #include <Game/Rendering/RenderingPass.hpp>
 #include <Game/Resources/ShaderResource.hpp>
 #include <Game/Resources/ConstantBufferResource.hpp>
@@ -15,8 +15,6 @@ class LightingPass final : public RenderingPass
 {
 
 public:
-
-	LightingPass (const GeometryPass & geometryPass);
 
 	struct Inputs
 	{
@@ -39,57 +37,68 @@ public:
 
 	bool IsLoaded () const override final;
 
-	void Render (const Scene & scene, ID3D11DeviceContext & context, const Inputs& inputs, ID3D11RenderTargetView * target);
+	void Render (ID3D11DeviceContext & context, const SceneResources & sceneResources, const Scene & scene, const Inputs& inputs, ID3D11RenderTargetView * target);
 
 private:
 
-	static constexpr int s_cDirectionalTotal { 32 };
-	static constexpr int s_cPointTotal { 32 };
-	static constexpr int s_cConeTotal { 32 };
-	static constexpr int s_cDirectionalWithShadow { 8 };
-	static constexpr int s_cPointWithShadow { 4 };
-	static constexpr int s_cConeWithShadow { 8 };
-	static constexpr int s_cMaxWithShadow { std::max ({ s_cConeWithShadow, s_cDirectionalWithShadow, s_cPointWithShadow }) };
+	static constexpr int s_cMaxLights { 32 };
 
-	struct DirectionalLightBufferData
-	{
-		DirectX::XMFLOAT3 color;
-		UINT shadowMapSize;
-		DirectX::XMFLOAT3 direction;
-		FLOAT intensity;
-	};
+	static std::list<const Light*> GatherLights (const Scene & scene);
 
-	struct ConeLightBufferData
-	{
-		DirectX::XMFLOAT3 color;
-		UINT shadowMapSize;
-		DirectX::XMFLOAT3 position;
-		FLOAT intensity;
-		DirectX::XMFLOAT3 direction;
-		FLOAT innerCutoff;
-		FLOAT outerCutoff;
-		FLOAT startLength;
-		FLOAT endLenght;
-		FLOAT realEndLength;
-	};
-
-	struct PointLightBufferData
-	{
-		DirectX::XMFLOAT3 color;
-		UINT shadowMapSize;
-		DirectX::XMFLOAT3 position;
-		FLOAT intensity;
-		DirectX::XMFLOAT3 radius;
-		FLOAT farZ;
-	};
-
-	template<typename T, int cMax = 1>
 	struct LightBufferData
 	{
-		DirectX::XMFLOAT4X4 invProjView;
-		alignas(16) UINT cLights;
+		struct PackedLight
+		{
+			DirectX::XMFLOAT3 position;
+			UINT iShadowMap1Based;
+			DirectX::XMFLOAT3 color;
+			FLOAT intensity;
+			DirectX::XMFLOAT3 direction;
+			FLOAT innerCutoff;
+			FLOAT linearAttenuation;
+			FLOAT quadAttenuation;
+			FLOAT cubicAttenuation;
+			FLOAT outerCutoff;
 
-		alignas(16) T lights[cMax];
+			inline void Set (const Light & _light, UINT _iShadowMap1Based)
+			{
+				switch (_light.GetType ())
+				{
+					case Light::Type::POINT:
+					{
+						const PointLight & pointLight { static_cast<const PointLight&>(_light) };
+						position = pointLight.position;
+						direction = { 0.0f, 0.0f, 0.0f };
+					}
+					break;
+					case Light::Type::DIRECTION:
+					{
+
+						const DirectionalLight & directionalLight { static_cast<const DirectionalLight&>(_light) };
+						position = { 0.0f, 0.0f, 0.0f };
+						direction = directionalLight.direction;
+						innerCutoff = outerCutoff = 0.0f;
+					}
+					break;
+					case Light::Type::CONE:
+					{
+						const ConeLight & coneLight { static_cast<const ConeLight&>(_light) };
+						position = coneLight.position;
+						direction = coneLight.direction;
+					}
+					break;
+					default:
+						GAME_THROW_MSG ("Unknown light type");
+						break;
+				}
+				iShadowMap1Based = _iShadowMap1Based;
+				color = _light.color;
+				intensity = _light.intensity;
+			}
+		};
+
+		alignas(16) UINT cLights;
+		alignas(16) PackedLight aLights[s_cMaxLights];
 
 
 		constexpr int GetSize () const
@@ -99,31 +108,29 @@ private:
 
 		static inline constexpr int GetSize (int _cLights)
 		{
-			return static_cast<int>(sizeof (T)) * _cLights + 16 * 5;
+			return sizeof (PackedLight) * _cLights + offsetof (LightBufferData, aLights);
 		}
 	};
 
 	struct TransformBufferData
 	{
-		DirectX::XMFLOAT4X4 transforms[s_cMaxWithShadow];
+		DirectX::XMFLOAT4X4 invProjView;
+		DirectX::XMFLOAT4X4 aTransforms[ShadowingSubPass::s_cConeMaps + ShadowingSubPass::s_cDirectionalMaps];
 
 		static inline constexpr int GetSize (int _cLights)
 		{
-			return static_cast<int>(sizeof (DirectX::XMFLOAT4X4)) * _cLights;
+			return sizeof (DirectX::XMFLOAT4X4) * _cLights + offsetof (TransformBufferData, aTransforms);
 		}
 	};
 
-	PixelShaderResource m_DirectionalShader RENDERINGPASS_PIXSHADER ("DirectionalLighting");
-	PixelShaderResource m_ConeShader RENDERINGPASS_PIXSHADER ("ConeLighting");
-	PixelShaderResource m_PointShader RENDERINGPASS_PIXSHADER ("PointLighting");
-	ConstantBufferResource m_LightBuffer { std::max ({ LightBufferData<DirectionalLightBufferData>::GetSize (s_cDirectionalTotal) }) };
-	ConstantBufferStructResource<TransformBufferData> m_TransformBuffer;
 	ShadowingSubPass m_ShadowingSubPass;
-	LightBufferData<DirectionalLightBufferData, s_cDirectionalTotal> m_DirectionalBufferData;
-	LightBufferData<ConeLightBufferData, s_cConeTotal> m_ConeBufferData;
-	LightBufferData<PointLightBufferData, s_cPointTotal> m_PointBufferData;
-	com_ptr<ID3D11RasterizerState> m_RasterizerState;
-	com_ptr<ID3D11SamplerState> m_SamplerState;
-	com_ptr<ID3D11SamplerState> m_SamplerComparisonState;
 
-};*/
+	PixelShaderResource m_PixelShader { GAME_PIXELSHADER_FILENAME ("Lighting") };
+
+	ConstantBufferStructResource<TransformBufferData> m_TransformBuffer;
+	ConstantBufferStructResource<LightBufferData> m_LightBuffer;
+
+	com_ptr<ID3D11RasterizerState> m_RasterizerState;
+	ID3D11SamplerState * m_apSamplerStates[2];
+
+};

@@ -16,9 +16,6 @@
     <Filter Include="Resources\Shaders\Lighting">
       <UniqueIdentifier>{3e02e2ed-ff35-41f0-bda6-e9796a3bb1c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Textures">
-      <UniqueIdentifier>{43b9b32b-42bd-4128-925d-6af751ebfa4f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Meshes">
       <UniqueIdentifier>{5fdd7eff-8b88-4fcd-91d7-a26d7957e921}</UniqueIdentifier>
     </Filter>
@@ -72,13 +69,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resource.cpp">
       <Filter>Sources\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\SceneResources.cpp">
-      <Filter>Sources\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\ShaderResource.cpp">
-      <Filter>Sources\Resources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\TextureResource.cpp">
       <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\GeometryPass.cpp">
@@ -116,9 +107,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DDSLoader.hpp">
-      <Filter>Sources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Direct3D.hpp">
       <Filter>Sources</Filter>
     </ClInclude>
@@ -161,13 +149,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\Resource.hpp">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\SceneResources.hpp">
-      <Filter>Sources\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\ShaderResource.hpp">
-      <Filter>Sources\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Resources\TextureResource.hpp">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\GeometryPass.hpp">
@@ -229,14 +211,14 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\ConeLighting_pixel.hlsl">
       <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\PointLighting_pixel.hlsl">
-      <Filter>Resources\Shaders\Lighting</Filter>
-    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_vertex.hlsl">
       <Filter>Resources\Shaders\Shadowing</Filter>
     </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Shadowing_geometry.hlsl">
       <Filter>Resources\Shaders\Shadowing</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Resources\Shaders\Lighting_pixel.hlsl">
+      <Filter>Resources\Shaders\Lighting</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -246,13 +228,5 @@
     <CopyResourceTask Include="$(MSBuildThisFileDirectory)Resources\Meshes\Home.json">
       <Filter>Resources\Meshes</Filter>
     </CopyResourceTask>
-  </ItemGroup>
-  <ItemGroup>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Sammy.tif">
-      <Filter>Resources\Textures</Filter>
-    </ImageContentTask>
-    <ImageContentTask Include="$(MSBuildThisFileDirectory)Resources\Textures\Home.tif">
-      <Filter>Resources\Textures</Filter>
-    </ImageContentTask>
   </ItemGroup>
 </Project>
