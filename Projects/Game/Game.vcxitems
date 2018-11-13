@@ -40,6 +40,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\DirectXMath.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\DeviceHolder.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\Dispatcher.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\EngineListener.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\LightingPass.hpp" />
@@ -61,20 +62,37 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Exceptions.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Log.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\MatrixWrapper.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\Storage.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\WindowRect.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Windows.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\XInput.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\ConeLighting_pixel.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\DirectionalLighting_pixel.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_pixel.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_vertex.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Lighting_pixel.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Screen_vertex.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_geometry.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_vertex.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\ConeLighting_pixel.hlsl">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\DirectionalLighting_pixel.hlsl">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Geometry_vertex.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Lighting_pixel.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Screen_vertex.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_geometry.hlsl">
+      <ShaderType>Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)Shaders\Shadowing_vertex.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Cinema 4D\c4d_mesh_exporter.py" />

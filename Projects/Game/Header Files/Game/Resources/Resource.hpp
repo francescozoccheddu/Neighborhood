@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Game/Direct3D.hpp>
-#include <Game/Utils/NonCopyable.h>
+#include <Game/Utils/NonCopyable.hpp>
 #include <string>
 
 #define GAME_RESOURCES_DIR "Resources/"

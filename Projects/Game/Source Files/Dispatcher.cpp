@@ -25,7 +25,8 @@ double Dispatcher::s_TimerFreq = 0.0;
 
 Dispatcher::Dispatcher ()
 {
-	m_DeviceHolder.pListener = &m_Renderer;
+	m_DeviceHolder.Listeners.push_back (&m_Renderer);
+	m_DeviceHolder.Listeners.push_back (&m_Logic);
 }
 
 void Dispatcher::Tick ()
@@ -42,13 +43,11 @@ void Dispatcher::Destroy ()
 void Dispatcher::SetWindow (GAME_NATIVE_WINDOW_T _pWindow, WindowSize _size, WindowRotation _rotation)
 {
 	m_DeviceHolder.SetWindow (_pWindow, _size, _rotation);
-	m_Logic.Size (_size, _rotation);
 }
 
 void Dispatcher::Size (WindowSize _size, WindowRotation _rotation)
 {
 	m_DeviceHolder.Size (_size, _rotation);
-	m_Logic.Size (_size, _rotation);
 }
 
 void Dispatcher::Suspend ()

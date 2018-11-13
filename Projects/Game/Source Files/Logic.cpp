@@ -1,14 +1,8 @@
 #include <Game/Logic/Logic.hpp>
+#include <Game/Engine/DeviceHolder.hpp>
 
 Logic::Logic ()
 {
-	Scene::Drawable drawable;
-	drawable.pMesh = new SceneMeshResource (GAME_MESHRESOURCE_FILENAME ("Sammy"));
-	drawable.transform.Update ();
-	m_Scene.drawables.push_back (drawable);
-	drawable.pMesh = new SceneMeshResource (GAME_MESHRESOURCE_FILENAME ("Home"));
-	drawable.transform.Update ();
-	m_Scene.drawables.push_back (drawable);
 	PerspectiveProjection* pProjection = new PerspectiveProjection;
 	pProjection->vFov = 1.0f;
 	pProjection->farZ = 10.0f;
@@ -50,7 +44,7 @@ void Logic::Update (double _deltaTime)
 		view.lookUp += -rt.y * fdt * angSpeed;
 		view.ClampLookUp (DirectX::XMConvertToRadians (70.f));
 
-		{
+		/*{
 			float x { 0 }, y { 0 }, z { 0 };
 			if (m_Gamepad.AreButtonsPressed (XINPUT_GAMEPAD_DPAD_RIGHT, false))
 				x += 1.0;
@@ -69,7 +63,7 @@ void Logic::Update (double _deltaTime)
 			m_Scene.pointLights[0].position.y += y * fdt;
 			m_Scene.pointLights[0].position.z += z * fdt;
 			m_Scene.pointLights[0].Update ();
-		}
+		}*/
 
 	}
 
@@ -81,8 +75,15 @@ const Scene& Logic::GetScene () const
 	return m_Scene;
 }
 
-void Logic::Size (WindowSize _size, WindowRotation _rotation)
+void Logic::OnDeviceDestroyed ()
+{}
+
+void Logic::OnDeviceCreated (const DeviceHolder& _deviceHolder)
+{}
+
+void Logic::OnSized (const DeviceHolder& _deviceHolder)
 {
-	m_Scene.pProjection->aspectRatio = AbstractProjection::CalcAspectRatio (_size.width, _size.height);
+	const WindowSize size { _deviceHolder.GetSize () };
+	m_Scene.pProjection->aspectRatio = AbstractProjection::CalcAspectRatio (size.width, size.height);
 	m_Scene.pProjection->Update ();
 }

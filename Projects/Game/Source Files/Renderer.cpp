@@ -8,23 +8,22 @@ Renderer::Renderer (const DeviceHolder & _deviceHolder) : m_DeviceHolder { _devi
 {
 	m_ScreenShader.Load ();
 	m_GeometryPass.Load ();
-	m_LightingPass.Load ();
+	//m_LightingPass.Load ();
 }
 
 Renderer::~Renderer ()
 {
 	m_ScreenShader.Unload ();
 	m_GeometryPass.Unload ();
-	m_LightingPass.Unload ();
+	//m_LightingPass.Unload ();
 }
 
-void Renderer::OnDeviceCreated ()
+void Renderer::OnDeviceCreated (const DeviceHolder & deviceHolder)
 {
 	ID3D11Device & device { *m_DeviceHolder.GetDevice () };
 
 	m_GeometryPass.Create (device);
-	m_SceneResources.Create (device);
-	m_LightingPass.Create (device);
+	//m_LightingPass.Create (device);
 	m_ScreenMesh.Create (device);
 	{
 		D3D11_SAMPLER_DESC desc {};
@@ -46,7 +45,6 @@ void Renderer::OnDeviceDestroyed ()
 	delete m_pDepthMapResource;
 	m_pDepthMapResource = nullptr;
 	m_ScreenMesh.Destroy ();
-	m_SceneResources.Destroy ();
 	for (int iView { 0 }; iView < s_cRenderTargets; iView++)
 	{
 		m_RenderTargetViews[iView] = nullptr;
@@ -54,13 +52,14 @@ void Renderer::OnDeviceDestroyed ()
 	}
 	m_ScreenShader.Destroy ();
 	m_GeometryPass.Destroy ();
-	m_LightingPass.Destroy ();
+	//m_LightingPass.Destroy ();
 }
 
-void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
+void Renderer::OnSized (const DeviceHolder & deviceHolder)
 {
 	ID3D11Device * pDevice { m_DeviceHolder.GetDevice () };
-	m_pDepthMapResource = new DepthMapResource (_size.width, _size.height, false);
+	WindowSize size = m_DeviceHolder.GetSize ();
+	m_pDepthMapResource = new DepthMapResource (size.width, size.height, false);
 	m_pDepthMapResource->Create (*pDevice);
 	{
 		// Render target views
@@ -69,8 +68,8 @@ void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 			m_RenderTargetViews[iView] = nullptr;
 			m_ShaderResourceViews[iView] = nullptr;
 			D3D11_TEXTURE2D_DESC desc;
-			desc.Width = _size.width;
-			desc.Height = _size.height;
+			desc.Width = size.width;
+			desc.Height = size.height;
 			desc.ArraySize = 1;
 			desc.MipLevels = 1;
 			desc.Format = s_renderTargetFormats[iView];
@@ -88,8 +87,8 @@ void Renderer::OnSized (WindowSize _size, WindowRotation _rotation)
 	}
 	{
 		// Viewport
-		m_Viewport.Width = static_cast<FLOAT>(_size.width);
-		m_Viewport.Height = static_cast<FLOAT>(_size.height);
+		m_Viewport.Width = static_cast<FLOAT>(size.width);
+		m_Viewport.Height = static_cast<FLOAT>(size.height);
 		m_Viewport.MaxDepth = 1.0f;
 		m_Viewport.MinDepth = 0.0f;
 		m_Viewport.TopLeftX = 0.0f;
@@ -124,17 +123,17 @@ void Renderer::Render (const Scene & _scene)
 		target.normals = m_RenderTargetViews[s_iNormalTexture].get ();
 		target.material = m_RenderTargetViews[s_iMaterialTexture].get ();
 		target.depth = m_pDepthMapResource->GetDepthStencilView ();
-		m_GeometryPass.Render (context, m_SceneResources, _scene, target);
+		m_GeometryPass.Render (context, _scene, target);
 	}
 
 	{
-		LightingPass::Inputs inputs;
+		/*LightingPass::Inputs inputs;
 		inputs.material = m_ShaderResourceViews[s_iMaterialTexture].get ();
 		inputs.normals = m_ShaderResourceViews[s_iNormalTexture].get ();
 		inputs.depth = m_pDepthMapResource->GetShaderResourceView ();
 		inputs.mesh = &m_ScreenMesh;
 		inputs.screenShader = &m_ScreenShader;
-		m_LightingPass.Render (context, m_SceneResources, _scene, inputs, pRenderTargetView);
+		m_LightingPass.Render (context, _scene, inputs, pRenderTargetView);*/
 	}
 
 }

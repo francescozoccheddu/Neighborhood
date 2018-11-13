@@ -11,6 +11,8 @@ class MeshResource final : public Resource
 
 public:
 
+	~MeshResource ();
+
 #if GAME_MESHRESOURCE_HALF_INDEX
 	using ind_t = uint16_t;
 #else

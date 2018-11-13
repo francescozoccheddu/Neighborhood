@@ -7,7 +7,6 @@
 #include <Game/Direct3D.hpp>
 #include <Game/DirectXMath.hpp>
 #include <Game/Scene/Scene.hpp>
-#include <Game/Resources/SceneResources.hpp>
 
 class GeometryPass final : public RenderingPass
 {

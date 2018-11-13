@@ -1,3 +1,4 @@
+/*
 #include <Game/Rendering/LightingPass.hpp>
 
 #include <Game/Utils/Exceptions.hpp>
@@ -73,13 +74,14 @@ bool LightingPass::IsLoaded () const
 	return m_ShadowingSubPass.IsLoaded ();
 }
 
-void LightingPass::Render (ID3D11DeviceContext & _context, const SceneResources & _sceneResources, const Scene & _scene, const Inputs& _inputs, ID3D11RenderTargetView * _target)
+/*
+void LightingPass::Render (ID3D11DeviceContext & _context, const Scene & _scene, const Inputs& _inputs, ID3D11RenderTargetView * _target)
 {
 	return;
 	std::list<const Light*> lights { GatherLights (_scene) };
 	while (!lights.empty ())
 	{
-		const std::vector<ShadowingSubPass::ProcessedLight> processedLights { m_ShadowingSubPass.ProcessLights (_context, _sceneResources, _scene.drawables, lights, s_cMaxLights) };
+		const std::vector<ShadowingSubPass::ProcessedLight> processedLights { m_ShadowingSubPass.ProcessLights (_context, _scene.drawables, lights, s_cMaxLights) };
 		//TODO Draw lights
 	}
 }
@@ -101,3 +103,4 @@ std::list<const Light*> LightingPass::GatherLights (const Scene & _scene)
 	}
 	return lights;
 }
+*/
