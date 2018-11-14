@@ -26,6 +26,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Logic.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MergingPass.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\MeshResource.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Mesh_Sammy.c4d.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Renderer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Resource.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Scene.cpp" />
@@ -43,6 +44,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\EngineListener.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Input\Gamepad.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Mesh.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Meshes.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\LightingPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\GeometryPass.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Rendering\MergingPass.hpp" />

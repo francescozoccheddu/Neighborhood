@@ -3,7 +3,6 @@
 #include <Game/Utils/Storage.hpp>
 #include <Game/Utils/Exceptions.hpp>
 #include <Game/Utils/COMExceptions.hpp>
-#include "..\Header Files\Game\Resources\MeshResource.hpp"
 
 MeshResource::~MeshResource ()
 {
@@ -13,8 +12,8 @@ MeshResource::~MeshResource ()
 	}
 }
 
-MeshResource::MeshResource (const GeometryVertex * _pGeometry, const ShadingVertex * _pShading, const ind_t * _pIndices, int _cVertices, int _cIndices)
-	: m_pGeometryVertices { _pGeometry }, m_pShadingVertices { _pShading }, m_pIndices { _pIndices }, m_cVertices { _cVertices }, m_cIndices { _cIndices }
+MeshResource::MeshResource (const Mesh& _mesh)
+	: m_Mesh { _mesh }
 {}
 
 void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _bGeometryOnly) const
@@ -26,14 +25,14 @@ void MeshResource::SetBuffers (ID3D11DeviceContext & _deviceContext, bool _bGeom
 	GAME_COMC (_deviceContext.IASetIndexBuffer (m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0));
 #endif
 	UINT offsets[] { 0, 0 };
-	UINT strides[] { sizeof (GeometryVertex), sizeof (ShadingVertex) };
+	UINT strides[] { sizeof (Mesh::GeometryVertex), sizeof (Mesh::ShadingVertex) };
 	ID3D11Buffer * buffers[] { m_pGeometryVertexBuffer, _bGeometryOnly ? nullptr : m_pShadingVertexBuffer };
 	GAME_COMC (_deviceContext.IASetVertexBuffers (0, 2, buffers, strides, offsets));
 }
 
 int MeshResource::GetIndicesCount () const
 {
-	return m_cIndices;
+	return m_Mesh.indices.size ();
 }
 
 void MeshResource::Create (ID3D11Device & _device)
@@ -42,13 +41,13 @@ void MeshResource::Create (ID3D11Device & _device)
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = m_cVertices * sizeof (GeometryVertex);
+		desc.ByteWidth = m_Mesh.geometry.size () * sizeof (Mesh::GeometryVertex);
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (GeometryVertex);
+		desc.StructureByteStride = sizeof (Mesh::GeometryVertex);
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = m_pGeometryVertices;
+		data.pSysMem = m_Mesh.geometry.data ();
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pGeometryVertexBuffer));
@@ -56,13 +55,13 @@ void MeshResource::Create (ID3D11Device & _device)
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = m_cVertices * sizeof (ShadingVertex);
+		desc.ByteWidth = m_Mesh.shading.size () * sizeof (Mesh::ShadingVertex);
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (ShadingVertex);
+		desc.StructureByteStride = sizeof (Mesh::ShadingVertex);
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = m_pShadingVertices;
+		data.pSysMem = m_Mesh.shading.data ();
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pShadingVertexBuffer));
@@ -70,13 +69,13 @@ void MeshResource::Create (ID3D11Device & _device)
 	{
 		D3D11_BUFFER_DESC desc;
 		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.ByteWidth = m_cIndices * sizeof (ind_t);
+		desc.ByteWidth = m_Mesh.indices.size () * sizeof (Mesh::ind_t);
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
-		desc.StructureByteStride = sizeof (ind_t);
+		desc.StructureByteStride = sizeof (Mesh::ind_t);
 		desc.Usage = D3D11_USAGE_DEFAULT;
 		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = m_pIndices;
+		data.pSysMem = m_Mesh.indices.data ();
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 		GAME_COMC (_device.CreateBuffer (&desc, &data, &m_pIndexBuffer));
