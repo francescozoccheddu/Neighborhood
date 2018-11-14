@@ -31,6 +31,9 @@
     <Filter Include="Cinema 4D">
       <UniqueIdentifier>{8fb7937a-9edf-473b-a145-c5dcbc2d0fee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Meshes">
+      <UniqueIdentifier>{d7026052-d858-4824-b67a-9a3b14ecf32f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Gamepad.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\DepthMapResource.cpp">
       <Filter>Sources\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source Files\Mesh_Sammy.c4d.cpp">
+      <Filter>Sources\Meshes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,11 +188,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Logic\Logic.hpp">
       <Filter>Sources\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\franc\Documents\Visual Studio 2017\Projects\Neighborhood\Projects\Game\Header Files\Game\Utils\NonCopyable.hpp">
-      <Filter>Sources\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\EngineListener.hpp">
       <Filter>Sources\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.hpp" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Meshes.hpp">
+      <Filter>Sources\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Mesh.hpp">
+      <Filter>Sources\Meshes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
