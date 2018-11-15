@@ -10,6 +10,13 @@ Logic::Logic ()
 	m_Scene.pProjection = pProjection;
 	m_Scene.pView = new ViewWithOrientation ();
 	m_Scene.pView->position = { 0.0f, 0.0f, -2.0f };
+
+
+	Scene::Drawable sammy;
+	sammy.pMesh = &m_MeshSammy;
+	sammy.transform.Update ();
+	m_Scene.drawables.push_back (sammy);
+
 }
 
 void Logic::Update (double _deltaTime)
@@ -76,10 +83,14 @@ const Scene& Logic::GetScene () const
 }
 
 void Logic::OnDeviceDestroyed ()
-{}
+{
+	m_MeshSammy.Destroy ();
+}
 
 void Logic::OnDeviceCreated (const DeviceHolder& _deviceHolder)
-{}
+{
+	m_MeshSammy.Create (*_deviceHolder.GetDevice ());
+}
 
 void Logic::OnSized (const DeviceHolder& _deviceHolder)
 {

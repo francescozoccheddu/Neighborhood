@@ -191,12 +191,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Engine\EngineListener.hpp">
       <Filter>Sources\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.hpp" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Meshes.hpp">
       <Filter>Sources\Meshes</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Meshes\Mesh.hpp">
       <Filter>Sources\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Header Files\Game\Utils\NonCopyable.hpp">
+      <Filter>Sources\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
